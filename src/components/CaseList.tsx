@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { motion } from "motion/react";
 import { CASES, VERDICT_META, type Category } from "@/data/cases";
+import { getDeep } from "@/data/deep";
 import { AUDIENCES } from "@/data/audiences";
 import { useGame } from "@/lib/game";
 
@@ -18,7 +18,11 @@ export default function CaseList() {
 
   const list = CASES.filter((c) => (cat === "全部" || c.category === cat) && (!aud || aud.cases.includes(c.slug)));
 
-  const chip = (active: boolean) => `rounded-full border-2 border-ink px-3 py-1 text-sm font-bold transition ${active ? "bg-ink text-cream" : "bg-white hover:-translate-y-0.5"}`;
+  const chip = (active: boolean) =>
+    `rounded-full border px-3 py-1 text-xs font-medium transition ${
+      active ? "border-ink bg-ink text-white" : "border-line bg-white text-ink-soft hover:border-ink/50 hover:text-ink"
+    }`;
+
   const href = (c: string, f: string | null) => {
     const p = new URLSearchParams();
     if (c !== "全部") p.set("cat", c);
@@ -28,17 +32,17 @@ export default function CaseList() {
   };
 
   return (
-    <div>
-      <h1 className="font-display text-4xl">📚 判决书档案室</h1>
-      <p className="mt-1 text-ink-soft">没审过的案子先盖着，去法庭猜完再揭晓更好玩。</p>
+    <div className="mx-auto max-w-3xl">
+      <h1 className="font-display text-4xl text-ink">📚 判决书档案室</h1>
+      <p className="mt-1 text-sm text-ink-soft">全部 25 案，每案都附来龙去脉与原理；标「🎬 含动画」的配有橙线小人讲解演示。</p>
 
-      <div className="mt-5 flex flex-wrap gap-2">
+      <div className="mt-5 flex flex-wrap items-center gap-2">
         {CATS.map((c) => (
           <Link key={c} href={href(c, forId)} className={chip(cat === c)}>
             {c}
           </Link>
         ))}
-        <span className="mx-1 self-center text-ink-soft">|</span>
+        <span className="mx-1 text-line">|</span>
         <Link href={href(cat, null)} className={chip(!aud)}>
           所有人
         </Link>
@@ -49,36 +53,46 @@ export default function CaseList() {
         ))}
       </div>
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {list.map((c, i) => {
+      {/* 清爽列表，告别满屏卡片墙疲劳 */}
+      <ul className="mt-6 divide-y divide-line border-t border-line">
+        {list.map((c) => {
           const ans = c.slug in g.answered;
           const m = VERDICT_META[c.verdict];
+          const hasScene = Boolean(getDeep(c.slug)?.scene);
           return (
-            <motion.div key={c.slug} initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: i * 0.03 }} whileHover={{ y: -5, rotate: i % 2 ? 1 : -1 }}>
-              <Link href={`/cases/${c.slug}`} className="panel flex h-full flex-col p-4">
-                <div className="flex items-center justify-between text-xs font-bold text-ink-soft">
-                  <span>No.{String(c.no).padStart(3, "0")}</span>
-                  <span>{c.category}</span>
+            <li key={c.slug}>
+              <Link href={`/cases/${c.slug}`} className="group flex items-center gap-4 py-4 transition hover:bg-white/60 sm:px-2">
+                <span className="text-3xl">{c.emoji}</span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-bold text-ink group-hover:text-accent-dark">「{c.claim}」</span>
+                    {hasScene && (
+                      <span className="rounded-md bg-accent-soft px-1.5 py-0.5 text-[11px] font-bold text-accent-dark">
+                        🎬 含动画
+                      </span>
+                    )}
+                    {c.podcast && (
+                      <span className="rounded-md bg-cream px-1.5 py-0.5 text-[11px] font-medium text-ink-soft">
+                        🎧 播客
+                      </span>
+                    )}
+                  </div>
+                  <p className="mt-0.5 truncate text-xs text-ink-soft">{c.hook}</p>
                 </div>
-                <div className="mt-2 flex items-start gap-3">
-                  <span className="text-4xl">{c.emoji}</span>
-                  <span className="font-display text-xl leading-snug">「{c.claim}」</span>
-                </div>
-                <div className="mt-4 flex items-center justify-between">
+                <div className="shrink-0 text-right">
                   {ans ? (
-                    <span className="stamp !text-base" style={{ color: m.dark }}>
+                    <span className="rounded-lg border px-2 py-0.5 text-xs font-bold" style={{ color: m.dark, borderColor: m.color }}>
                       {m.emoji} {m.label}
                     </span>
                   ) : (
-                    <span className="rounded-lg border-2 border-dashed border-ink-soft px-2 py-0.5 text-sm font-bold text-ink-soft">🔒 判决未揭晓</span>
+                    <span className="text-xs font-medium text-ink-soft">待审 →</span>
                   )}
-                  {c.podcast && <span className="text-xs font-bold text-purple-dark">🎧 播客聊过</span>}
                 </div>
               </Link>
-            </motion.div>
+            </li>
           );
         })}
-      </div>
+      </ul>
     </div>
   );
 }

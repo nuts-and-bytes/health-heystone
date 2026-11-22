@@ -2,15 +2,13 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { motion } from "motion/react";
 import { CASES, VERDICT_META } from "@/data/cases";
 import { getAudience } from "@/data/audiences";
 import { EPISODES } from "@/data/podcasts";
 import { useGame } from "@/lib/game";
+import { Term } from "./Term";
 import Mascot from "./Mascot";
 import AudiencePicker from "./AudiencePicker";
-
-/* eslint-disable @next/next/no-img-element */
 
 function dailyCase() {
   const d = new Date();
@@ -18,172 +16,175 @@ function dailyCase() {
   return CASES[n % CASES.length];
 }
 
-const DOORS = [
-  { href: "/court", title: "开庭审案", desc: "滑卡站队，看判决", emoji: "⚖️", cls: "btn-red" },
-  { href: "/quiz", title: "段位测验", desc: "10 题测你的常识段位", emoji: "🏆", cls: "btn-yellow" },
-  { href: "/body", title: "身体地图", desc: "点哪儿查哪儿", emoji: "🫀", cls: "btn-blue" },
-  { href: "/smash", title: "谣言粉碎机", desc: "粘贴一句话，AI 帮你查", emoji: "🔨", cls: "btn-purple" },
-];
-
-const pop = {
-  hidden: { y: 30, opacity: 0 },
-  show: (i: number) => ({ y: 0, opacity: 1, transition: { delay: i * 0.08, type: "spring" as const, stiffness: 260, damping: 20 } }),
-};
-
 export default function Home() {
   const g = useGame();
   const aud = getAudience(g.audience);
   const [today, setToday] = useState(CASES[0]);
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setToday(dailyCase()), []);
+
   const done = Object.keys(g.answered).length;
   const ep = EPISODES[0];
-  const myCases = aud ? CASES.filter((c) => aud.cases.includes(c.slug)) : [];
+  const myCases = aud ? CASES.filter((c) => aud.cases.includes(c.slug)) : CASES.slice(0, 6);
 
   return (
-    <div className="space-y-10">
-      {/* HERO panel */}
-      <motion.section initial="hidden" animate="show" custom={0} variants={pop} className="panel grid overflow-hidden md:grid-cols-[1.1fr_1fr]">
-        <div className="flex flex-col justify-center p-6 sm:p-8">
-          <span className="w-fit -rotate-2 rounded-lg border-2 border-ink bg-yellow px-2 py-0.5 text-sm font-black">今日开庭 · 第 {done + 1} 案</span>
-          <h1 className="font-display mt-4 text-5xl leading-[1.05] sm:text-6xl">
-            健康谣言
-            <br />
-            <span className="text-red">送上法庭</span>
-          </h1>
-          <p className="mt-4 text-lg text-ink-soft">先站队，再看证据。跑步伤膝？一万步？蛋黄不能吃？每条判决都附权威来源。</p>
-          <div className="mt-6 flex flex-wrap gap-4">
-            <Link href="/court" className="btn btn-red text-lg">
-              ⚖️ 开始审案
-            </Link>
-            <Link href="/quiz" className="btn btn-white">
-              🏆 测测我的段位
-            </Link>
-          </div>
-        </div>
-        <div className="relative border-t-[3px] border-ink bg-cream md:border-l-[3px] md:border-t-0">
-          <Mascot mood="hero" className="animate-float h-full w-full object-cover" />
-        </div>
-      </motion.section>
-
-      {/* WHO ARE YOU */}
-      <motion.section initial="hidden" animate="show" custom={1} variants={pop}>
-        {!aud ? (
-          <div className="panel p-6">
-            <div className="flex items-center gap-4">
-              <Mascot mood="thinking" className="w-20 rounded-xl border-2 border-ink" />
-              <div className="bubble flex-1">
-                <p className="font-bold">先告诉法官，你是哪一类人？我会把和你最相关的案子排在前面。</p>
-              </div>
-            </div>
-            <div className="mt-6">
-              <AudiencePicker compact />
-            </div>
-          </div>
-        ) : (
-          <div className="panel p-6" style={{ background: `color-mix(in srgb, ${aud.color} 16%, white)` }}>
-            <div className="flex flex-wrap items-end justify-between gap-3">
-              <div>
-                <p className="text-sm font-bold text-ink-soft">
-                  {aud.emoji} {aud.label}专属卷宗
-                </p>
-                <h2 className="font-display text-3xl">{aud.tagline}</h2>
-              </div>
-              <Link href={`/advice?for=${aud.id}`} className="btn btn-white text-sm">
-                🃏 我的建议卡
-              </Link>
-            </div>
-            <div className="-mx-1 mt-4 flex snap-x gap-4 overflow-x-auto px-1 pb-4 pr-3 pt-2">
-              {myCases.map((c, i) => {
-                const ans = c.slug in g.answered;
-                return (
-                  <motion.div key={c.slug} whileHover={{ y: -6, rotate: i % 2 ? 2 : -2 }} className="shrink-0 snap-start">
-                    <Link href={ans ? `/cases/${c.slug}` : "/court"} className="panel flex h-40 w-40 flex-col p-3">
-                      <span className="text-3xl">{c.emoji}</span>
-                      <span className="mt-2 text-[15px] font-black leading-snug">{c.claim}</span>
-                      <span className="mt-auto text-xs font-bold" style={{ color: ans ? VERDICT_META[c.verdict].dark : "var(--ink-soft)" }}>
-                        {ans ? `${VERDICT_META[c.verdict].emoji} ${VERDICT_META[c.verdict].label}` : "🔒 待审"}
-                      </span>
-                    </Link>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-      </motion.section>
-
-      {/* DOORS */}
-      <section className="grid grid-cols-2 gap-4 md:grid-cols-4">
-        {DOORS.map((d, i) => (
-          <motion.div key={d.href} initial="hidden" animate="show" custom={i + 2} variants={pop}>
-            <Link href={d.href} className={`btn ${d.cls} h-full w-full flex-col items-start !p-4 text-left`}>
-              <span className="text-3xl">{d.emoji}</span>
-              <span className="font-display text-2xl">{d.title}</span>
-              <span className="text-sm font-bold opacity-90">{d.desc}</span>
-            </Link>
-          </motion.div>
-        ))}
-      </section>
-
-      {/* COMIC STRIP: daily case */}
-      <section>
-        <h2 className="font-display mb-4 text-3xl">📅 每日一案</h2>
-        <div className="grid gap-4 md:grid-cols-3">
-          <div className="panel p-5">
-            <div className="text-xs font-black text-ink-soft">第一格 · 传闻</div>
-            <div className="mt-3 text-6xl">{today.emoji}</div>
-            <div className="bubble mt-4">{today.hook}</div>
-          </div>
-          <div className="panel flex flex-col p-5">
-            <div className="text-xs font-black text-ink-soft">第二格 · 你怎么看</div>
-            <p className="font-display mt-4 text-3xl leading-tight">「{today.claim}」</p>
-            <Mascot mood="thinking" className="mt-auto w-24 self-end rounded-xl" />
-          </div>
-          <Link href={`/cases/${today.slug}`} className="panel group relative flex flex-col items-center justify-center overflow-hidden bg-ink p-5 text-center text-cream transition hover:-rotate-1">
-            <div className="text-xs font-black opacity-70">第三格 · 判决</div>
-            <div className="font-display mt-3 text-5xl transition group-hover:scale-110">？？？</div>
-            <p className="mt-3 font-bold">点开揭晓 →</p>
-          </Link>
-        </div>
-      </section>
-
-      {/* TOPICS */}
-      <section>
-        <h2 className="font-display mb-4 text-3xl">🗂️ 按主题翻卷宗</h2>
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          {[
-            { k: "运动", img: "topic-exercise" },
-            { k: "饮食", img: "topic-diet" },
-            { k: "睡眠", img: "topic-sleep" },
-            { k: "肌肉", img: "topic-muscle" },
-          ].map((t, i) => (
-            <motion.div key={t.k} whileHover={{ y: -6, rotate: i % 2 ? 2 : -2 }}>
-              <Link href={`/cases?cat=${t.k}`} className="panel block overflow-hidden">
-                <img src={`/illustrations/${t.img}.jpg`} alt={t.k} className="aspect-square w-full border-b-[3px] border-ink object-cover" />
-                <div className="flex items-center justify-between p-3">
-                  <span className="font-display text-2xl">{t.k}</span>
-                  <span className="text-sm font-bold text-ink-soft">{CASES.filter((c) => c.category === t.k).length} 案</span>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* PODCAST */}
-      <section className="panel grid gap-4 p-6 md:grid-cols-[auto_1fr]" style={{ background: "#efe6ff" }}>
-        <div className="flex h-24 w-24 items-center justify-center rounded-2xl border-[3px] border-ink bg-yellow text-5xl">🍍</div>
+    <div className="space-y-14">
+      {/* 1. HERO：克制纸面 + 唯一主动作，不再满屏彩色按钮 */}
+      <section className="grid items-center gap-8 md:grid-cols-[1.2fr_0.9fr]">
         <div>
-          <p className="text-sm font-bold text-ink-soft">
-            🎧 播客推荐 · {ep.show} {ep.vol}
+          <p className="inline-flex items-center gap-2 text-xs font-bold tracking-wide text-accent-dark">
+            <span className="h-2 w-2 rounded-full bg-accent" />
+            <span>先站队 · 再看证据 · 附原理与来源</span>
           </p>
-          <h3 className="font-display text-2xl leading-snug">{ep.title}</h3>
-          <p className="mt-1 text-ink-soft">{ep.hook}</p>
-          <Link href="/podcasts" className="btn btn-purple mt-4 text-sm">
-            看本期 16 个话题 →
+          <h1 className="font-display mt-3 text-4xl leading-[1.12] text-ink sm:text-5xl">
+            把生活里的健康谣言
+            <br />
+            一个个<span className="text-accent">送上法庭</span>
+          </h1>
+          <p className="mt-4 max-w-lg text-[15.5px] leading-relaxed text-ink-soft">
+            跑步伤膝盖？每天必须走一万步？蛋黄不能吃？先猜真假，再翻开原理动画和{" "}
+            <Term word="WHO" />、<Term word="荟萃分析" /> 等原始证据——不懂的词直接点开看大白话。
+          </p>
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <Link href="/court" className="btn">
+              ⚖️ {done > 0 ? `继续审案（已审 ${done}/25）` : "从第一案开始"}
+            </Link>
+            <Link href="/guide" className="btn btn-white">
+              🔎 先看：怎么读懂证据
+            </Link>
+          </div>
+        </div>
+
+        <div className="overflow-hidden rounded-3xl border-[1.5px] border-line bg-[#fdeecf]">
+          <Mascot mood="hero" className="h-full w-full object-cover" />
+        </div>
+      </section>
+
+      {/* 2. 新手 3 步路线（解决“第一次进来不知道从哪看起”） */}
+      <section className="border-t border-line pt-10">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <h2 className="font-display text-2xl text-ink">第一次来？按这三步逛</h2>
+          <span className="text-xs text-ink-soft">全程 3 分钟，随时可以跳着看</span>
+        </div>
+
+        <ol className="mt-5 grid gap-6 sm:grid-cols-3">
+          <li className="flex gap-3">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-black text-white">1</span>
+            <div>
+              <p className="font-bold text-ink">在下面选你是哪类人</p>
+              <p className="mt-1 text-sm text-ink-soft">优先给你看最切身的案子和每天起步建议。</p>
+            </div>
+          </li>
+          <li className="flex gap-3">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-ink text-xs font-black text-white">2</span>
+            <div>
+              <Link href="/court" className="font-bold text-ink underline decoration-line decoration-2 underline-offset-4 hover:decoration-accent">
+                去法庭滑 5 张卡 →
+              </Link>
+              <p className="mt-1 text-sm text-ink-soft">先凭直觉猜真假，再看反转判决和背后的原理动画。</p>
+            </div>
+          </li>
+          <li className="flex gap-3">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-ink text-xs font-black text-white">3</span>
+            <div>
+              <Link href="/smash" className="font-bold text-ink underline decoration-line decoration-2 underline-offset-4 hover:decoration-accent">
+                有拿不准的？扔进粉碎机 →
+              </Link>
+              <p className="mt-1 text-sm text-ink-soft">粘贴朋友圈或短视频里的说法，只用站内证据查。</p>
+            </div>
+          </li>
+        </ol>
+
+        {/* 人群选择（轻量平铺，不再厚重边框） */}
+        <div className="mt-7">
+          <div className="mb-3 flex items-center justify-between">
+            <span className="text-sm font-bold text-ink">选你的身份（可选）</span>
+            {aud && (
+              <Link href={`/advice?for=${aud.id}`} className="text-xs font-bold text-accent-dark hover:underline">
+                看给{aud.label}的最低有效剂量卡 →
+              </Link>
+            )}
+          </div>
+          <AudiencePicker compact />
+        </div>
+      </section>
+
+      {/* 3. 今日一案 + 为你挑的卷宗（用干净列表替代满屏厚卡片） */}
+      <section className="grid gap-10 border-t border-line pt-10 md:grid-cols-[0.95fr_1.05fr]">
+        <div>
+          <p className="text-xs font-bold text-accent-dark">今日一案</p>
+          <h2 className="font-display mt-1 text-3xl leading-snug text-ink">
+            {today.emoji} 「{today.claim}」
+          </h2>
+          <p className="mt-2 text-sm text-ink-soft">{today.hook}</p>
+          <p className="mt-4 text-sm text-ink">
+            不剧透答案——点进去先站队，再看它的来龙去脉、身体机制和原始研究。
+          </p>
+          <Link href={`/cases/${today.slug}`} className="btn btn-white mt-5 text-sm">
+            去审这一案 →
           </Link>
         </div>
+
+        <div>
+          <div className="flex items-baseline justify-between">
+            <h2 className="font-display text-2xl text-ink">{aud ? `${aud.emoji} 给${aud.label}挑的案子` : "热门案子"}</h2>
+            <Link href={aud ? `/cases?for=${aud.id}` : "/cases"} className="text-xs font-bold text-ink-soft hover:text-accent-dark">
+              全部 25 案 →
+            </Link>
+          </div>
+          <ul className="mt-3 divide-y divide-line">
+            {myCases.slice(0, 6).map((c) => {
+              const ans = c.slug in g.answered;
+              return (
+                <li key={c.slug}>
+                  <Link href={`/cases/${c.slug}`} className="group flex items-center gap-3 py-3 transition hover:text-accent-dark">
+                    <span className="text-xl">{c.emoji}</span>
+                    <span className="flex-1 text-[15px] font-medium text-ink group-hover:text-accent-dark">「{c.claim}」</span>
+                    <span
+                      className="text-xs font-bold"
+                      style={{ color: ans ? VERDICT_META[c.verdict].dark : "var(--ink-soft)" }}
+                    >
+                      {ans ? `${VERDICT_META[c.verdict].label}` : "未审 →"}
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </section>
+
+      {/* 4. 更多逛法：清爽三栏文字导航（告别彩虹大卡片墙） */}
+      <section className="grid gap-6 border-t border-line pt-10 sm:grid-cols-3">
+        <Link href="/body" className="group block">
+          <p className="text-xs font-bold text-accent-dark">按部位查</p>
+          <h3 className="font-display mt-1 text-2xl text-ink group-hover:text-accent-dark">🫀 身体地图 →</h3>
+          <p className="mt-1 text-sm text-ink-soft">点膝盖、肌肉、肠胃或大脑，直接看和那个部位有关的谣言。</p>
+        </Link>
+        <Link href="/advice" className="group block">
+          <p className="text-xs font-bold text-accent-dark">照着做就行</p>
+          <h3 className="font-display mt-1 text-2xl text-ink group-hover:text-accent-dark">🃏 最低有效剂量 →</h3>
+          <p className="mt-1 text-sm text-ink-soft">不用一步到位，翻面看每条权威建议背后的原因和出处。</p>
+        </Link>
+        <Link href="/quiz" className="group block">
+          <p className="text-xs font-bold text-accent-dark">10 题挑战</p>
+          <h3 className="font-display mt-1 text-2xl text-ink group-hover:text-accent-dark">🏆 健康常识段位 →</h3>
+          <p className="mt-1 text-sm text-ink-soft">从「吃瓜群众」到「首席大法官」，测测你能识破几条。</p>
+        </Link>
+      </section>
+
+      {/* 5. 播客精选：单条安静呈现 */}
+      <section className="flex flex-col gap-4 border-t border-line pt-10 sm:flex-row sm:items-center sm:justify-between">
+        <div className="max-w-xl">
+          <p className="text-xs font-bold text-accent-dark">
+            🎧 灵感来源 · {ep.show} {ep.vol}
+          </p>
+          <h2 className="font-display mt-1 text-2xl text-ink">{ep.title}</h2>
+          <p className="mt-1 text-sm text-ink-soft">{ep.hook}</p>
+        </div>
+        <Link href="/podcasts" className="btn btn-white shrink-0 text-sm">
+          看本期 16 个话题 →
+        </Link>
       </section>
     </div>
   );

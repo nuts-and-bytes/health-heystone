@@ -206,7 +206,7 @@ export default function CourtSession({ count = 5, mode = "court" }: { count?: nu
             <button className="btn btn-yellow whitespace-nowrap !px-2 sm:!px-5" onClick={() => answer("depends")}>
               ⚖️ 看情况
             </button>
-            <button className="btn whitespace-nowrap !px-2 sm:!px-5" onClick={() => answer("true")}>
+            <button className="btn btn-green whitespace-nowrap !px-2 sm:!px-5" onClick={() => answer("true")}>
               ✅ 真
             </button>
             <p className="col-span-3 text-center text-xs text-ink-soft">拖动卡片：← 假 · ↑ 看情况 · → 真（键盘方向键也行）</p>
@@ -229,8 +229,8 @@ export default function CourtSession({ count = 5, mode = "court" }: { count?: nu
               <p className="text-sm">
                 正确判决：<b>{VERDICT_META[current.verdict].label}</b> · {current.takeaway}
               </p>
-              <Link href={`/cases/${current.slug}`} className="text-sm font-bold underline decoration-2 underline-offset-4">
-                看完整判决书 →
+              <Link href={`/cases/${current.slug}`} className="text-sm font-bold text-accent-dark underline decoration-2 underline-offset-4">
+                深挖原理与原始来源 →
               </Link>
             </div>
             <button className={`btn ${correct ? "" : "btn-red"} shrink-0`} onClick={next} autoFocus>
@@ -283,7 +283,7 @@ function SwipeCard({ c, phase, picked, onAnswer }: { c: Case; phase: Phase; pick
         transition={{ type: "spring", stiffness: 140, damping: 18 }}
       >
         {/* front */}
-        <div className="panel absolute inset-0 flex cursor-grab flex-col p-6 [backface-visibility:hidden]">
+        <div className="panel-comic absolute inset-0 flex cursor-grab flex-col p-6 [backface-visibility:hidden]">
           <div className="flex items-center justify-between text-sm font-bold text-ink-soft">
             <span>案件 No.{String(c.no).padStart(3, "0")}</span>
             <span className="rounded-full border-2 border-ink bg-cream px-2 py-0.5 text-xs text-ink">{c.category}</span>
@@ -307,7 +307,7 @@ function SwipeCard({ c, phase, picked, onAnswer }: { c: Case; phase: Phase; pick
         </div>
 
         {/* back */}
-        <div className="panel absolute inset-0 flex flex-col overflow-hidden p-6 [backface-visibility:hidden] [transform:rotateY(180deg)]" style={{ background: "#fffdf7" }}>
+        <div className="panel-comic absolute inset-0 flex flex-col overflow-hidden p-6 [backface-visibility:hidden] [transform:rotateY(180deg)]" style={{ background: "#fffdf7" }}>
           <div className="text-sm font-bold text-ink-soft">判决书 · 「{c.claim}」</div>
           <div className="mt-4 flex justify-center">{revealed && <Stamp verdict={c.verdict} big delay={0.35} />}</div>
           <p className="font-display mt-6 text-2xl leading-snug">{c.verdictLine}</p>

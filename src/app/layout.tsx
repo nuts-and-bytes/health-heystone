@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#fdeecf",
+  themeColor: "#faf8f4",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -28,9 +28,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       </head>
       <body className="min-h-dvh">
         <TopBar />
-        <main className="mx-auto w-full max-w-5xl px-4 pb-28 pt-6 sm:px-6">{children}</main>
-        <footer className="mx-auto max-w-5xl px-6 pb-10 text-center text-sm text-ink-soft">
-          本站内容用于科普，不能替代医生的诊断和建议。每条判决都附有来源，欢迎核对。
+        <main className="mx-auto w-full max-w-4xl px-4 pb-28 pt-8 sm:px-6">{children}</main>
+        <footer className="mx-auto max-w-4xl border-t border-line px-6 py-8 text-center text-xs text-ink-soft">
+          本站内容用于科普，不能替代医生的诊断和建议。每条判决都附有来源，看到带橙色虚线的专业词可以点开看大白话解释。
         </footer>
       </body>
     </html>
