@@ -6,6 +6,7 @@ export interface GlossaryTerm {
   detail: string;
   analogy: string;
   scene?: string;
+  bodySlug?: string;
 }
 
 export const GLOSSARY: GlossaryTerm[] = [
@@ -99,6 +100,41 @@ export const GLOSSARY: GlossaryTerm[] = [
     short: "有充分人类证据表明「确实会增加致癌风险」的物质。",
     detail: "注意：分类说的是「证据有多确凿」，不是「吃一口就一定会得癌」。但酒精、烟草这类一类致癌物，越少接触越安全。",
     analogy: "「一类」说的是「铁证如山」，不是「毒性最强」。",
+  },
+  {
+    key: "肾上腺",
+    aliases: ["肾上腺素", "皮质醇"],
+    title: "肾上腺（肾上腺素 / 皮质醇）",
+    short: "长在肾脏头顶的内分泌小器官，管紧急应激和压力激素。",
+    detail: "紧张或运动时放出肾上腺素帮你提速，平时分泌皮质醇调节清醒与压力；长期熬夜和高压会让警报停不下来。",
+    analogy: "身体里的「紧急拉警报员」，关键时刻救命，但不能天天响。",
+    bodySlug: "adrenal",
+  },
+  {
+    key: "胆固醇",
+    title: "胆固醇",
+    short: "细胞膜和多种激素必需的建材，约七成以上由肝脏自己制造。",
+    detail: "分「送货车」LDL 和「回收车」HDL；健康人每天吃一个整蛋通常影响有限，真正要留心的是过多饱和脂肪与反式脂肪。",
+    analogy: "被冤枉几十年的「修路包工头」，关键看运输车队平不平衡。",
+    bodySlug: "cholesterol",
+  },
+  {
+    key: "胰岛素",
+    aliases: ["胰岛素敏感性"],
+    title: "胰岛素",
+    short: "胰腺分泌的激素，负责把血液里的葡萄糖送进细胞供能。",
+    detail: "熬夜、久坐、长期高糖会让细胞对它变迟钝（胰岛素敏感性下降）；饭后散步和练肌肉能帮它减负。",
+    analogy: "给细胞开门的「快递门禁卡」。",
+    bodySlug: "insulin",
+  },
+  {
+    key: "软骨",
+    aliases: ["关节软骨"],
+    title: "关节软骨",
+    short: "包在关节骨头两端的顺滑缓冲垫，几乎没有血管。",
+    detail: "它靠活动时的一压一松，从关节液里交换营养；循序渐进地动反而滋养它，长期不动才会退化。",
+    analogy: "一块活海绵，压一下、松一下才能喝饱水。",
+    bodySlug: "cartilage",
   },
 ];
 

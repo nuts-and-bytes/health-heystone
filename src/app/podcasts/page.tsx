@@ -62,7 +62,7 @@ export default function Page() {
           </div>
 
           <div className="panel-flat border-dashed bg-white/60 p-5 text-sm text-ink-soft">
-            🤖 <b>AI 精华卡片筹备中：</b>拿到节目文字稿后，会用 AI 把每段提炼成观点卡片，经人工核对后再上线。目前列出的是节目官方的时间轴，「相关案件」是本站对同一话题整理的证据，不代表嘉宾原话。
+            ⚖️ <b>AI 精华卡片筹备中：</b>拿到节目文字稿后，会用 AI 把每段提炼成观点卡片，经人工核对后再上线。目前列出的是节目官方的时间轴，「相关案件」是本站对同一话题整理的证据，不代表嘉宾原话。
           </div>
         </section>
       ))}

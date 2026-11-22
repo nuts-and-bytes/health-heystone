@@ -96,7 +96,7 @@ export default function Smasher() {
                   <Stamp verdict={top.verdict} delay={0.15} />
                 </div>
               )}
-              <p className="text-xs font-black text-ink-soft">{res.mode === "ai" ? "🤖 AI 法官根据站内判决书回答" : "📚 站内判决书"}</p>
+              <p className="text-xs font-black text-ink-soft">{res.mode === "ai" ? "⚖️ AI 法官根据站内判决书回答" : "📚 站内判决书"}</p>
               <p className="mt-2 whitespace-pre-wrap text-lg leading-relaxed">{res.answer}</p>
               <p className="mt-4 text-xs text-ink-soft">仅供科普参考，不能替代医生的诊断。</p>
             </div>

@@ -32,8 +32,13 @@ export function Term({ word, children }: { word: string; children?: React.ReactN
               <span className="font-bold text-accent-dark">打个比方：</span>
               {item.analogy}
             </p>
-            <div className="mt-2.5 flex justify-end">
-              <Link href="/guide" className="text-xs font-bold text-accent-dark hover:underline">
+            <div className="mt-2.5 flex justify-end gap-3">
+              {item.bodySlug && (
+                <Link href={`/body?tab=roles&role=${item.bodySlug}`} className="text-xs font-bold text-accent-dark hover:underline">
+                  看身体动画科普 →
+                </Link>
+              )}
+              <Link href="/guide" className="text-xs font-bold text-ink-soft hover:text-accent-dark hover:underline">
                 看证据怎么分级 →
               </Link>
             </div>
