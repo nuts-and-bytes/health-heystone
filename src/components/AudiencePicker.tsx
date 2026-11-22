@@ -23,9 +23,9 @@ export default function AudiencePicker({ compact = false }: { compact?: boolean 
                 : "border-line bg-white hover:border-ink/40"
             }`}
           >
-            <div className="flex items-center gap-2">
-              <span className="text-xl">{a.emoji}</span>
+            <div className="flex items-center justify-between gap-2">
               <span className="font-bold text-ink">{a.label}</span>
+              <span className={`h-2 w-2 rounded-full ${active ? "bg-accent" : "bg-line"}`} />
             </div>
             <p className="mt-1 text-xs text-ink-soft">{a.tagline}</p>
           </button>

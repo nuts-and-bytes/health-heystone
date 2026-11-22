@@ -5,35 +5,60 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { game, useGame } from "@/lib/game";
 import { getAudience } from "@/data/audiences";
+import {
+  BrandMark,
+  IconArchive,
+  IconBody,
+  IconBolt,
+  IconEvidence,
+  IconFlame,
+  IconGavel,
+  IconHeart,
+  IconPodcast,
+  IconSmash,
+  IconVolume,
+} from "./Icons";
 
 const NAV = [
-  { href: "/court", label: "法庭", emoji: "⚖️" },
-  { href: "/body", label: "身体百科", emoji: "🫀" },
-  { href: "/cases", label: "档案", emoji: "📚" },
-  { href: "/guide", label: "看懂证据", emoji: "🔎" },
-  { href: "/podcasts", label: "播客", emoji: "🎧" },
-  { href: "/smash", label: "粉碎机", emoji: "🔨" },
+  { href: "/court", label: "法庭", Icon: IconGavel },
+  { href: "/body", label: "身体百科", Icon: IconBody },
+  { href: "/cases", label: "档案", Icon: IconArchive },
+  { href: "/guide", label: "看懂证据", Icon: IconEvidence },
+  { href: "/podcasts", label: "播客", Icon: IconPodcast },
+  { href: "/smash", label: "粉碎机", Icon: IconSmash },
 ];
 
 const MOBILE_NAV = [
-  { href: "/court", label: "法庭", emoji: "⚖️" },
-  { href: "/body", label: "身体", emoji: "🫀" },
-  { href: "/cases", label: "档案", emoji: "📚" },
-  { href: "/guide", label: "证据", emoji: "🔎" },
-  { href: "/smash", label: "粉碎机", emoji: "🔨" },
+  { href: "/court", label: "法庭", Icon: IconGavel },
+  { href: "/body", label: "身体", Icon: IconBody },
+  { href: "/cases", label: "档案", Icon: IconArchive },
+  { href: "/guide", label: "证据", Icon: IconEvidence },
+  { href: "/smash", label: "粉碎机", Icon: IconSmash },
 ];
 
-function Stat({ icon, value, color, label }: { icon: string; value: number; color: string; label: string }) {
+function Stat({
+  Icon,
+  value,
+  color,
+  fill,
+  label,
+}: {
+  Icon: typeof IconFlame;
+  value: number;
+  color: string;
+  fill?: string;
+  label: string;
+}) {
   return (
-    <span className="flex items-center gap-1 font-black tabular-nums" style={{ color }} aria-label={label} title={label}>
-      <span className="text-lg">{icon}</span>
+    <span className="flex items-center gap-1 font-extrabold tabular-nums" style={{ color }} aria-label={label} title={label}>
+      <Icon width={16} height={16} fill={fill ?? "none"} />
       <AnimatePresence mode="popLayout">
         <motion.span
           key={value}
-          initial={{ y: -12, opacity: 0, scale: 1.35 }}
+          initial={{ y: -10, opacity: 0, scale: 1.25 }}
           animate={{ y: 0, opacity: 1, scale: 1 }}
-          exit={{ y: 12, opacity: 0 }}
-          transition={{ type: "spring", stiffness: 500, damping: 22 }}
+          exit={{ y: 10, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 480, damping: 22 }}
         >
           {value}
         </motion.span>
@@ -49,25 +74,28 @@ export default function TopBar() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b-[3px] border-ink bg-cream/95 backdrop-blur">
+      <header className="sticky top-0 z-40 border-b-[2.5px] border-ink bg-cream/95 backdrop-blur">
         <div className="mx-auto flex max-w-4xl items-center gap-3 px-4 py-2.5 sm:px-6">
-          <Link href="/" className="font-display flex shrink-0 items-center gap-1.5 text-2xl leading-none text-ink">
-            <span className="animate-wiggle inline-block">⚖️</span>
-            <span>谣言法庭</span>
+          <Link href="/" className="group flex shrink-0 items-center gap-2 text-ink">
+            <BrandMark className="transition-transform group-hover:-rotate-6" />
+            <span className="font-display text-2xl leading-none">谣言法庭</span>
           </Link>
 
           <nav className="ml-2 hidden items-center gap-1 md:flex">
-            {NAV.map((n) => {
-              const active = path.startsWith(n.href);
+            {NAV.map(({ href, label, Icon }) => {
+              const active = path.startsWith(href);
               return (
                 <Link
-                  key={n.href}
-                  href={n.href}
-                  className={`rounded-xl border-2 px-2.5 py-1 text-sm font-bold transition ${
-                    active ? "border-ink bg-[#ffd23f] text-ink" : "border-transparent text-ink hover:border-ink hover:bg-white"
+                  key={href}
+                  href={href}
+                  className={`inline-flex items-center gap-1.5 rounded-xl border-2 px-2.5 py-1 text-sm font-bold transition ${
+                    active
+                      ? "border-ink bg-accent-soft text-accent-dark"
+                      : "border-transparent text-ink-soft hover:border-ink/20 hover:bg-white hover:text-ink"
                   }`}
                 >
-                  {n.emoji} {n.label}
+                  <Icon width={15} height={15} />
+                  <span>{label}</span>
                 </Link>
               );
             })}
@@ -77,36 +105,40 @@ export default function TopBar() {
             {aud && (
               <button
                 onClick={() => game.setAudience(null)}
-                className="hidden cursor-pointer rounded-full border-2 border-ink bg-white px-2 py-0.5 text-xs font-bold sm:inline-flex"
+                className="hidden cursor-pointer rounded-full border-2 border-ink bg-white px-2.5 py-0.5 text-xs font-bold text-ink transition hover:bg-accent-soft sm:inline-flex"
                 title="切换身份"
               >
-                {aud.emoji} {aud.label}
+                {aud.label}
               </button>
             )}
-            <Stat icon="🔥" value={g.streak} color="#f97316" label="连续天数" />
-            <Stat icon="⚡" value={g.xp} color="#d97706" label="经验值" />
-            <Stat icon="❤️" value={g.hearts} color="var(--red)" label="今日红心" />
-            <button onClick={() => game.toggleMute()} className="cursor-pointer text-lg" aria-label={g.muted ? "打开音效" : "关闭音效"}>
-              {g.muted ? "🔇" : "🔊"}
+            <Stat Icon={IconFlame} value={g.streak} color="#f97316" fill="#fed7aa" label="连续天数" />
+            <Stat Icon={IconBolt} value={g.xp} color="#d97706" fill="#fde68a" label="经验值" />
+            <Stat Icon={IconHeart} value={g.hearts} color="var(--red)" fill="#fecaca" label="今日红心" />
+            <button
+              onClick={() => game.toggleMute()}
+              className="cursor-pointer rounded-lg p-1 text-ink-soft transition hover:bg-white hover:text-ink"
+              aria-label={g.muted ? "打开音效" : "关闭音效"}
+            >
+              <IconVolume muted={g.muted} width={17} height={17} />
             </button>
           </div>
         </div>
       </header>
 
-      {/* mobile bottom nav — 恢复上一版的清晰黑边与黄底选中态 */}
-      <nav className="fixed inset-x-0 bottom-0 z-40 flex justify-around border-t-[3px] border-ink bg-white py-1.5 md:hidden">
-        {MOBILE_NAV.map((n) => {
-          const active = path.startsWith(n.href);
+      {/* mobile bottom nav：统一手绘线条图标，去 emoji 廉价感 */}
+      <nav className="fixed inset-x-0 bottom-0 z-40 flex justify-around border-t-[2.5px] border-ink bg-white py-1.5 md:hidden">
+        {MOBILE_NAV.map(({ href, label, Icon }) => {
+          const active = path.startsWith(href);
           return (
             <Link
-              key={n.href}
-              href={n.href}
-              className={`flex flex-col items-center rounded-xl px-2.5 py-0.5 text-[11px] font-bold ${
-                active ? "bg-[#ffd23f] text-ink" : "text-ink"
+              key={href}
+              href={href}
+              className={`flex flex-col items-center gap-0.5 rounded-xl px-3 py-1 text-[11px] font-bold transition ${
+                active ? "bg-accent-soft text-accent-dark" : "text-ink-soft hover:text-ink"
               }`}
             >
-              <span className="text-xl leading-tight">{n.emoji}</span>
-              {n.label}
+              <Icon width={19} height={19} />
+              <span>{label}</span>
             </Link>
           );
         })}

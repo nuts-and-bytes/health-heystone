@@ -9,6 +9,7 @@ import { useGame } from "@/lib/game";
 import { Term } from "./Term";
 import Mascot from "./Mascot";
 import AudiencePicker from "./AudiencePicker";
+import { IconEvidence, IconGavel } from "./Icons";
 
 function dailyCase() {
   const d = new Date();
@@ -47,10 +48,12 @@ export default function Home() {
           </p>
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <Link href="/court" className="btn">
-              ⚖️ {done > 0 ? `继续审案（已审 ${done}/25）` : "从第一案开始"}
+              <IconGavel width={17} height={17} />
+              <span>{done > 0 ? `继续审案（已审 ${done}/25）` : "从第一案开始"}</span>
             </Link>
             <Link href="/guide" className="btn btn-white">
-              🔎 先看：怎么读懂证据
+              <IconEvidence width={17} height={17} />
+              <span>先看：怎么读懂证据</span>
             </Link>
           </div>
         </div>
@@ -154,21 +157,21 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4. 更多逛法：清爽三栏文字导航（告别彩虹大卡片墙） */}
+      {/* 4. 更多逛法：清爽三栏文字导航（告别彩虹大卡片墙与 emoji 堆砌） */}
       <section className="grid gap-6 border-t border-line pt-10 sm:grid-cols-3">
         <Link href="/body" className="group block">
-          <p className="text-xs font-bold text-accent-dark">按部位查</p>
-          <h3 className="font-display mt-1 text-2xl text-ink group-hover:text-accent-dark">🫀 身体地图 →</h3>
-          <p className="mt-1 text-sm text-ink-soft">点膝盖、肌肉、肠胃或大脑，直接看和那个部位有关的谣言。</p>
+          <p className="text-xs font-bold text-accent-dark">按部位与角色</p>
+          <h3 className="font-display mt-1 text-2xl text-ink group-hover:text-accent-dark">认识你的身体 →</h3>
+          <p className="mt-1 text-sm text-ink-soft">点膝盖、肌肉或看看肾上腺、胆固醇的小人动画科普。</p>
         </Link>
         <Link href="/advice" className="group block">
           <p className="text-xs font-bold text-accent-dark">照着做就行</p>
-          <h3 className="font-display mt-1 text-2xl text-ink group-hover:text-accent-dark">🃏 最低有效剂量 →</h3>
+          <h3 className="font-display mt-1 text-2xl text-ink group-hover:text-accent-dark">最低有效剂量 →</h3>
           <p className="mt-1 text-sm text-ink-soft">不用一步到位，翻面看每条权威建议背后的原因和出处。</p>
         </Link>
         <Link href="/quiz" className="group block">
           <p className="text-xs font-bold text-accent-dark">10 题挑战</p>
-          <h3 className="font-display mt-1 text-2xl text-ink group-hover:text-accent-dark">🏆 健康常识段位 →</h3>
+          <h3 className="font-display mt-1 text-2xl text-ink group-hover:text-accent-dark">健康常识段位 →</h3>
           <p className="mt-1 text-sm text-ink-soft">从「吃瓜群众」到「首席大法官」，测测你能识破几条。</p>
         </Link>
       </section>
@@ -177,7 +180,7 @@ export default function Home() {
       <section className="flex flex-col gap-4 border-t border-line pt-10 sm:flex-row sm:items-center sm:justify-between">
         <div className="max-w-xl">
           <p className="text-xs font-bold text-accent-dark">
-            🎧 灵感来源 · {ep.show} {ep.vol}
+            灵感来源 · {ep.show} {ep.vol}
           </p>
           <h2 className="font-display mt-1 text-2xl text-ink">{ep.title}</h2>
           <p className="mt-1 text-sm text-ink-soft">{ep.hook}</p>
