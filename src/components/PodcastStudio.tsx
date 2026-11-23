@@ -190,7 +190,7 @@ export default function PodcastStudio() {
               ref={audioRef}
               src={ep.audioUrl}
               preload="metadata"
-              onTimeUpdate={(e) => setCurrentTime(e.currentTime)}
+              onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
               onLoadedMetadata={(e) => setDuration(e.currentTarget.duration || ep.minutes * 60)}
               onEnded={() => setPlaying(false)}
             />
