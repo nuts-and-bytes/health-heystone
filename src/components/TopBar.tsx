@@ -25,7 +25,7 @@ const NAV = [
   { href: "/cases", label: "档案", Icon: IconArchive },
   { href: "/guide", label: "看懂证据", Icon: IconEvidence },
   { href: "/podcasts", label: "播客", Icon: IconPodcast },
-  { href: "/smash", label: "粉碎机", Icon: IconSmash },
+  { href: "/smash", label: "谣言粉碎机", Icon: IconSmash },
 ];
 
 const MOBILE_NAV = [
@@ -33,7 +33,7 @@ const MOBILE_NAV = [
   { href: "/body", label: "身体", Icon: IconBody },
   { href: "/cases", label: "档案", Icon: IconArchive },
   { href: "/guide", label: "证据", Icon: IconEvidence },
-  { href: "/smash", label: "粉碎机", Icon: IconSmash },
+  { href: "/smash", label: "谣言粉碎机", Icon: IconSmash },
 ];
 
 function Stat({

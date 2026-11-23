@@ -197,6 +197,14 @@ body {
 .animate-float { animation: float 3.6s ease-in-out infinite; }
 .pulse-ring { animation: pulse-ring 1.6s ease-out infinite; }
 
+body.resizing {
+  cursor: col-resize !important;
+  user-select: none !important;
+}
+body.resizing iframe {
+  pointer-events: none !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

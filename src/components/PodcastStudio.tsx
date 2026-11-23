@@ -7,8 +7,20 @@ import { getCase } from "@/data/cases";
 import { getBodyRole } from "@/data/body-pedia";
 import { useAudio } from "@/lib/audio";
 import PodcastInfographic from "./PodcastInfographic";
+import Splitter from "./Splitter";
 
 /* eslint-disable @next/next/no-img-element */
+
+const LAYOUT_KEY = "health-podcast-layout-v1";
+const SIDEBAR = { min: 176, max: 320, def: 224, snap: 120 };
+const PANEL = { min: 320, max: 720, def: 440, snap: 240 };
+
+interface PaneLayout {
+  sidebar: number;
+  sideOpen: boolean;
+  panel: number;
+  panelOpen: boolean;
+}
 
 interface QAItem {
   q: string;
@@ -81,7 +93,31 @@ export default function PodcastStudio() {
   const [qaInput, setQaInput] = useState("");
   const [qaLoading, setQaLoading] = useState(false);
   const [qaHistory, setQaHistory] = useState<Record<string, QAItem[]>>({});
+  const [pane, setPane] = useState<PaneLayout>({
+    sidebar: SIDEBAR.def,
+    sideOpen: true,
+    panel: PANEL.def,
+    panelOpen: true,
+  });
   const activeSubRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(LAYOUT_KEY) || "{}");
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setPane((prev) => ({ ...prev, ...saved }));
+    } catch {}
+  }, []);
+
+  const updatePane = (patch: Partial<PaneLayout>) => {
+    setPane((prev) => {
+      const next = { ...prev, ...patch };
+      try {
+        localStorage.setItem(LAYOUT_KEY, JSON.stringify(next));
+      } catch {}
+      return next;
+    });
+  };
 
   const allChapters: Chapter[] = useMemo(() => ep.sections.flatMap((s) => s.chapters), [ep]);
   const activeVideo = customVideos[ep.id] ?? ep.video ?? null;
@@ -210,19 +246,40 @@ export default function PodcastStudio() {
         })}
       </div>
 
-      {/* 桌面端（>=768px）真正三栏：左 节目列表 | 中 音频封面+滚动字幕+播控 | 右 AI/字幕/一图读懂/导读 */}
-      <div className="grid items-start gap-4 md:grid-cols-[200px_minmax(0,1fr)_310px] lg:grid-cols-[230px_minmax(0,1fr)_380px] xl:grid-cols-[250px_minmax(0,1fr)_430px]">
-        {/* ① 左栏：播客节目与单集列表（>=768px 固定三栏左侧，吸顶） */}
-        <aside className="hidden rounded-2xl border border-line bg-white/90 p-3 md:sticky md:top-20 md:block">
+      {/* 桌面端（>=768px）仿 SubCast 可拖拽调宽三栏：左 节目列表 | Splitter | 中 播放器 | Splitter | 右 AI/字幕/一图读懂 */}
+      <div className="flex flex-col gap-4 md:flex-row md:items-start md:gap-0">
+        {/* ① 左栏：播客节目与单集列表（可拖动调宽 / 折叠为封面窄条） */}
+        <aside
+          style={{ width: pane.sideOpen ? `${pane.sidebar}px` : "64px" }}
+          className="hidden shrink-0 rounded-2xl border border-line bg-white/90 p-3 md:sticky md:top-20 md:block"
+        >
           <div className="flex items-center justify-between border-b border-line pb-2.5">
-            <h1 className="font-display text-xl text-ink">播客精读</h1>
-            <span className="rounded-full bg-cream px-2 py-0.5 text-[11px] font-bold text-ink-soft">{EPISODES.length} 期</span>
+            {pane.sideOpen ? (
+              <>
+                <h1 className="font-display text-xl text-ink">播客精读</h1>
+                <button
+                  onClick={() => updatePane({ sideOpen: false })}
+                  className="cursor-pointer rounded-md px-1.5 py-0.5 text-xs font-bold text-ink-soft hover:bg-cream hover:text-ink"
+                  title="收起左栏"
+                >
+                  «
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => updatePane({ sideOpen: true })}
+                className="mx-auto cursor-pointer rounded-md px-2 py-0.5 text-xs font-bold text-ink-soft hover:bg-cream hover:text-ink"
+                title="展开节目栏"
+              >
+                »
+              </button>
+            )}
           </div>
 
           <div className="mt-3 space-y-4">
             {shows.map(([showName, items]) => (
               <div key={showName} className="space-y-1.5">
-                <p className="px-2 text-[11px] font-bold tracking-wide text-ink-soft">{showName}</p>
+                {pane.sideOpen && <p className="px-2 text-[11px] font-bold tracking-wide text-ink-soft">{showName}</p>}
                 <div className="space-y-1">
                   {items.map((item) => {
                     const active = item.id === ep.id;
@@ -230,21 +287,24 @@ export default function PodcastStudio() {
                       <button
                         key={item.id}
                         onClick={() => audio.selectEpisode(item.id)}
-                        className={`flex w-full cursor-pointer items-start gap-2.5 rounded-xl p-2 text-left transition ${
+                        title={item.title}
+                        className={`flex w-full cursor-pointer items-start gap-2.5 rounded-xl p-1.5 text-left transition ${
                           active ? "bg-accent-soft/80 text-ink" : "text-ink-soft hover:bg-cream hover:text-ink"
-                        }`}
+                        } ${pane.sideOpen ? "" : "justify-center"}`}
                       >
                         <img
                           src={item.cover}
                           alt={item.show}
-                          className={`mt-0.5 h-10 w-10 shrink-0 rounded-lg border object-cover ${active ? "border-accent" : "border-line"}`}
+                          className={`h-9 w-9 shrink-0 rounded-lg border object-cover ${active ? "border-accent" : "border-line"}`}
                         />
-                        <div className="min-w-0 flex-1">
-                          <p className={`line-clamp-2 text-xs leading-snug ${active ? "font-bold text-ink" : "font-medium"}`}>
-                            {item.title}
-                          </p>
-                          <p className="mt-0.5 font-mono text-[10px] text-ink-soft">{item.minutes} 分钟</p>
-                        </div>
+                        {pane.sideOpen && (
+                          <div className="min-w-0 flex-1">
+                            <p className={`line-clamp-2 text-xs leading-snug ${active ? "font-bold text-ink" : "font-medium"}`}>
+                              {item.title}
+                            </p>
+                            <p className="mt-0.5 font-mono text-[10px] text-ink-soft">{item.minutes} 分钟</p>
+                          </div>
+                        )}
                       </button>
                     );
                   })}
@@ -253,13 +313,28 @@ export default function PodcastStudio() {
             ))}
           </div>
 
-          <div className="mt-5 rounded-xl bg-cream p-3 text-[11px] leading-relaxed text-ink-soft">
-            切到网站其他页面时音频会继续播放，底部出现迷你条随时控制。
-          </div>
+          {pane.sideOpen && (
+            <div className="mt-5 rounded-xl bg-cream p-3 text-[11px] leading-relaxed text-ink-soft">
+              拖动中间分隔线可调宽任意栏，双击恢复默认。
+            </div>
+          )}
         </aside>
 
+        {/* 左-中拖拽分隔线 */}
+        <Splitter
+          value={pane.sideOpen ? pane.sidebar : 64}
+          min={SIDEBAR.min}
+          max={SIDEBAR.max}
+          def={SIDEBAR.def}
+          snap={SIDEBAR.snap}
+          edge="right"
+          label="调节左侧节目栏宽度"
+          onChange={(w) => updatePane({ sidebar: w, sideOpen: true })}
+          onCollapse={() => updatePane({ sideOpen: false })}
+        />
+
         {/* ② 中栏：极简居中封面 + 歌词式滚动字幕 + 播控 + 简介 */}
-        <section className="space-y-4">
+        <section className="min-w-0 flex-1 space-y-4">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <p className="text-xs text-ink-soft">
@@ -267,19 +342,30 @@ export default function PodcastStudio() {
               </p>
               <h2 className="font-display mt-1 text-2xl leading-snug text-ink sm:text-[26px]">{ep.title}</h2>
             </div>
-            <div className="inline-flex shrink-0 rounded-lg border border-line bg-white p-0.5 text-xs font-bold">
-              <button
-                onClick={() => setMediaMode("video")}
-                className={`cursor-pointer rounded-md px-2.5 py-1 transition ${mediaMode === "video" ? "bg-ink text-white" : "text-ink-soft hover:text-ink"}`}
-              >
-                视频
-              </button>
-              <button
-                onClick={() => setMediaMode("audio")}
-                className={`cursor-pointer rounded-md px-2.5 py-1 transition ${mediaMode === "audio" ? "bg-ink text-white" : "text-ink-soft hover:text-ink"}`}
-              >
-                仅音频
-              </button>
+            <div className="flex shrink-0 items-center gap-1.5">
+              <div className="inline-flex rounded-lg border border-line bg-white p-0.5 text-xs font-bold">
+                <button
+                  onClick={() => setMediaMode("video")}
+                  className={`cursor-pointer rounded-md px-2.5 py-1 transition ${mediaMode === "video" ? "bg-ink text-white" : "text-ink-soft hover:text-ink"}`}
+                >
+                  视频
+                </button>
+                <button
+                  onClick={() => setMediaMode("audio")}
+                  className={`cursor-pointer rounded-md px-2.5 py-1 transition ${mediaMode === "audio" ? "bg-ink text-white" : "text-ink-soft hover:text-ink"}`}
+                >
+                  仅音频
+                </button>
+              </div>
+              {!pane.panelOpen && (
+                <button
+                  onClick={() => updatePane({ panelOpen: true })}
+                  className="hidden cursor-pointer rounded-lg border border-ink bg-accent-soft px-2.5 py-1 text-xs font-bold text-accent-dark md:inline-flex"
+                  title="展开右侧字幕/一图读懂/AI栏"
+                >
+                  展开右栏
+                </button>
+              )}
             </div>
           </div>
 
@@ -385,8 +471,27 @@ export default function PodcastStudio() {
           </details>
         </section>
 
-        {/* ③ 右栏：字幕 / 一图读懂 / 导读 / 问答 */}
-        <section className="panel min-h-[560px] bg-white p-4 sm:p-5 md:sticky md:top-20">
+        {/* 中-右拖拽分隔线（拉宽右栏看大图「一图读懂」超爽） */}
+        {pane.panelOpen && (
+          <Splitter
+            value={pane.panel}
+            min={PANEL.min}
+            max={PANEL.max}
+            def={PANEL.def}
+            snap={PANEL.snap}
+            edge="left"
+            label="调节右侧精读与一图读懂栏宽度"
+            onChange={(w) => updatePane({ panel: w })}
+            onCollapse={() => updatePane({ panelOpen: false })}
+          />
+        )}
+
+        {/* ③ 右栏：字幕 / 一图读懂 / 导读 / 问答（桌面端按 pane.panel 宽度自适应，手机端全宽） */}
+        {pane.panelOpen && (
+          <section
+            style={{ "--panel-w": `${pane.panel}px` } as React.CSSProperties}
+            className="panel min-h-[560px] w-full shrink-0 bg-white p-4 sm:p-5 md:sticky md:top-20 md:w-[var(--panel-w)]"
+          >
           <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line pb-3">
             <div className="flex gap-1 overflow-x-auto">
               {(
@@ -594,7 +699,8 @@ export default function PodcastStudio() {
               </form>
             </div>
           )}
-        </section>
+          </section>
+        )}
       </div>
     </div>
   );
