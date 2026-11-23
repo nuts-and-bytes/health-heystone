@@ -188,8 +188,8 @@ export default function PodcastStudio() {
 
   return (
     <div className="space-y-4">
-      {/* 手机端顶部横向节目切换条（桌面端隐藏，由左栏接管） */}
-      <div className="flex gap-2.5 overflow-x-auto pb-1 lg:hidden">
+      {/* 手机端顶部横向节目切换条（768px 以上直接展示左栏） */}
+      <div className="flex gap-2.5 overflow-x-auto pb-1 md:hidden">
         {EPISODES.map((item) => {
           const active = item.id === ep.id;
           return (
@@ -210,10 +210,10 @@ export default function PodcastStudio() {
         })}
       </div>
 
-      {/* 桌面端 SubCast 经典三栏：左 节目列表(236px) | 中 封面+滚动字幕+播控(1fr) | 右 字幕/一图读懂/导读/AI问答(400px) */}
-      <div className="grid items-start gap-5 lg:grid-cols-[236px_minmax(0,1fr)_390px] xl:grid-cols-[248px_minmax(0,1fr)_420px]">
-        {/* ① 左栏：播客节目与单集列表（仅桌面端显示，吸顶） */}
-        <aside className="hidden rounded-2xl border border-line bg-white/80 p-3.5 lg:sticky lg:top-20 lg:block">
+      {/* 桌面端（>=768px）真正三栏：左 节目列表 | 中 音频封面+滚动字幕+播控 | 右 AI/字幕/一图读懂/导读 */}
+      <div className="grid items-start gap-4 md:grid-cols-[200px_minmax(0,1fr)_310px] lg:grid-cols-[230px_minmax(0,1fr)_380px] xl:grid-cols-[250px_minmax(0,1fr)_430px]">
+        {/* ① 左栏：播客节目与单集列表（>=768px 固定三栏左侧，吸顶） */}
+        <aside className="hidden rounded-2xl border border-line bg-white/90 p-3 md:sticky md:top-20 md:block">
           <div className="flex items-center justify-between border-b border-line pb-2.5">
             <h1 className="font-display text-xl text-ink">播客精读</h1>
             <span className="rounded-full bg-cream px-2 py-0.5 text-[11px] font-bold text-ink-soft">{EPISODES.length} 期</span>
@@ -386,7 +386,7 @@ export default function PodcastStudio() {
         </section>
 
         {/* ③ 右栏：字幕 / 一图读懂 / 导读 / 问答 */}
-        <section className="panel min-h-[560px] bg-white p-4 sm:p-5 lg:sticky lg:top-20">
+        <section className="panel min-h-[560px] bg-white p-4 sm:p-5 md:sticky md:top-20">
           <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line pb-3">
             <div className="flex gap-1 overflow-x-auto">
               {(
