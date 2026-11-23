@@ -75,37 +75,37 @@ export default function TopBar() {
   return (
     <>
       <header className="sticky top-0 z-40 border-b-[2.5px] border-ink bg-cream/95 backdrop-blur">
-        <div className="mx-auto flex max-w-4xl items-center gap-3 px-4 py-2.5 sm:px-6">
-          <Link href="/" className="group flex shrink-0 items-center gap-2 text-ink">
+        <div className="mx-auto flex max-w-6xl items-center gap-2 px-4 py-2.5 sm:px-6 lg:gap-4">
+          <Link href="/" className="group flex shrink-0 items-center gap-2 whitespace-nowrap text-ink">
             <BrandMark className="transition-transform group-hover:-rotate-6" />
-            <span className="font-display text-2xl leading-none">懂点健康</span>
+            <span className="font-display text-xl leading-none lg:text-2xl">懂点健康</span>
           </Link>
 
-          <nav className="ml-2 hidden items-center gap-1 md:flex">
+          <nav className="ml-1 hidden items-center gap-0.5 md:flex lg:ml-2 lg:gap-1">
             {NAV.map(({ href, label, Icon }) => {
               const active = path.startsWith(href);
               return (
                 <Link
                   key={href}
                   href={href}
-                  className={`inline-flex items-center gap-1.5 rounded-xl border-2 px-2.5 py-1 text-sm font-bold transition ${
+                  className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl border-2 px-2 py-1 text-xs font-bold transition lg:px-2.5 lg:text-sm ${
                     active
                       ? "border-ink bg-accent-soft text-accent-dark"
                       : "border-transparent text-ink-soft hover:border-ink/20 hover:bg-white hover:text-ink"
                   }`}
                 >
-                  <Icon width={15} height={15} />
+                  <Icon width={15} height={15} className="shrink-0" />
                   <span>{label}</span>
                 </Link>
               );
             })}
           </nav>
 
-          <div className="ml-auto flex items-center gap-3 text-sm">
+          <div className="ml-auto flex shrink-0 items-center gap-2.5 whitespace-nowrap text-sm lg:gap-3">
             {aud && (
               <button
                 onClick={() => game.setAudience(null)}
-                className="hidden cursor-pointer rounded-full border-2 border-ink bg-white px-2.5 py-0.5 text-xs font-bold text-ink transition hover:bg-accent-soft sm:inline-flex"
+                className="hidden cursor-pointer whitespace-nowrap rounded-full border-2 border-ink bg-white px-2.5 py-0.5 text-xs font-bold text-ink transition hover:bg-accent-soft lg:inline-flex"
                 title="切换身份"
               >
                 {aud.label}

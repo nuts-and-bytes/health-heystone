@@ -8,6 +8,7 @@ import { getBodyRole } from "@/data/body-pedia";
 import { useAudio } from "@/lib/audio";
 import PodcastInfographic from "./PodcastInfographic";
 import PodcastMarkdown from "./PodcastMarkdown";
+import PodcastAiState from "./PodcastAiState";
 import Splitter from "./Splitter";
 
 /* eslint-disable @next/next/no-img-element */
@@ -108,11 +109,15 @@ async function streamPodcastAI(
 
   if (!res.ok) {
     let msg = `请求失败 (HTTP ${res.status})`;
+    let code = "HTTP_ERROR";
     try {
       const j = await res.json();
       if (j?.error) msg = j.error;
+      if (j?.code) code = j.code;
     } catch {}
-    throw new Error(msg);
+    const err = new Error(msg) as Error & { code?: string };
+    err.code = code;
+    throw err;
   }
 
   if (!res.body) {
@@ -152,10 +157,14 @@ export default function PodcastStudio() {
     panelOpen: true,
   });
 
+  // AI 模型配置状态检测（区分「未配置模型」与「网络波动」）
+  const [aiStatus, setAiStatus] = useState<{ configured: boolean; model: string } | null>(null);
+
   // SubCast 风格 AI 导读状态（按集缓存 + 流式生成 + 可随时停止）
   const [guides, setGuides] = useState<Record<string, string>>({});
   const [guideStreaming, setGuideStreaming] = useState(false);
   const [guideError, setGuideError] = useState("");
+  const [guideErrorCode, setGuideErrorCode] = useState("");
   const guideAbortRef = useRef<AbortController | null>(null);
 
   // SubCast 风格多轮流式 AI 问答状态（按集缓存 + 使用频率排序 + 停止/重试/新对话）
@@ -164,10 +173,25 @@ export default function PodcastStudio() {
   const [qaInput, setQaInput] = useState("");
   const [qaStreaming, setQaStreaming] = useState(false);
   const [qaError, setQaError] = useState("");
+  const [qaErrorCode, setQaErrorCode] = useState("");
   const [showPresets, setShowPresets] = useState(false);
   const qaAbortRef = useRef<AbortController | null>(null);
   const qaEndRef = useRef<HTMLDivElement>(null);
   const activeSubRef = useRef<HTMLButtonElement>(null);
+
+  const checkAiStatus = async () => {
+    try {
+      const r = await fetch("/api/podcast-qa");
+      if (r.ok) {
+        const j = await r.json();
+        setAiStatus({ configured: Boolean(j.configured), model: j.model || "gpt-4o-mini" });
+      }
+    } catch {}
+  };
+
+  useEffect(() => {
+    checkAiStatus();
+  }, []);
 
   // 监听桌面断点，确保内联 width 仅在 md (>=768px) 生效，避免与 Tailwind 媒体查询冲突
   useEffect(() => {
@@ -285,6 +309,7 @@ export default function PodcastStudio() {
     guideAbortRef.current = ctrl;
     setGuideStreaming(true);
     setGuideError("");
+    setGuideErrorCode("");
     let acc = "";
     setGuides((prev) => ({ ...prev, [epId]: "" }));
 
@@ -299,8 +324,10 @@ export default function PodcastStudio() {
         return next;
       });
     } catch (err) {
-      if ((err as Error).name !== "AbortError") {
-        setGuideError((err as Error).message || "导读生成失败，请稍后重试");
+      const e = err as Error & { code?: string };
+      if (e.name !== "AbortError") {
+        setGuideError(e.message || "导读生成失败，请稍后重试");
+        setGuideErrorCode(e.code || "ERROR");
       } else if (acc) {
         setGuides((prev) => {
           const next = { ...prev, [epId]: acc };
@@ -337,6 +364,7 @@ export default function PodcastStudio() {
     setQaInput("");
     setShowPresets(false);
     setQaError("");
+    setQaErrorCode("");
     setRightTab("qa");
 
     const baseHistory = chats[epId] ?? [];
@@ -369,8 +397,10 @@ export default function PodcastStudio() {
         return next;
       });
     } catch (err) {
-      if ((err as Error).name !== "AbortError") {
-        setQaError((err as Error).message || "回答生成失败，请重试");
+      const e = err as Error & { code?: string };
+      if (e.name !== "AbortError") {
+        setQaError(e.message || "回答生成失败，请重试");
+        setQaErrorCode(e.code || "ERROR");
         setChats((prev) => ({ ...prev, [epId]: reqMessages }));
       } else if (acc) {
         setChats((prev) => {
@@ -807,52 +837,57 @@ export default function PodcastStudio() {
             {rightTab === "guide" && (
               <div className="mt-3 min-h-0 flex-1 space-y-5 overflow-y-auto pr-1">
                 {/* AI 精读导读区 */}
-                <div className="rounded-2xl border border-line bg-cream/40 p-4">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <div>
-                      <p className="text-sm font-bold text-ink">AI 结构化导读</p>
-                      <p className="text-[11px] text-ink-soft">
-                        通读整期 {audio.transcript?.length ?? allChapters.length} 段简体逐字稿 · 一句话总结 / 时间线 / 核心观点 / 原话 / 先听这几段
-                      </p>
+                {epGuide ? (
+                  <div className="rounded-2xl border border-line bg-cream/40 p-4">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div>
+                        <p className="text-sm font-bold text-ink">AI 结构化导读</p>
+                        <p className="text-[11px] text-ink-soft">
+                          通读整期 {audio.transcript?.length ?? allChapters.length} 段简体逐字稿 · 5 段精读
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        {guideStreaming ? (
+                          <button
+                            onClick={stopGuide}
+                            className="cursor-pointer rounded-lg border border-ink bg-white px-2.5 py-1 text-xs font-bold text-ink hover:bg-cream"
+                          >
+                            停止生成
+                          </button>
+                        ) : (
+                          <button
+                            onClick={generateGuide}
+                            className="cursor-pointer rounded-lg bg-ink px-3 py-1.5 text-xs font-bold text-white transition hover:bg-accent"
+                          >
+                            重新生成
+                          </button>
+                        )}
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1.5">
-                      {guideStreaming ? (
-                        <button
-                          onClick={stopGuide}
-                          className="cursor-pointer rounded-lg border border-ink bg-white px-2.5 py-1 text-xs font-bold text-ink hover:bg-cream"
-                        >
-                          停止生成
-                        </button>
-                      ) : (
-                        <button
-                          onClick={generateGuide}
-                          className="cursor-pointer rounded-lg bg-ink px-3 py-1.5 text-xs font-bold text-white transition hover:bg-accent"
-                        >
-                          {epGuide ? "重新生成" : "生成 AI 导读"}
-                        </button>
-                      )}
-                    </div>
-                  </div>
-
-                  {guideError && (
-                    <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
-                      {guideError}
-                    </div>
-                  )}
-
-                  {epGuide ? (
                     <div className="mt-3 border-t border-line/80 pt-3">
                       <PodcastMarkdown content={epGuide} onSeek={jumpTo} />
                       {guideStreaming && <span className="mt-1 inline-block h-3.5 w-1.5 animate-pulse bg-accent align-middle" />}
                     </div>
-                  ) : guideStreaming ? (
-                    <p className="mt-3 text-xs text-ink-soft">正在通读整期逐字稿并提炼要点…</p>
-                  ) : (
-                    <p className="mt-2.5 text-xs leading-relaxed text-ink-soft">
-                      点击右上角「生成 AI 导读」，按 SubCast 精读体系提炼 5 段导读，每条结论都附真实时间戳，点一下直接跳播，并自动缓存在本地。
-                    </p>
-                  )}
-                </div>
+                  </div>
+                ) : guideStreaming ? (
+                  <PodcastAiState
+                    kind="thinking"
+                    mode="guide"
+                    segmentCount={audio.transcript?.length ?? allChapters.length}
+                    onPrimary={stopGuide}
+                    primaryLabel="先停一下"
+                  />
+                ) : aiStatus?.configured === false || guideErrorCode === "NO_API_KEY" ? (
+                  <PodcastAiState kind="no-key" onPrimary={checkAiStatus} />
+                ) : guideError ? (
+                  <PodcastAiState kind="error" detail={guideError} onPrimary={generateGuide} />
+                ) : (
+                  <PodcastAiState
+                    kind="idle-guide"
+                    segmentCount={audio.transcript?.length ?? allChapters.length}
+                    onPrimary={generateGuide}
+                  />
+                )}
 
                 {/* 本站官方章节与谣言/身体图解对照 */}
                 <details open className="space-y-3">
@@ -955,28 +990,36 @@ export default function PodcastStudio() {
                           <div key={idx} className="ml-8 rounded-2xl rounded-tr-sm bg-ink px-3.5 py-2.5 text-sm text-white">
                             {m.content}
                           </div>
-                        ) : (
+                        ) : m.content ? (
                           <div key={idx} className="rounded-2xl rounded-tl-sm border border-line bg-cream/45 p-3.5">
-                            {m.content ? (
-                              <PodcastMarkdown content={m.content} onSeek={jumpTo} />
-                            ) : (
-                              <p className="text-xs text-ink-soft">正在通读逐字稿思考中…</p>
-                            )}
+                            <PodcastMarkdown content={m.content} onSeek={jumpTo} />
                             {isLastAssistant && <span className="mt-1 inline-block h-3.5 w-1.5 animate-pulse bg-accent align-middle" />}
                           </div>
+                        ) : (
+                          <PodcastAiState
+                            key={idx}
+                            kind="thinking"
+                            mode="qa"
+                            segmentCount={audio.transcript?.length ?? allChapters.length}
+                            onPrimary={stopChat}
+                            primaryLabel="先停一下"
+                          />
                         );
                       })}
                       <div ref={qaEndRef} />
                     </div>
                   )}
 
+                  {aiStatus?.configured === false && epChat.length === 0 && (
+                    <PodcastAiState kind="no-key" onPrimary={checkAiStatus} />
+                  )}
+
                   {qaError && (
-                    <div className="flex items-center justify-between rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
-                      <span>{qaError}</span>
-                      <button onClick={retryLastChat} className="cursor-pointer font-bold underline">
-                        重试
-                      </button>
-                    </div>
+                    <PodcastAiState
+                      kind={qaErrorCode === "NO_API_KEY" ? "no-key" : "error"}
+                      detail={qaError}
+                      onPrimary={qaErrorCode === "NO_API_KEY" ? checkAiStatus : retryLastChat}
+                    />
                   )}
 
                   {(epChat.length === 0 || showPresets) && (

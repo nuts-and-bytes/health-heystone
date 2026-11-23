@@ -8,6 +8,14 @@ interface Msg {
   content: string;
 }
 
+/** 供前端探测当前是否已配置模型（绝不返回密钥本身） */
+export async function GET() {
+  return Response.json({
+    configured: Boolean(process.env.OPENAI_API_KEY?.trim()),
+    model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+  });
+}
+
 /** 复刻 SubCast 的 transcriptForModel：把整期带时间戳的文字稿喂给模型 */
 async function loadFullTranscript(episodeId: string, limitChars = 220_000): Promise<{ text: string; count: number }> {
   try {
@@ -77,6 +85,25 @@ function buildGuidePrompt(minutes: number) {
 写完后自查：每个时间戳都必须是文字稿里真实存在的时间，格式只用 [mm:ss] 或 [h:mm:ss]。`;
 }
 
+/** 带退避重试的上游请求，抵抗偶发 TLS / ECONNRESET 抖动 */
+async function fetchOpenAIWithRetry(url: string, init: RequestInit, attempts = 3): Promise<Response> {
+  let lastErr: unknown = null;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      const res = await fetch(url, init);
+      if (res.ok || (res.status >= 400 && res.status < 500 && res.status !== 429)) {
+        return res;
+      }
+      if (i === attempts - 1) return res;
+    } catch (err) {
+      lastErr = err;
+      if (i === attempts - 1) throw err;
+    }
+    await new Promise((r) => setTimeout(r, 650 * (i + 1)));
+  }
+  throw lastErr ?? new Error("网络请求失败");
+}
+
 export async function POST(req: Request) {
   const body = (await req.json().catch(() => ({}))) as {
     episodeId?: string;
@@ -86,14 +113,21 @@ export async function POST(req: Request) {
   };
 
   const ep = EPISODES.find((e) => e.id === body.episodeId);
-  if (!ep) return Response.json({ error: "未找到该期播客" }, { status: 404 });
+  if (!ep) return Response.json({ error: "未找到该期播客", code: "NOT_FOUND" }, { status: 404 });
+
+  const openaiKey = process.env.OPENAI_API_KEY?.trim();
+  if (!openaiKey) {
+    return Response.json(
+      { error: "尚未配置 AI 模型密钥（OPENAI_API_KEY）", code: "NO_API_KEY" },
+      { status: 503 }
+    );
+  }
 
   const action = body.action ?? "chat";
   const chapters = ep.sections.flatMap((s) => s.chapters);
   const { text: fullTranscript } = await loadFullTranscript(ep.id);
   const transcriptSource =
-    fullTranscript ||
-    chapters.map((ch) => `[${ch.time}] ${ch.title}`).join("\n");
+    fullTranscript || chapters.map((ch) => `[${ch.time}] ${ch.title}`).join("\n");
 
   const linkedSlugs = new Set(chapters.map((c) => c.caseSlug).filter(Boolean));
   const linkedCases = CASES.filter((c) => linkedSlugs.has(c.slug))
@@ -109,35 +143,59 @@ export async function POST(req: Request) {
         : [{ role: "user", content: (body.question ?? "").trim().slice(0, 500) }];
 
   if (!userMessages[userMessages.length - 1]?.content) {
-    return Response.json({ error: "请输入问题" }, { status: 400 });
-  }
-
-  const openaiKey = process.env.OPENAI_API_KEY;
-  if (!openaiKey) {
-    const fallback =
-      `当前未配置 OPENAI_API_KEY，先为你列出本期官方时间轴：\n` +
-      chapters.slice(0, 6).map((ch) => `- [${ch.time}] ${ch.title}`).join("\n");
-    return new Response(fallback, { headers: { "Content-Type": "text/plain; charset=utf-8" } });
+    return Response.json({ error: "请输入问题", code: "EMPTY_INPUT" }, { status: 400 });
   }
 
   const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
-  const upstream = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${openaiKey}`,
-    },
-    body: JSON.stringify({
-      model,
-      stream: true,
-      temperature: 0.45,
-      messages: [{ role: "system", content: system }, ...userMessages],
-    }),
-  });
+  const baseUrl = (process.env.OPENAI_BASE_URL || "https://api.openai.com/v1").replace(/\/+$/, "");
+
+  let upstream: Response;
+  try {
+    upstream = await fetchOpenAIWithRetry(
+      `${baseUrl}/chat/completions`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${openaiKey}`,
+        },
+        body: JSON.stringify({
+          model,
+          stream: true,
+          temperature: 0.45,
+          messages: [{ role: "system", content: system }, ...userMessages],
+        }),
+      },
+      3
+    );
+  } catch (err) {
+    const causeCode = (err as { cause?: { code?: string } })?.cause?.code;
+    return Response.json(
+      {
+        error:
+          causeCode === "ECONNRESET" || causeCode === "ETIMEDOUT"
+            ? `连接模型时网络波动（${causeCode}），已自动重试 3 次，请稍后再点重试`
+            : "暂时无法连接到模型服务，请检查网络或代理后重试",
+        code: "NETWORK_ERROR",
+      },
+      { status: 502 }
+    );
+  }
 
   if (!upstream.ok || !upstream.body) {
     const errText = await upstream.text().catch(() => "");
-    return Response.json({ error: `OpenAI HTTP ${upstream.status}: ${errText.slice(0, 120)}` }, { status: 502 });
+    return Response.json(
+      {
+        error:
+          upstream.status === 401
+            ? "模型密钥无效或已过期，请检查 .env.local 中的 OPENAI_API_KEY"
+            : upstream.status === 429
+              ? "模型请求频率达到上限或额度不足，请稍后再试"
+              : `模型服务返回异常（HTTP ${upstream.status}）${errText ? `：${errText.slice(0, 100)}` : ""}`,
+        code: upstream.status === 401 ? "NO_API_KEY" : "UPSTREAM_ERROR",
+      },
+      { status: 502 }
+    );
   }
 
   // 解析 OpenAI SSE 流并直接向下游输出纯文本增量，零缓冲延迟
