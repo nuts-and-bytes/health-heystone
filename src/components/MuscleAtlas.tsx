@@ -5,6 +5,7 @@ import { useState } from "react";
 import { MUSCLES, type MuscleItem } from "@/data/muscles";
 import { CASES } from "@/data/cases";
 import { sfx } from "@/lib/sfx";
+import StickScene from "./StickScene";
 
 /* eslint-disable @next/next/no-img-element */
 
@@ -26,10 +27,7 @@ export default function MuscleAtlas() {
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <p className="text-xs font-bold text-accent-dark">真实解剖图 · 点数字看每块肌肉的作用</p>
-          <p className="text-sm text-ink-soft">小人动画看动作原理，认识身上每块肌肉长在哪、干嘛用，直接点下面这张真图。</p>
-        </div>
+        <p className="text-sm text-ink-soft">左边真图认位置，右边小人看怎么练。</p>
         <div className="inline-flex rounded-xl border-2 border-ink bg-white p-0.5 text-xs font-bold">
           <button
             onClick={() => switchSide("front")}
@@ -46,9 +44,9 @@ export default function MuscleAtlas() {
         </div>
       </div>
 
-      <div className="grid gap-8 md:grid-cols-[minmax(0,360px)_1fr]">
+      <div className="grid gap-8 md:grid-cols-[minmax(0,340px)_1fr]">
         {/* 左侧：真实解剖肌群图 + 可点击编号圆点 */}
-        <div className="panel relative mx-auto w-full max-w-[360px] overflow-hidden bg-cream p-2">
+        <div className="panel relative mx-auto w-full max-w-[340px] overflow-hidden bg-cream p-2">
           <div className="relative aspect-[3/4] w-full overflow-hidden rounded-xl">
             <img
               src={side === "front" ? "/anatomy/anatomy-muscles-front.jpg" : "/anatomy/anatomy-muscles-back.jpg"}
@@ -96,41 +94,44 @@ export default function MuscleAtlas() {
           </div>
         </div>
 
-        {/* 右侧：少字直观说明卡 */}
-        <div className="space-y-5">
+        {/* 右侧：图解优先 —— 小人动作演示 + 极简 2 条要点 */}
+        <div className="space-y-4">
           <header>
             <p className="text-xs font-bold uppercase tracking-wider text-accent-dark">{active.en}</p>
-            <h2 className="font-display mt-1 text-3xl text-ink">{active.name}</h2>
+            <h2 className="font-display mt-0.5 text-3xl text-ink">{active.name}</h2>
           </header>
 
-          <dl className="grid gap-3">
-            <div className="rounded-2xl border border-line bg-white p-4">
+          {/* 动作演示小人动画（与全站小橙人物统一） */}
+          <div className="[&>figure]:my-0">
+            <StickScene key={active.id} scene={active.demoScene} caption={`推荐起步动作：${active.homeMove}`} play="view" height={200} />
+          </div>
+
+          {/* 精简两栏对照，少字一眼读完 */}
+          <dl className="grid gap-3 sm:grid-cols-2">
+            <div className="rounded-xl border border-line bg-white p-3.5">
               <dt className="text-xs font-bold text-accent-dark">日常起什么作用</dt>
-              <dd className="mt-1 text-[15.5px] font-medium text-ink">{active.dailyRole}</dd>
+              <dd className="mt-1 text-sm leading-relaxed text-ink">{active.dailyRole}</dd>
             </div>
-            <div className="rounded-2xl border border-line bg-white p-4">
-              <dt className="text-xs font-bold text-red-dark">这块肌肉弱了会怎样</dt>
-              <dd className="mt-1 text-[15px] text-ink-soft">{active.ifWeak}</dd>
-            </div>
-            <div className="rounded-2xl border border-line bg-white p-4">
-              <dt className="text-xs font-bold text-green-dark">在家就能练的起步动作</dt>
-              <dd className="mt-1 text-[15px] font-medium text-ink">{active.homeMove}</dd>
+            <div className="rounded-xl border border-line bg-white p-3.5">
+              <dt className="text-xs font-bold text-red-dark">弱了会怎样</dt>
+              <dd className="mt-1 text-sm leading-relaxed text-ink-soft">{active.ifWeak}</dd>
             </div>
           </dl>
 
           {related.length > 0 && (
-            <div className="border-t border-line pt-4">
-              <p className="text-xs font-bold text-ink-soft">和这块肌肉有关的谣言案件</p>
-              <ul className="mt-2 divide-y divide-line">
+            <div className="border-t border-line pt-3">
+              <p className="text-xs font-bold text-ink-soft">关联谣言</p>
+              <div className="mt-2 flex flex-wrap gap-2">
                 {related.map((c) => (
-                  <li key={c.slug}>
-                    <Link href={`/cases/${c.slug}`} className="group flex items-center justify-between py-2.5 text-sm transition hover:text-accent-dark">
-                      <span className="font-medium text-ink group-hover:text-accent-dark">「{c.claim}」</span>
-                      <span className="text-xs text-ink-soft">去审 →</span>
-                    </Link>
-                  </li>
+                  <Link
+                    key={c.slug}
+                    href={`/cases/${c.slug}`}
+                    className="rounded-full border border-line bg-white px-3 py-1 text-xs font-medium text-ink transition hover:border-accent hover:text-accent-dark"
+                  >
+                    「{c.claim}」→
+                  </Link>
                 ))}
-              </ul>
+              </div>
             </div>
           )}
         </div>

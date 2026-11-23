@@ -16,16 +16,14 @@ import { RichText } from "./Term";
 /* eslint-disable @next/next/no-img-element */
 
 const SPOTS: { id: BodyPart; x: number; y: number }[] = [
-  { id: "brain", x: 160, y: 62 },
-  { id: "heart", x: 140, y: 175 },
-  { id: "arm", x: 252, y: 190 },
-  { id: "stomach", x: 160, y: 245 },
-  { id: "spine", x: 186, y: 300 },
-  { id: "knee", x: 122, y: 405 },
-  { id: "feet", x: 205, y: 495 },
+  { id: "brain", x: 50, y: 8 },
+  { id: "heart", x: 54, y: 26 },
+  { id: "arm", x: 30, y: 34 },
+  { id: "stomach", x: 50, y: 40 },
+  { id: "spine", x: 50, y: 49 },
+  { id: "knee", x: 42, y: 71 },
+  { id: "feet", x: 58, y: 92 },
 ];
-
-const INK = "#1c1917";
 
 export default function BodyMap() {
   const sp = useSearchParams();
@@ -199,62 +197,35 @@ export default function BodyMap() {
           </article>
         </div>
       ) : (
-        /* 按部位点身体地图 */
+        /* 按部位点真实人体解剖图查谣言（彻底替换掉违和简笔 SVG 人） */
         <div className="grid gap-8 md:grid-cols-[minmax(0,330px)_1fr]">
-          <div className="panel mx-auto w-full max-w-[330px] bg-white p-4">
-            <svg viewBox="0 0 320 540" className="w-full" role="img" aria-label="可点击的人体地图">
-              <g stroke={INK} strokeWidth="4.5" strokeLinejoin="round" strokeLinecap="round">
-                <path d="M118 340 L108 470 Q106 492 128 494 L140 494 L150 350 Z" fill="#dbeafe" />
-                <path d="M202 340 L212 470 Q214 492 192 494 L180 494 L170 350 Z" fill="#dbeafe" />
-                <path d="M100 488 Q100 512 132 512 L150 512 Q156 500 144 490 Z" fill="#f97316" />
-                <path d="M220 488 Q220 512 188 512 L170 512 Q164 500 176 490 Z" fill="#f97316" />
-                <path d="M92 150 Q52 200 62 270 Q66 284 80 280 Q90 230 112 190 Z" fill="#fed7aa" />
-                <path d="M228 150 Q272 168 280 222 Q284 238 270 240 Q258 205 220 190 Z" fill="#fed7aa" />
-                <path d="M96 140 Q160 118 224 140 L218 350 Q160 366 102 350 Z" fill="#fef3c7" />
-                <rect x="145" y="105" width="30" height="26" rx="10" fill="#fed7aa" />
-                <circle cx="160" cy="68" r="52" fill="#fed7aa" />
-                <path d="M110 58 Q118 14 160 16 Q206 16 212 60 Q190 40 160 44 Q130 40 110 58 Z" fill={INK} />
-                <circle cx="142" cy="74" r="4.5" fill={INK} stroke="none" />
-                <circle cx="178" cy="74" r="4.5" fill={INK} stroke="none" />
-                <path d="M146 94 Q160 104 174 94" fill="none" />
-              </g>
-
+          <div className="panel mx-auto w-full max-w-[330px] overflow-hidden bg-cream p-2">
+            <div className="relative aspect-[3/4] w-full overflow-hidden rounded-xl">
+              <img src="/anatomy/anatomy-muscles-front.jpg" alt="按身体部位查谣言" className="h-full w-full object-contain" />
               {SPOTS.map((s, idx) => {
                 const active = s.id === sel;
                 return (
-                  <g
+                  <button
                     key={s.id}
-                    className="cursor-pointer outline-none"
                     onClick={() => {
                       sfx.tap();
                       setSel(s.id);
                     }}
-                    role="button"
-                    tabIndex={0}
+                    style={{ left: `${s.x}%`, top: `${s.y}%` }}
+                    className={`absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-full border-2 border-ink text-xs font-black transition ${
+                      active
+                        ? "z-20 h-8 w-8 scale-110 bg-accent text-white shadow-[0_0_0_5px_rgba(249,115,22,0.28)]"
+                        : "z-10 h-7 w-7 bg-white/95 text-ink hover:scale-110 hover:bg-accent-soft"
+                    }`}
                     aria-label={BODY_PARTS[s.id].label}
-                    onFocus={() => setSel(s.id)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") setSel(s.id);
-                    }}
+                    title={BODY_PARTS[s.id].label}
                   >
-                    <circle
-                      cx={s.x}
-                      cy={s.y}
-                      r="15"
-                      fill={active ? "#f97316" : "#fff"}
-                      className="pulse-ring"
-                      style={{ transformOrigin: `${s.x}px ${s.y}px`, transformBox: "view-box" }}
-                      opacity=".55"
-                    />
-                    <circle cx={s.x} cy={s.y} r="15" fill={active ? "#f97316" : "#fff"} stroke={INK} strokeWidth="3" />
-                    <text x={s.x} y={s.y + 5} textAnchor="middle" fontSize="13" fontWeight="800" fill={active ? "#fff" : INK}>
-                      {idx + 1}
-                    </text>
-                  </g>
+                    {idx + 1}
+                  </button>
                 );
               })}
-            </svg>
-            <p className="text-center text-xs font-medium text-ink-soft">点数字圆点，查看该部位的角色与谣言</p>
+            </div>
+            <p className="py-1.5 text-center text-xs font-medium text-ink-soft">点数字圆点，查看该部位的角色与谣言</p>
           </div>
 
           <AnimatePresence mode="wait">

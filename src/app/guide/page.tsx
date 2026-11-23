@@ -95,20 +95,29 @@ export default function GuidePage() {
         </div>
       </section>
 
-      {/* 3. 大白话词典 */}
+      {/* 3. 大白话词典：精简两栏 + 折叠详情，一图一句话不压字 */}
       <section className="space-y-4 border-t border-line pt-8">
-        <h2 className="font-display text-2xl text-ink">三、站里常见词大白话速查</h2>
-        <p className="text-sm text-ink-soft">在案件正文里，看到带橙色虚线的词直接点一下也会弹出这里的解释。</p>
-        <dl className="divide-y divide-line">
+        <h2 className="font-display text-2xl text-ink">三、常见词一句话速查</h2>
+        <p className="text-sm text-ink-soft">默认只看大白话和比方；想细看点「展开」。</p>
+        <div className="grid gap-3 sm:grid-cols-2">
           {GLOSSARY.map((item) => (
-            <div key={item.key} className="py-4">
-              <dt className="font-bold text-ink">{item.title}</dt>
-              <dd className="mt-1 text-[15px] text-ink-soft">{item.short}</dd>
-              <dd className="mt-1 text-sm text-ink-soft/90">{item.detail}</dd>
-              <dd className="mt-2 text-sm text-accent-dark">打个比方：{item.analogy}</dd>
+            <div key={item.key} className="rounded-2xl border border-line bg-white p-4">
+              <div className="flex items-baseline justify-between gap-2">
+                <h3 className="font-bold text-ink">{item.title}</h3>
+                {item.bodySlug && (
+                  <Link href={`/body?tab=roles&role=${item.bodySlug}`} className="shrink-0 text-[11px] font-bold text-accent-dark hover:underline">
+                    看图解 →
+                  </Link>
+                )}
+              </div>
+              <p className="mt-1 text-sm font-medium text-accent-dark">{item.analogy}</p>
+              <details className="mt-2 text-xs text-ink-soft">
+                <summary className="cursor-pointer select-none font-medium text-ink-soft hover:text-ink">展开说明</summary>
+                <p className="mt-1.5 leading-relaxed">{item.short} {item.detail}</p>
+              </details>
             </div>
           ))}
-        </dl>
+        </div>
       </section>
 
       <div className="flex flex-wrap gap-3 border-t border-line pt-6">

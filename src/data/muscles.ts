@@ -9,6 +9,8 @@ export interface MuscleItem {
   dailyRole: string;
   ifWeak: string;
   homeMove: string;
+  demoScene: string;
+  demoCaption: string;
   relatedCases: string[];
 }
 
@@ -24,6 +26,8 @@ export const MUSCLES: MuscleItem[] = [
     dailyRole: "抬起手臂、往高处放行李、穿衣服全靠它发力。",
     ifWeak: "抬手容易肩酸，拿稍重的东西就耸肩代偿。",
     homeMove: "拿两瓶矿泉水做侧平举 / 推举（每组 10–12 次）",
+    demoScene: "move-push",
+    demoCaption: "上肢推举/扶墙推：肩下沉不耸肩，慢推慢落",
     relatedCases: ["women-bulky", "train-to-failure"],
   },
   {
@@ -36,6 +40,8 @@ export const MUSCLES: MuscleItem[] = [
     dailyRole: "负责「往前推」和「往怀里抱」，推门、抱东西、俯卧撑的主力。",
     ifWeak: "上肢推力差，长期含胸办公还容易让胸肌又紧又短。",
     homeMove: "扶墙俯卧撑 / 跪姿俯卧撑（循序渐进）",
+    demoScene: "move-push",
+    demoCaption: "扶墙俯卧撑：身体一条直线，胸口靠近墙面再稳推回",
     relatedCases: ["steps-vs-muscle", "women-bulky"],
   },
   {
@@ -48,6 +54,8 @@ export const MUSCLES: MuscleItem[] = [
     dailyRole: "弯曲手肘、拎菜篮子、把重物端起来。",
     ifWeak: "提快递、拎重物时小臂和手腕容易先酸。",
     homeMove: "哑铃或弹力带弯举（保持大臂贴身）",
+    demoScene: "move-push",
+    demoCaption: "上肢推拉/弯举：大臂贴紧身体，控制速度不借力",
     relatedCases: ["lactic-acid", "elderly-strength"],
   },
   {
@@ -60,6 +68,8 @@ export const MUSCLES: MuscleItem[] = [
     dailyRole: "像天然护腰一样稳住躯干，走路搬重物时不让腰椎乱晃。",
     ifWeak: "久坐或站久了容易腰酸，跑步时骨盆不稳。",
     homeMove: "死虫式 / 平板支撑（比抱头仰卧起坐护腰得多）",
+    demoScene: "move-plank",
+    demoCaption: "核心稳定练习：腹部收紧，交替抬腿抬手不塌腰",
     relatedCases: ["spot-reduction", "sit-ups-back"],
   },
   {
@@ -72,6 +82,8 @@ export const MUSCLES: MuscleItem[] = [
     dailyRole: "上楼梯、从椅子站起来、跑步落地减震的头号发动机，也是护膝主力。",
     ifWeak: "下楼膝盖发软打颤，年纪大了起身费劲。",
     homeMove: "扶椅坐站起立 / 靠墙静蹲（膝盖不痛为度）",
+    demoScene: "move-squat",
+    demoCaption: "坐站起立 / 深蹲：臀部向后微坐，膝盖顺脚尖方向站起",
     relatedCases: ["running-knees", "elderly-strength", "bed-rest"],
   },
   {
@@ -84,6 +96,8 @@ export const MUSCLES: MuscleItem[] = [
     dailyRole: "走路和跑步时勾起脚尖，防止走路拖脚绊倒，缓冲脚跟着地冲击。",
     ifWeak: "走快了小腿前面发紧发酸，老年人容易被小门槛绊倒。",
     homeMove: "靠墙勾脚尖（脚跟撑地，脚尖反复向上抬）",
+    demoScene: "move-calf",
+    demoCaption: "提踵与勾脚尖：扶墙站稳，慢抬慢落激活小腿前后",
     relatedCases: ["10000-steps", "running-knees"],
   },
 
@@ -98,6 +112,8 @@ export const MUSCLES: MuscleItem[] = [
     dailyRole: "稳住肩胛骨、托住脑袋；中下束负责把圆肩往后拉正。",
     ifWeak: "低头看手机久了上束僵硬酸痛，背变圆。",
     homeMove: "弹力带面拉 / 俯身 Y-T-W 伸展",
+    demoScene: "move-push",
+    demoCaption: "上背推拉练习：把肩胛骨往后下方收紧，打开圆肩",
     relatedCases: ["exercise-offsets-sitting", "static-stretch"],
   },
   {
@@ -110,6 +126,8 @@ export const MUSCLES: MuscleItem[] = [
     dailyRole: "负责「往回拉」和「往下拉」，拉开重门、提拉行李、撑起挺拔体态。",
     ifWeak: "体态容易含胸驼背，拉重物全靠手臂硬拽。",
     homeMove: "弹力带坐姿划船 / 哑铃单臂划船",
+    demoScene: "move-plank",
+    demoCaption: "后链与核心联动：挺胸收腹，感受背部两侧发力",
     relatedCases: ["steps-vs-muscle", "osteoporosis-strength"],
   },
   {
@@ -122,6 +140,8 @@ export const MUSCLES: MuscleItem[] = [
     dailyRole: "贴着脊柱左右两排，帮你挺直腰背、弯腰捡东西后再稳稳起身。",
     ifWeak: "久坐半小时腰就直不起来，稍微搬点东西就闪腰。",
     homeMove: "鸟狗式 / 臀桥（安全练后链，不伤腰）",
+    demoScene: "move-plank",
+    demoCaption: "核心稳定练习：脊柱保持中立一条线，安全护腰",
     relatedCases: ["exercise-offsets-sitting", "sit-ups-back", "osteoporosis-strength"],
   },
   {
@@ -134,6 +154,8 @@ export const MUSCLES: MuscleItem[] = [
     dailyRole: "人体最有力的发动机之一：走路蹬地、爬坡、保护腰椎和膝盖都靠它。",
     ifWeak: "久坐「臀肌失忆」，走路发力转移到腰和膝盖，越走越累。",
     homeMove: "臀桥 / 徒手深蹲（感受臀部夹紧发力）",
+    demoScene: "move-squat",
+    demoCaption: "深蹲 / 坐站起立：起身时夹紧臀部发力，帮膝盖减负",
     relatedCases: ["running-knees", "exercise-offsets-sitting", "elderly-strength"],
   },
   {
@@ -146,6 +168,8 @@ export const MUSCLES: MuscleItem[] = [
     dailyRole: "屈膝与伸髋，跑步加速和急停时像刹车带一样保护膝关节韧带。",
     ifWeak: "久坐又短又紧，突然冲刺或弯腰容易拉伤大腿后侧。",
     homeMove: "单腿臀桥 / 轻重量罗马尼亚硬拉",
+    demoScene: "move-squat",
+    demoCaption: "下肢屈髋练习：臀部向后推，感受大腿后侧拉紧发力",
     relatedCases: ["running-knees", "static-stretch"],
   },
   {
@@ -158,6 +182,8 @@ export const MUSCLES: MuscleItem[] = [
     dailyRole: "踮脚、迈步推进，还像「第二心脏」一样把下肢静脉血泵回心脏。",
     ifWeak: "走远路脚底小腿容易发沉，久站易下肢浮肿。",
     homeMove: "扶墙提踵（踮脚尖 2 秒再慢落，每天 2 组）",
+    demoScene: "move-calf",
+    demoCaption: "扶墙提踵：脚跟慢抬到最高停 2 秒，再缓慢落下",
     relatedCases: ["10000-steps", "walk-after-meal", "ice-or-heat"],
   },
 ];
