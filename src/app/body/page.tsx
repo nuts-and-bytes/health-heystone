@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import BodyMap from "@/components/BodyMap";
 
-export const metadata = { title: "身体地图与身体百科 · 健康谣言法庭" };
+export const metadata = { title: "身体地图与身体百科 · 懂点健康" };
 
 export default function Page() {
   return (

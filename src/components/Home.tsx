@@ -35,12 +35,12 @@ export default function Home() {
         <div>
           <p className="inline-flex items-center gap-2 text-xs font-bold tracking-wide text-accent-dark">
             <span className="h-2 w-2 rounded-full bg-accent" />
-            <span>先站队 · 再看证据 · 附原理与来源</span>
+            <span>懂点健康 · 谣言法庭 · 身体图解 · 播客精读</span>
           </p>
           <h1 className="font-display mt-3 text-4xl leading-[1.12] text-ink sm:text-5xl">
-            把生活里的健康谣言
+            用图解、动画和证据
             <br />
-            一个个<span className="text-accent">送上法庭</span>
+            真正<span className="text-accent">懂点健康</span>
           </h1>
           <p className="mt-4 max-w-lg text-[15.5px] leading-relaxed text-ink-soft">
             跑步伤膝盖？每天必须走一万步？蛋黄不能吃？先猜真假，再翻开原理动画和{" "}

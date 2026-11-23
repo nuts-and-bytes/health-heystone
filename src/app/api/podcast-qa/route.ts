@@ -3,7 +3,7 @@ import { CASES, VERDICT_META } from "@/data/cases";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
-const SYSTEM = `你是「健康谣言法庭 · 播客精读助手」。
+const SYSTEM = `你是「懂点健康 · 播客精读助手」。
 规则：
 1. 只能基于下面提供的「单集简介、官方时间轴、逐字稿片段（如有）以及站内关联判决书」来回答用户关于这期播客的问题，不要编造嘉宾原话。
 2. 回答里提到节目具体段落时，务必带上 [MM:SS] 格式的时间点（例如 [25:49]），方便用户点击跳播。

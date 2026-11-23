@@ -15,15 +15,19 @@ const base = (p: P): P => ({
   ...p,
 });
 
-/** 站点专属 Logo 徽章：手绘墨线法槌 + 唯一橙色重点圆点 */
+/** 站点专属 Logo 徽章（懂点健康）：手绘墨线心电脉搏 + 唯一橙色重点圆点 */
 export function BrandMark(p: P) {
   return (
     <svg width={28} height={28} viewBox="0 0 32 32" fill="none" aria-hidden {...p}>
       <rect x="2" y="2" width="28" height="28" rx="9" fill="#FFF" stroke="#1c1917" strokeWidth="2.4" />
       <circle cx="23.5" cy="8.5" r="3" fill="#F97316" />
-      <path d="M9.5 13.5l5-5 4 4-5 5-4-4Z" fill="#1c1917" stroke="#1c1917" strokeWidth="1.8" strokeLinejoin="round" />
-      <path d="M15.5 14.5l6 6" stroke="#1c1917" strokeWidth="2.6" strokeLinecap="round" />
-      <path d="M8 23h9" stroke="#1c1917" strokeWidth="2.4" strokeLinecap="round" />
+      <path
+        d="M6.5 17.5h4.2l2.6-6 3.4 11 2.6-5h6.2"
+        stroke="#1c1917"
+        strokeWidth="2.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }

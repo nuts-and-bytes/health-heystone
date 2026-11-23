@@ -162,7 +162,7 @@ async function exportPosterPng(ep: Episode) {
   // 页脚水印
   ctx.fillStyle = "#635B52";
   ctx.font = '600 22px "PingFang SC", sans-serif';
-  ctx.fillText("health.heystone.site · 科普参考，不替代医生诊断", 64, H - 46);
+  ctx.fillText("懂点健康 · health.heystone.site · 科普参考，不替代医生诊断", 64, H - 46);
 
   const url = canvas.toDataURL("image/png");
   const a = document.createElement("a");

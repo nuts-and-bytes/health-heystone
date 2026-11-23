@@ -12,7 +12,7 @@ const body = Noto_Sans_SC({
 });
 
 export const metadata: Metadata = {
-  title: "健康谣言法庭 · health.heystone.site",
+  title: "懂点健康 · health.heystone.site",
   description: "先站队，再看证据。把生活里最常见的健康谣言送上法庭，每条判决都附权威来源。",
 };
 

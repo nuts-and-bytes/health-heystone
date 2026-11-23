@@ -1,6 +1,6 @@
 import CourtSession from "@/components/CourtSession";
 
-export const metadata = { title: "开庭审案 · 健康谣言法庭" };
+export const metadata = { title: "开庭审案 · 懂点健康" };
 
 export default function Page() {
   return (

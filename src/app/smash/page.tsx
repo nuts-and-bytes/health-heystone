@@ -1,6 +1,6 @@
 import Smasher from "@/components/Smasher";
 
-export const metadata = { title: "谣言粉碎机 · 健康谣言法庭" };
+export const metadata = { title: "谣言粉碎机 · 懂点健康" };
 
 export default function Page() {
   return (

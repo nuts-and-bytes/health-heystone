@@ -78,7 +78,7 @@ export default function TopBar() {
         <div className="mx-auto flex max-w-4xl items-center gap-3 px-4 py-2.5 sm:px-6">
           <Link href="/" className="group flex shrink-0 items-center gap-2 text-ink">
             <BrandMark className="transition-transform group-hover:-rotate-6" />
-            <span className="font-display text-2xl leading-none">谣言法庭</span>
+            <span className="font-display text-2xl leading-none">懂点健康</span>
           </Link>
 
           <nav className="ml-2 hidden items-center gap-1 md:flex">

@@ -3,7 +3,7 @@ import { GLOSSARY } from "@/data/glossary";
 import StickScene from "@/components/StickScene";
 
 export const metadata = {
-  title: "怎么看证据与专业词 · 健康谣言法庭",
+  title: "怎么看证据与专业词 · 懂点健康",
   description: "用大白话和小人动画讲清楚 WHO、荟萃分析、随机对照试验、观察研究是什么意思。",
 };
 

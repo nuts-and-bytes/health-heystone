@@ -9,7 +9,7 @@ export function generateStaticParams() {
 export async function generateMetadata(props: PageProps<"/cases/[slug]">) {
   const { slug } = await props.params;
   const c = getCase(slug);
-  return { title: c ? `「${c.claim}」· 健康谣言法庭` : "健康谣言法庭" };
+  return { title: c ? `「${c.claim}」· 懂点健康` : "懂点健康" };
 }
 
 export default async function Page(props: PageProps<"/cases/[slug]">) {
