@@ -1,107 +1,181 @@
-import { EPISODES } from "@/data/podcasts";
-import { CASES, VERDICT_META } from "@/data/cases";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import { EPISODES, secToTime } from "@/data/podcasts";
+import { CASES, VERDICT_META } from "@/data/cases";
 
-const SYSTEM = `你是「懂点健康 · 播客精读助手」。
-规则：
-1. 只能基于下面提供的「单集简介、官方时间轴、逐字稿片段（如有）以及站内关联判决书」来回答用户关于这期播客的问题，不要编造嘉宾原话。
-2. 回答里提到节目具体段落时，务必带上 [MM:SS] 格式的时间点（例如 [25:49]），方便用户点击跳播。
-3. 如果逐字稿还没导入、只有时间轴，诚实说明这是基于官方时间轴和站内关联证据整理的，并建议用户点对应时间码听原声。
-4. 语言简洁、口语化、分点清晰，不超过 220 字。`;
-
-async function callOpenAI(prompt: string) {
-  const key = process.env.OPENAI_API_KEY;
-  if (!key) return null;
-  const res = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
-    body: JSON.stringify({
-      model: process.env.OPENAI_MODEL || "gpt-4o-mini",
-      messages: [
-        { role: "system", content: SYSTEM },
-        { role: "user", content: prompt },
-      ],
-      temperature: 0.5,
-    }),
-  });
-  if (!res.ok) throw new Error(`OpenAI ${res.status}`);
-  const j = await res.json();
-  return j.choices?.[0]?.message?.content as string | undefined;
+interface Msg {
+  role: "user" | "assistant";
+  content: string;
 }
 
-async function callGemini(prompt: string) {
-  const key = process.env.GEMINI_API_KEY;
-  if (!key) return null;
-  const model = process.env.GEMINI_MODEL || "gemini-2.5-flash";
-  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-    body: JSON.stringify({
-      systemInstruction: { parts: [{ text: SYSTEM }] },
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.5 },
-    }),
-  });
-  if (!res.ok) throw new Error(`Gemini ${res.status}`);
-  const j = await res.json();
-  return j.candidates?.[0]?.content?.parts?.map((p: { text?: string }) => p.text ?? "").join("") as string | undefined;
+/** 复刻 SubCast 的 transcriptForModel：把整期带时间戳的文字稿喂给模型 */
+async function loadFullTranscript(episodeId: string, limitChars = 220_000): Promise<{ text: string; count: number }> {
+  try {
+    const raw = await readFile(path.join(process.cwd(), "public/transcripts", `${episodeId}.json`), "utf-8");
+    const parsed = JSON.parse(raw) as { segments?: { start: number; text: string }[] };
+    const segs = Array.isArray(parsed.segments) ? parsed.segments : [];
+    if (!segs.length) return { text: "", count: 0 };
+    const lines = segs.map((s) => `[${secToTime(s.start)}] ${s.text}`);
+    let text = lines.join("\n");
+    if (text.length > limitChars) text = text.slice(0, limitChars);
+    return { text, count: segs.length };
+  } catch {
+    return { text: "", count: 0 };
+  }
+}
+
+/** 复刻 SubCast 的 QA_SYSTEM 提示词 */
+function buildQaSystem(title: string, show: string, guest: string, transcript: string, linkedCases: string) {
+  return `你是「懂点健康」播客精读助手（参考 SubCast 精读体系），帮助中文听众吃透一期健康科普播客。
+节目：${show}
+本期：${title}
+嘉宾：${guest}
+
+下面是本期带时间戳的完整文字稿（由语音识别生成，个别同音词可能有误，请结合上下文准确理解）：
+<transcript>
+${transcript}
+</transcript>
+${linkedCases ? `\n本站已核验的相关健康判决书（可交叉印证）：\n${linkedCases}\n` : ""}
+回答规则：
+- 用简体中文回答，先给结论，再给依据；适度使用 Markdown 小标题（##）和列表（-）。
+- 只根据文字稿回答；文字稿没有涉及的，明确说「节目里没有提到」，可以补充权威常识但要标明。
+- 引用原话或观点时必须附上文字稿中真实存在的时间戳，格式严格为 [mm:ss] 或 [h:mm:ss]，例如 [12:34]，方便用户点击跳转播放。
+- 涉及医学术语时，第一次出现顺手用一句大白话解释。`;
+}
+
+/** 复刻 SubCast 的 summaryPrompt 导读提示词 */
+function buildGuidePrompt(minutes: number) {
+  return `请通读整份带时间戳的文字稿（本期总长约 ${minutes} 分钟），为这期节目写一份中文导读，帮听众在一分钟内判断这期讲了什么、值不值得听、该听哪几段。
+
+什么算「要点」：
+- 具体、有信息量：带数字、案例、人名、量化建议或明确判断，换一期节目就说不出来的内容。
+- 不算要点：寒暄、自我介绍、广告口播、人人都知道的空话。
+- 观点写清是谁说的（嘉宾名或「主持人」）。
+- 后半段和前半段同样重要，不要只总结开头。
+
+用 Markdown，严格按下面的结构输出，不要开场白，不要结尾客套：
+
+## 一句话总结
+（谁和谁聊了什么，最重要的结论是什么。一句话，不超过 60 字）
+
+## 时间线
+（按时间顺序覆盖整期，划分 6–10 个话题段落。每段一行，格式严格为：
+- [mm:ss] **段落标题**：一两句说清这段的具体内容）
+
+## 核心观点
+（5–7 条，按信息量和重要性排序。每条格式：
+- **一句话观点**（说话人）：一两句讲清理由、证据或例子 [mm:ss]）
+
+## 值得记住的原话
+（3–4 句，挑观点最鲜明或最有画面感的原句，摘自文字稿。每句一行，格式：
+> 原句 · 说话人 [mm:ss]）
+
+## 先听这几段
+（2–3 段信息密度最高的片段。每段一行，格式：
+- [mm:ss] **片段标题**：为什么值得听，约几分钟）
+
+写完后自查：每个时间戳都必须是文字稿里真实存在的时间，格式只用 [mm:ss] 或 [h:mm:ss]。`;
 }
 
 export async function POST(req: Request) {
-  const { episodeId, question } = (await req.json().catch(() => ({}))) as { episodeId?: string; question?: string };
-  const ep = EPISODES.find((e) => e.id === episodeId);
-  const q = (question ?? "").trim().slice(0, 300);
-  if (!ep || q.length < 2) return Response.json({ error: "请输入关于本期播客的问题" }, { status: 400 });
+  const body = (await req.json().catch(() => ({}))) as {
+    episodeId?: string;
+    action?: "chat" | "guide";
+    question?: string;
+    messages?: Msg[];
+  };
 
+  const ep = EPISODES.find((e) => e.id === body.episodeId);
+  if (!ep) return Response.json({ error: "未找到该期播客" }, { status: 404 });
+
+  const action = body.action ?? "chat";
   const chapters = ep.sections.flatMap((s) => s.chapters);
-  const chapterText = chapters.map((ch) => `[${ch.time}] ${ch.title}`).join("\n");
+  const { text: fullTranscript } = await loadFullTranscript(ep.id);
+  const transcriptSource =
+    fullTranscript ||
+    chapters.map((ch) => `[${ch.time}] ${ch.title}`).join("\n");
 
   const linkedSlugs = new Set(chapters.map((c) => c.caseSlug).filter(Boolean));
   const linkedCases = CASES.filter((c) => linkedSlugs.has(c.slug))
-    .map((c) => `「${c.claim}」(${VERDICT_META[c.verdict].label})：${c.verdictLine} ${c.takeaway}`)
+    .map((c) => `- 「${c.claim}」（${VERDICT_META[c.verdict].label}）：${c.verdictLine}`)
     .join("\n");
 
-  let transcriptSnippet = "";
-  try {
-    const raw = await readFile(path.join(process.cwd(), "public/transcripts", `${ep.id}.json`), "utf-8");
-    const parsed = JSON.parse(raw) as { segments?: { start: number; text: string }[] };
-    if (Array.isArray(parsed.segments) && parsed.segments.length) {
-      // 取最相关的 20 句或前 20 句
-      const matched = parsed.segments.filter((s) => q.split(/\s+/).some((w) => w.length >= 2 && s.text.includes(w))).slice(0, 20);
-      const pick = matched.length ? matched : parsed.segments.slice(0, 20);
-      transcriptSnippet =
-        "\n\n逐字稿参考片段：\n" +
-        pick
-          .map((s) => {
-            const m = String(Math.floor(s.start / 60)).padStart(2, "0");
-            const r = String(Math.floor(s.start % 60)).padStart(2, "0");
-            return `[${m}:${r}] ${s.text}`;
-          })
-          .join("\n");
-    }
-  } catch {}
+  const system = buildQaSystem(ep.title, ep.show, ep.guest, transcriptSource, linkedCases);
+  const userMessages: Msg[] =
+    action === "guide"
+      ? [{ role: "user", content: buildGuidePrompt(ep.minutes) }]
+      : Array.isArray(body.messages) && body.messages.length
+        ? body.messages.slice(-12)
+        : [{ role: "user", content: (body.question ?? "").trim().slice(0, 500) }];
 
-  const prompt = `单集：《${ep.show}》${ep.title}\n嘉宾：${ep.guest}\n简介：${ep.hook}\n\n官方时间轴：\n${chapterText}\n\n站内关联判决书：\n${linkedCases}${transcriptSnippet}\n\n用户提问：${q}`;
-
-  let answer: string | null | undefined = null;
-  let mode: "ai" | "local" = "local";
-  try {
-    answer = (await callOpenAI(prompt)) ?? (await callGemini(prompt));
-    if (answer) mode = "ai";
-  } catch (e) {
-    console.error("[podcast-qa] LLM error", e);
+  if (!userMessages[userMessages.length - 1]?.content) {
+    return Response.json({ error: "请输入问题" }, { status: 400 });
   }
 
-  if (!answer) {
-    // 无 Key 时的本地精准时间轴匹配兜底
-    const hits = chapters.filter((ch) => q.split("").some((chChar) => chChar.trim() && ch.title.includes(chChar)));
-    const top = (hits.length ? hits : chapters).slice(0, 3);
-    answer =
-      `本期《${ep.title}》里和这个问题最相关的段落在这里（点击时间码可直接跳播）：\n` +
-      top.map((ch) => `• [${ch.time}] ${ch.title}`).join("\n") +
-      `\n（配置 OPENAI_API_KEY 后将由 AI 结合完整内容深度回答）`;
+  const openaiKey = process.env.OPENAI_API_KEY;
+  if (!openaiKey) {
+    const fallback =
+      `当前未配置 OPENAI_API_KEY，先为你列出本期官方时间轴：\n` +
+      chapters.slice(0, 6).map((ch) => `- [${ch.time}] ${ch.title}`).join("\n");
+    return new Response(fallback, { headers: { "Content-Type": "text/plain; charset=utf-8" } });
   }
 
-  return Response.json({ answer, mode });
+  const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
+  const upstream = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${openaiKey}`,
+    },
+    body: JSON.stringify({
+      model,
+      stream: true,
+      temperature: 0.45,
+      messages: [{ role: "system", content: system }, ...userMessages],
+    }),
+  });
+
+  if (!upstream.ok || !upstream.body) {
+    const errText = await upstream.text().catch(() => "");
+    return Response.json({ error: `OpenAI HTTP ${upstream.status}: ${errText.slice(0, 120)}` }, { status: 502 });
+  }
+
+  // 解析 OpenAI SSE 流并直接向下游输出纯文本增量，零缓冲延迟
+  const encoder = new TextEncoder();
+  const decoder = new TextDecoder();
+  const stream = new ReadableStream({
+    async start(controller) {
+      const reader = upstream.body!.getReader();
+      let buf = "";
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buf += decoder.decode(value, { stream: true });
+          const lines = buf.split("\n");
+          buf = lines.pop() ?? "";
+          for (const line of lines) {
+            const trimmed = line.trim();
+            if (!trimmed.startsWith("data:")) continue;
+            const payload = trimmed.slice(5).trim();
+            if (payload === "[DONE]") continue;
+            try {
+              const json = JSON.parse(payload);
+              const delta = json.choices?.[0]?.delta?.content;
+              if (delta) controller.enqueue(encoder.encode(delta));
+            } catch {}
+          }
+        }
+      } finally {
+        controller.close();
+      }
+    },
+  });
+
+  return new Response(stream, {
+    headers: {
+      "Content-Type": "text/plain; charset=utf-8",
+      "Cache-Control": "no-cache",
+    },
+  });
 }

@@ -3,11 +3,10 @@
 import { useRef } from "react";
 
 /**
- * 借鉴 SubCast 的三栏拖拽分隔线：
- * - 拖动调整左侧或右侧栏宽度（setPointerCapture 防脱手）
- * - 拖过 snap 阈值松手自动折叠
- * - 双击恢复默认宽度
- * - 支持键盘左右方向键微调（16px）与 Enter 重置
+ * 完整复刻 SubCast 的全高可拖拽分隔线：
+ * - self-stretch 撑满整栏高度，整条边线任意位置都可抓拖
+ * - setPointerCapture 防止拖快脱手；拖过 snap 阈值松手折叠
+ * - 双击恢复默认宽度；键盘左右方向键 16px 微调
  */
 export default function Splitter({
   value,
@@ -47,8 +46,8 @@ export default function Splitter({
       aria-valuemax={max}
       aria-valuenow={value}
       tabIndex={0}
-      title="拖动调整宽度 · 双击恢复默认"
-      className="group relative hidden w-3 shrink-0 cursor-col-resize select-none items-center justify-center md:flex"
+      title="按住左右拖动调节宽度 · 双击恢复默认"
+      className="group relative hidden w-3.5 shrink-0 cursor-col-resize select-none self-stretch items-center justify-center md:flex"
       onPointerDown={(e) => {
         e.preventDefault();
         (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
@@ -85,7 +84,8 @@ export default function Splitter({
         }
       }}
     >
-      <span className="h-14 w-1 rounded-full bg-line transition-colors group-hover:bg-accent group-active:bg-accent" />
+      {/* 细分隔线 + 悬停橙色高亮，视觉清晰且全高可拖 */}
+      <span className="h-full w-px bg-line/80 transition-colors group-hover:w-[3px] group-hover:bg-accent group-active:w-[3px] group-active:bg-accent" />
     </div>
   );
 }

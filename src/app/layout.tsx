@@ -32,9 +32,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <AudioProvider>
           <TopBar />
           <MainShell>{children}</MainShell>
-          <footer className="mx-auto max-w-4xl border-t border-line px-6 py-8 text-center text-xs text-ink-soft">
-            本站内容用于科普，不能替代医生的诊断和建议。每条判决都附有来源，看到带橙色虚线的专业词可以点开看大白话解释。
-          </footer>
         </AudioProvider>
       </body>
     </html>
