@@ -15,19 +15,35 @@ const base = (p: P): P => ({
   ...p,
 });
 
-/** 站点专属 Logo 徽章（懂点健康）：手绘墨线心电脉搏 + 唯一橙色重点圆点 */
+/** 站点专属 Logo 徽章（懂点健康 · 小橙耳机芽）：暖橙微笑小脸 + 墨线耳机 + 头顶嫩芽 */
 export function BrandMark(p: P) {
   return (
-    <svg width={28} height={28} viewBox="0 0 32 32" fill="none" aria-hidden {...p}>
-      <rect x="2" y="2" width="28" height="28" rx="9" fill="#FFF" stroke="#1c1917" strokeWidth="2.4" />
-      <circle cx="23.5" cy="8.5" r="3" fill="#F97316" />
+    <svg width={32} height={32} viewBox="0 0 64 64" fill="none" aria-hidden {...p}>
+      {/* 头顶小嫩芽 */}
       <path
-        d="M6.5 17.5h4.2l2.6-6 3.4 11 2.6-5h6.2"
-        stroke="#1c1917"
-        strokeWidth="2.4"
+        d="M32 19 C32 10.5, 39 6, 44.5 6.5 C44.5 13, 39.5 18.5, 32 19 Z"
+        fill="#FED7AA"
+        stroke="#1C1917"
+        strokeWidth="3.6"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
+      {/* 耳机头梁 */}
+      <path
+        d="M11 39 C11 25, 20 18.5, 32 18.5 C44 18.5, 53 25, 53 39"
+        stroke="#1C1917"
+        strokeWidth="4"
+        strokeLinecap="round"
+      />
+      {/* 左右耳机耳罩 */}
+      <rect x="6" y="34" width="8.5" height="14.5" rx="4.25" fill="#FED7AA" stroke="#1C1917" strokeWidth="3.4" />
+      <rect x="49.5" y="34" width="8.5" height="14.5" rx="4.25" fill="#FED7AA" stroke="#1C1917" strokeWidth="3.4" />
+      {/* 暖橙圆脸 */}
+      <circle cx="32" cy="40" r="17.5" fill="#F97316" />
+      {/* 弯弯笑眼与微笑 */}
+      <path d="M22.5 38.5 Q25.5 34.5 28.5 38.5" stroke="#1C1917" strokeWidth="3.4" strokeLinecap="round" />
+      <path d="M35.5 38.5 Q38.5 34.5 41.5 38.5" stroke="#1C1917" strokeWidth="3.4" strokeLinecap="round" />
+      <path d="M26 45.5 Q32 50.5 38 45.5" stroke="#1C1917" strokeWidth="3.4" strokeLinecap="round" />
     </svg>
   );
 }
