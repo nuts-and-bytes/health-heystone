@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { EPISODES, secToTime, timeToSec, type Chapter } from "@/data/podcasts";
+import { EPISODES, secToTime, timeToSec, type Chapter, type Episode } from "@/data/podcasts";
 import { getCase } from "@/data/cases";
 import { getBodyRole } from "@/data/body-pedia";
 import { useAudio } from "@/lib/audio";
+import PodcastInfographic from "./PodcastInfographic";
 
 /* eslint-disable @next/next/no-img-element */
 
@@ -26,7 +27,6 @@ function parseVideoInput(input: string): { platform: "bilibili" | "youtube"; id:
   return null;
 }
 
-/** 复刻 SubCast 截图 3 的 8 项高频精读预置提问方式 */
 const PRESET_PROMPTS: { title: string; desc: string; prompt: string }[] = [
   {
     title: "三分钟看懂这期",
@@ -74,7 +74,7 @@ export default function PodcastStudio() {
   const audio = useAudio();
   const ep = audio.episode;
   const [mediaMode, setMediaMode] = useState<"audio" | "video">("audio");
-  const [rightTab, setRightTab] = useState<"subtitle" | "guide" | "qa">("subtitle");
+  const [rightTab, setRightTab] = useState<"subtitle" | "poster" | "guide" | "qa">("subtitle");
   const [query, setQuery] = useState("");
   const [customVideos, setCustomVideos] = useState<Record<string, { platform: "bilibili" | "youtube"; id: string }>>({});
   const [videoDraft, setVideoDraft] = useState("");
@@ -86,6 +86,15 @@ export default function PodcastStudio() {
   const allChapters: Chapter[] = useMemo(() => ep.sections.flatMap((s) => s.chapters), [ep]);
   const activeVideo = customVideos[ep.id] ?? ep.video ?? null;
 
+  // 按播客节目分组，供左栏订阅列表展示
+  const shows = useMemo(() => {
+    const map = new Map<string, Episode[]>();
+    for (const item of EPISODES) {
+      map.set(item.show, [...(map.get(item.show) ?? []), item]);
+    }
+    return Array.from(map.entries());
+  }, []);
+
   useEffect(() => {
     try {
       const saved = JSON.parse(localStorage.getItem(VIDEO_KEY) || "{}");
@@ -94,7 +103,6 @@ export default function PodcastStudio() {
     } catch {}
   }, []);
 
-  // 播放时右侧当前字幕自动平缓滚入视野
   useEffect(() => {
     if (audio.playing && rightTab === "subtitle" && activeSubRef.current) {
       activeSubRef.current.scrollIntoView({ block: "nearest", behavior: "smooth" });
@@ -144,7 +152,6 @@ export default function PodcastStudio() {
     return idx;
   }, [allChapters, audio.currentTime]);
 
-  // 音频模式下滚动字幕：优先逐字稿当前句 & 下一句，没有逐字稿时用当前章 & 下一章
   const currentLine =
     audio.transcript && audio.activeSegIndex >= 0
       ? audio.transcript[audio.activeSegIndex]?.text
@@ -180,42 +187,85 @@ export default function PodcastStudio() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* 顶部单集切换条 */}
-      <div className="grid gap-3 md:grid-cols-3">
+    <div className="space-y-4">
+      {/* 手机端顶部横向节目切换条（桌面端隐藏，由左栏接管） */}
+      <div className="flex gap-2.5 overflow-x-auto pb-1 lg:hidden">
         {EPISODES.map((item) => {
           const active = item.id === ep.id;
           return (
             <button
               key={item.id}
               onClick={() => audio.selectEpisode(item.id)}
-              className={`flex cursor-pointer items-center gap-3 rounded-2xl border-[1.5px] p-3 text-left transition ${
-                active ? "border-ink bg-accent-soft/60" : "border-line bg-white hover:border-ink/40"
+              className={`flex w-60 shrink-0 cursor-pointer items-center gap-2.5 rounded-2xl border-[1.5px] p-2.5 text-left transition ${
+                active ? "border-ink bg-accent-soft/70" : "border-line bg-white"
               }`}
             >
-              <img src={item.cover} alt={item.show} className="h-12 w-12 shrink-0 rounded-xl border border-line object-cover" />
+              <img src={item.cover} alt={item.show} className="h-11 w-11 shrink-0 rounded-xl border border-line object-cover" />
               <div className="min-w-0 flex-1">
-                <div className="flex items-center justify-between text-[11px] font-bold">
-                  <span className="text-accent-dark">{item.show}</span>
-                  <span className="text-ink-soft">{item.minutes} 分钟</span>
-                </div>
-                <p className="mt-0.5 line-clamp-2 text-xs font-bold leading-snug text-ink">{item.title}</p>
+                <p className="text-[11px] font-bold text-accent-dark">{item.show}</p>
+                <p className="line-clamp-2 text-xs font-bold leading-snug text-ink">{item.title}</p>
               </div>
             </button>
           );
         })}
       </div>
 
-      {/* SubCast 同款双栏布局：左侧干净居中封面 + 滚动字幕 + 播控 + 简介；右侧 字幕 / 导读 / 问答 */}
-      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.1fr)]">
-        {/* 左栏 */}
-        <aside className="space-y-4 lg:sticky lg:top-20">
+      {/* 桌面端 SubCast 经典三栏：左 节目列表(236px) | 中 封面+滚动字幕+播控(1fr) | 右 字幕/一图读懂/导读/AI问答(400px) */}
+      <div className="grid items-start gap-5 lg:grid-cols-[236px_minmax(0,1fr)_390px] xl:grid-cols-[248px_minmax(0,1fr)_420px]">
+        {/* ① 左栏：播客节目与单集列表（仅桌面端显示，吸顶） */}
+        <aside className="hidden rounded-2xl border border-line bg-white/80 p-3.5 lg:sticky lg:top-20 lg:block">
+          <div className="flex items-center justify-between border-b border-line pb-2.5">
+            <h1 className="font-display text-xl text-ink">播客精读</h1>
+            <span className="rounded-full bg-cream px-2 py-0.5 text-[11px] font-bold text-ink-soft">{EPISODES.length} 期</span>
+          </div>
+
+          <div className="mt-3 space-y-4">
+            {shows.map(([showName, items]) => (
+              <div key={showName} className="space-y-1.5">
+                <p className="px-2 text-[11px] font-bold tracking-wide text-ink-soft">{showName}</p>
+                <div className="space-y-1">
+                  {items.map((item) => {
+                    const active = item.id === ep.id;
+                    return (
+                      <button
+                        key={item.id}
+                        onClick={() => audio.selectEpisode(item.id)}
+                        className={`flex w-full cursor-pointer items-start gap-2.5 rounded-xl p-2 text-left transition ${
+                          active ? "bg-accent-soft/80 text-ink" : "text-ink-soft hover:bg-cream hover:text-ink"
+                        }`}
+                      >
+                        <img
+                          src={item.cover}
+                          alt={item.show}
+                          className={`mt-0.5 h-10 w-10 shrink-0 rounded-lg border object-cover ${active ? "border-accent" : "border-line"}`}
+                        />
+                        <div className="min-w-0 flex-1">
+                          <p className={`line-clamp-2 text-xs leading-snug ${active ? "font-bold text-ink" : "font-medium"}`}>
+                            {item.title}
+                          </p>
+                          <p className="mt-0.5 font-mono text-[10px] text-ink-soft">{item.minutes} 分钟</p>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-5 rounded-xl bg-cream p-3 text-[11px] leading-relaxed text-ink-soft">
+            切到网站其他页面时音频会继续播放，底部出现迷你条随时控制。
+          </div>
+        </aside>
+
+        {/* ② 中栏：极简居中封面 + 歌词式滚动字幕 + 播控 + 简介 */}
+        <section className="space-y-4">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <p className="text-xs text-ink-soft">
                 {ep.show} · {ep.pubDate} · {ep.minutes} 分钟
               </p>
-              <h2 className="font-display mt-1 text-2xl leading-snug text-ink">{ep.title}</h2>
+              <h2 className="font-display mt-1 text-2xl leading-snug text-ink sm:text-[26px]">{ep.title}</h2>
             </div>
             <div className="inline-flex shrink-0 rounded-lg border border-line bg-white p-0.5 text-xs font-bold">
               <button
@@ -233,9 +283,8 @@ export default function PodcastStudio() {
             </div>
           </div>
 
-          {/* 舞台：音频模式复刻截图 4（纯纸白居中大方封面 + 下方歌词式滚动字幕）；视频模式为 16:9 嵌入 */}
           {mediaMode === "video" ? (
-            <div className="relative aspect-video w-full overflow-hidden rounded-2xl border-[1.5px] border-line bg-white">
+            <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-line bg-white">
               {activeVideo ? (
                 <iframe
                   src={
@@ -276,20 +325,19 @@ export default function PodcastStudio() {
               )}
             </div>
           ) : (
-            <div className="rounded-3xl border border-line bg-white px-6 py-7 text-center">
-              <div className="mx-auto aspect-square w-52 overflow-hidden rounded-2xl border border-line/80 shadow-[0_14px_34px_rgba(28,25,23,0.12)] sm:w-56">
+            <div className="rounded-3xl border border-line bg-white px-5 py-7 text-center sm:px-8">
+              <div className="mx-auto aspect-square w-48 overflow-hidden rounded-2xl border border-line/80 shadow-[0_14px_34px_rgba(28,25,23,0.12)] sm:w-56">
                 <img src={ep.cover} alt={ep.title} className="h-full w-full object-cover" />
               </div>
-              {/* 截图 4 同款：居中实时滚动字幕（当前句深炭黑 + 下一句浅灰） */}
               <div className="mx-auto mt-6 min-h-[76px] max-w-md space-y-2">
-                <p className="text-[17px] font-bold leading-snug text-ink transition-all">{currentLine}</p>
+                <p className="text-[17px] font-bold leading-snug text-ink">{currentLine}</p>
                 {nextLine && <p className="line-clamp-2 text-sm leading-relaxed text-ink-soft/60">{nextLine}</p>}
               </div>
             </div>
           )}
 
-          {/* 极简播控条（带 -15s / +30s / 倍速，切页不中断） */}
-          <div className="flex items-center gap-2.5 rounded-2xl border border-line bg-white px-3.5 py-2.5">
+          {/* 极简播放条 */}
+          <div className="flex items-center gap-2 rounded-2xl border border-line bg-white px-3 py-2.5 sm:gap-2.5 sm:px-3.5">
             <button onClick={() => audio.skip(-15)} className="cursor-pointer text-xs font-bold text-ink-soft hover:text-ink" title="后退 15 秒">
               ↺15
             </button>
@@ -303,7 +351,7 @@ export default function PodcastStudio() {
             <button onClick={() => audio.skip(30)} className="cursor-pointer text-xs font-bold text-ink-soft hover:text-ink" title="前进 30 秒">
               30↻
             </button>
-            <span className="shrink-0 font-mono text-xs text-ink-soft">{secToTime(audio.currentTime)}</span>
+            <span className="shrink-0 font-mono text-[11px] text-ink-soft">{secToTime(audio.currentTime)}</span>
             <input
               type="range"
               min={0}
@@ -313,8 +361,8 @@ export default function PodcastStudio() {
               aria-label="进度条"
               className="min-w-0 flex-1 accent-[#f97316]"
             />
-            <span className="shrink-0 font-mono text-xs text-ink-soft">{secToTime(audio.duration)}</span>
-            <button onClick={audio.cycleRate} className="shrink-0 cursor-pointer rounded-md border border-line px-1.5 py-0.5 font-mono text-xs font-bold hover:border-ink">
+            <span className="shrink-0 font-mono text-[11px] text-ink-soft">{secToTime(audio.duration)}</span>
+            <button onClick={audio.cycleRate} className="shrink-0 cursor-pointer rounded-md border border-line px-1.5 py-0.5 font-mono text-[11px] font-bold hover:border-ink">
               {audio.rate}x
             </button>
           </div>
@@ -335,15 +383,16 @@ export default function PodcastStudio() {
             <p className="mt-2 text-xs leading-relaxed text-ink-soft">{ep.hook}</p>
             <p className="mt-2 text-[11px] text-ink-soft/80">嘉宾：{ep.guest}</p>
           </details>
-        </aside>
+        </section>
 
-        {/* 右栏：SubCast 三大标签（字幕 / 导读 / 问答） */}
-        <section className="panel min-h-[580px] bg-white p-5">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-3">
-            <div className="flex gap-1">
+        {/* ③ 右栏：字幕 / 一图读懂 / 导读 / 问答 */}
+        <section className="panel min-h-[560px] bg-white p-4 sm:p-5 lg:sticky lg:top-20">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line pb-3">
+            <div className="flex gap-1 overflow-x-auto">
               {(
                 [
-                  ["subtitle", audio.transcript ? `字幕（${audio.transcript.length}）` : "字幕"],
+                  ["subtitle", "字幕"],
+                  ["poster", "一图读懂"],
                   ["guide", "导读"],
                   ["qa", "问答"],
                 ] as const
@@ -351,7 +400,7 @@ export default function PodcastStudio() {
                 <button
                   key={id}
                   onClick={() => setRightTab(id)}
-                  className={`cursor-pointer rounded-lg px-3.5 py-1.5 text-sm font-bold transition ${
+                  className={`shrink-0 cursor-pointer rounded-lg px-2.5 py-1.5 text-xs font-bold transition sm:text-sm ${
                     rightTab === id ? "border-b-2 border-ink bg-cream text-ink" : "text-ink-soft hover:text-ink"
                   }`}
                 >
@@ -359,17 +408,17 @@ export default function PodcastStudio() {
                 </button>
               ))}
             </div>
-            {rightTab !== "qa" && (
+            {(rightTab === "subtitle" || rightTab === "guide") && (
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="搜字幕关键词…"
-                className="w-36 rounded-lg border border-line bg-cream/60 px-2.5 py-1 text-xs outline-none focus:border-ink"
+                placeholder="搜关键词…"
+                className="w-28 rounded-lg border border-line bg-cream/60 px-2 py-1 text-xs outline-none focus:border-ink sm:w-32"
               />
             )}
           </div>
 
-          {/* Tab 1: 字幕（自动随播放高亮并滚入视野，点击任意一句跳播） */}
+          {/* Tab 1: 简体字幕（自动高亮并滚入视野） */}
           {rightTab === "subtitle" && (
             <div className="mt-3 max-h-[540px] space-y-1.5 overflow-y-auto pr-1">
               {audio.transcript ? (
@@ -385,7 +434,7 @@ export default function PodcastStudio() {
                           setMediaMode("audio");
                           audio.seekTo(s.start);
                         }}
-                        className={`flex w-full cursor-pointer items-start gap-3 rounded-xl border px-3 py-2.5 text-left text-sm transition ${
+                        className={`flex w-full cursor-pointer items-start gap-2.5 rounded-xl border px-3 py-2 text-left text-sm transition ${
                           isNow ? "border-accent/40 bg-accent-soft/65" : "border-transparent hover:bg-cream"
                         }`}
                       >
@@ -397,38 +446,46 @@ export default function PodcastStudio() {
                     );
                   })
               ) : (
-                <>
-                  <p className="mb-2 rounded-xl bg-cream px-3 py-2 text-xs text-ink-soft">
-                    本集逐字稿正在转写生成中，先显示官方章节时间轴（点任意一行直接跳播）。
-                  </p>
-                  {allChapters
-                    .filter((ch) => !q || ch.title.toLowerCase().includes(q))
-                    .map((ch, idx) => {
-                      const isNow = idx === activeChapterIdx;
-                      return (
-                        <button
-                          key={ch.time}
-                          onClick={() => {
-                            setMediaMode("audio");
-                            audio.seekTo(timeToSec(ch.time));
-                          }}
-                          className={`flex w-full cursor-pointer items-start gap-3 rounded-xl border px-3 py-2.5 text-left text-sm transition ${
-                            isNow ? "border-accent/40 bg-accent-soft/65" : "border-transparent hover:bg-cream"
-                          }`}
-                        >
-                          <span className={`mt-0.5 shrink-0 font-mono text-xs ${isNow ? "font-bold text-accent-dark" : "text-ink-soft"}`}>
-                            {ch.time}
-                          </span>
-                          <span className="flex-1 leading-relaxed text-ink">{ch.title}</span>
-                        </button>
-                      );
-                    })}
-                </>
+                allChapters
+                  .filter((ch) => !q || ch.title.toLowerCase().includes(q))
+                  .map((ch, idx) => {
+                    const isNow = idx === activeChapterIdx;
+                    return (
+                      <button
+                        key={ch.time}
+                        onClick={() => {
+                          setMediaMode("audio");
+                          audio.seekTo(timeToSec(ch.time));
+                        }}
+                        className={`flex w-full cursor-pointer items-start gap-2.5 rounded-xl border px-3 py-2 text-left text-sm transition ${
+                          isNow ? "border-accent/40 bg-accent-soft/65" : "border-transparent hover:bg-cream"
+                        }`}
+                      >
+                        <span className={`mt-0.5 shrink-0 font-mono text-xs ${isNow ? "font-bold text-accent-dark" : "text-ink-soft"}`}>
+                          {ch.time}
+                        </span>
+                        <span className="flex-1 leading-relaxed text-ink">{ch.title}</span>
+                      </button>
+                    );
+                  })
               )}
             </div>
           )}
 
-          {/* Tab 2: 导读 */}
+          {/* Tab 2: 一图读懂 + 导出 3:4 PNG 分享图 */}
+          {rightTab === "poster" && (
+            <div className="mt-4 max-h-[540px] overflow-y-auto pr-1">
+              <PodcastInfographic
+                ep={ep}
+                onSeek={(sec) => {
+                  setMediaMode("audio");
+                  audio.seekTo(sec);
+                }}
+              />
+            </div>
+          )}
+
+          {/* Tab 3: 导读 */}
           {rightTab === "guide" && (
             <div className="mt-4 max-h-[540px] space-y-5 overflow-y-auto pr-1">
               {ep.sections.map((sec) => (
@@ -485,7 +542,7 @@ export default function PodcastStudio() {
             </div>
           )}
 
-          {/* Tab 3: 问答（复刻截图 3 的 8 项预置提问卡 + 自由追问） */}
+          {/* Tab 4: AI 问答（8 项预置提问卡 + 自由追问） */}
           {rightTab === "qa" && (
             <div className="mt-4 flex h-[520px] flex-col">
               <div className="flex-1 space-y-3 overflow-y-auto pr-1">

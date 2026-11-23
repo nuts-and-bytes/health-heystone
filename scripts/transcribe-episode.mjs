@@ -83,6 +83,7 @@ for (let i = 0; i < chunks.length; i++) {
   fd.append("file", new Blob([buf], { type: "audio/mpeg" }), chunks[i]);
   fd.append("model", "whisper-1");
   fd.append("language", "zh");
+  fd.append("prompt", "以下是简体中文普通话健康科普播客的逐字稿，请全部使用简体中文标点与汉字输出。");
   fd.append("response_format", "verbose_json");
   fd.append("timestamp_granularities[]", "segment");
 

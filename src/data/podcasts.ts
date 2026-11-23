@@ -5,6 +5,13 @@ export interface Chapter {
   bodyRole?: string;
 }
 
+export interface VisualSummary {
+  headline: string;
+  stats: { value: string; label: string }[];
+  highlights: { tag: string; text: string; time: string }[];
+  action: string;
+}
+
 export interface Episode {
   id: string;
   show: string;
@@ -21,6 +28,7 @@ export interface Episode {
   minutes: number;
   pubDate: string;
   hook: string;
+  visualSummary: VisualSummary;
   sections: { title: string; chapters: Chapter[] }[];
 }
 
@@ -55,6 +63,21 @@ export const EPISODES: Episode[] = [
     minutes: 70,
     pubDate: "2026-10-12",
     hook: "「千金难买老来瘦」其实很糟？每天走一万步真的就健康吗？年纪大了走路变慢、容易摔跤，该怎么练？",
+    visualSummary: {
+      headline: "人过中年，肌肉才是让你老来有尊严的长期储蓄",
+      stats: [
+        { value: "2次/周", label: "建议抗阻训练底线" },
+        { value: "留1–3下", label: "每组别练到力竭" },
+        { value: "尽早下床", label: "术后别盲目久躺" },
+      ],
+      highlights: [
+        { tag: "跑步 vs 撸铁", text: "走路和跑步练心肺，但保住行动能力和防跌倒必须靠力量训练。", time: "05:58" },
+        { tag: "术后康复", text: "受伤手术后在医生允许下尽早离床活动，久躺会迅速掉肌肉。", time: "09:36" },
+        { tag: "酸痛真相", text: "运动次日酸痛不是乳酸堆积，而是肌纤维微小损伤后的修复。", time: "25:49" },
+        { tag: "父母健身", text: "七十多岁和骨质疏松人群在科学指导下练力量，依然有效且安全。", time: "18:59" },
+      ],
+      action: "从每周两次坐站起立、扶墙俯卧撑或弹力带开始，每组留一点余力。",
+    },
     sections: [
       {
         title: "人到中年，肌肉才是长期储蓄",
@@ -103,6 +126,21 @@ export const EPISODES: Episode[] = [
     minutes: 58,
     pubDate: "2026-08-17",
     hook: "肌肉不只是审美装饰，更是人体最大的代谢与抗衰器官。协和营养科主任与运动专家从「吃」和「动」双视角讲透怎么存肌肉。",
+    visualSummary: {
+      headline: "囤肌肉重于囤黄金：肌肉是人体最大的抗衰代谢器官",
+      stats: [
+        { value: "35岁", label: "肌肉储蓄黄金峰值" },
+        { value: "吃+动", label: "营养与抗阻缺一不可" },
+        { value: "碎片练", label: "像吃零食一样动起来" },
+      ],
+      highlights: [
+        { tag: "肌肉新角色", text: "肌肉直接支撑骨骼并参与血糖调控，流失远不只是没力气。", time: "01:35" },
+        { tag: "误区提醒", text: "「清淡饮食」不等于只喝粥不吃肉，蛋白质吃不够肌肉留不住。", time: "38:38" },
+        { tag: "减肥陷阱", text: "盲目节食和极端减肥法，减掉的往往是宝贵的肌肉而不是纯脂肪。", time: "44:03" },
+        { tag: "散步不够", text: "散步和广场舞能练心肺，但要涨肌肉必须加入适度抗阻负荷。", time: "49:25" },
+      ],
+      action: "三餐每顿保证优质蛋白（蛋、奶、鱼肉豆），零碎时间穿插居家抗阻动作。",
+    },
     sections: [
       {
         title: "为什么说肌肉是抗衰护城河",
@@ -143,6 +181,21 @@ export const EPISODES: Episode[] = [
     minutes: 51,
     pubDate: "2026-08-03",
     hook: "鸡蛋黄是胆固醇炸弹吗？血管斑块究竟怎么长出来的？家常炒菜为何也会藏着反式脂肪？心内科医生一次讲清血脂化验单。",
+    visualSummary: {
+      headline: "看懂血脂化验单与反式脂肪，别再冤枉一颗鸡蛋黄",
+      stats: [
+        { value: "3亿人", label: "我国高血脂人群规模" },
+        { value: "重点2项", label: "化验单先盯关键指标" },
+        { value: "少反式", label: "警惕高温反复用油" },
+      ],
+      highlights: [
+        { tag: "斑块机制", text: "血管斑块是长期血脂异常与炎症慢慢堆积的，早控血脂最关键。", time: "09:14" },
+        { tag: "蛋黄平反", text: "控血脂不等于拒绝吃肉和蛋黄，选对优质蛋白和烹饪方式更重要。", time: "21:05" },
+        { tag: "家常隐坑", text: "油温过高、反复煎炸和部分加工零食，容易藏着反式脂肪酸。", time: "27:01" },
+        { tag: "更年期护心", text: "女性更年期后激素变化会让心血管风险明显上升，要定期查血脂。", time: "35:10" },
+      ],
+      action: "下次体检把血脂四项留存对比，家常做菜少冒烟、少买配料表含植脂末的零食。",
+    },
     sections: [
       {
         title: "血管斑块与胆固醇真相",

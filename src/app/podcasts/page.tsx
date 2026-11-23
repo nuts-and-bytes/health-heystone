@@ -1,16 +1,11 @@
 import PodcastStudio from "@/components/PodcastStudio";
 
-export const metadata = { title: "播客精读工作台 · 健康谣言法庭" };
+export const metadata = { title: "播客精读工作台 · health.heystone.site" };
 
 export default function Page() {
   return (
-    <div className="space-y-4">
-      <div>
-        <h1 className="font-display text-4xl text-ink">播客精读工作台</h1>
-        <p className="mt-1 text-sm text-ink-soft">
-          参考声渡 SubCast 的学习方式：站内直连收听《菠萝健康派》与《健康静距离》，点时间码直接跳播，随时记时间戳笔记，并一键对照本站谣言与身体图解。
-        </p>
-      </div>
+    /* 桌面端突破父级 max-w-4xl，完整呈现 SubCast 左/中/右三栏工作台；手机端全宽自适应 */
+    <div className="lg:relative lg:left-1/2 lg:w-[min(1320px,calc(100vw-3rem))] lg:-translate-x-1/2">
       <PodcastStudio />
     </div>
   );
