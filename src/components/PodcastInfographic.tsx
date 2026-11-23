@@ -95,7 +95,7 @@ function EpisodeVisualSvg({ ep, svgRef }: { ep: Episode; svgRef: React.RefObject
 
           {/* 灰色自然下滑线（不练力量） */}
           <path d="M 76 250 Q 220 265 340 330 T 520 382" fill="none" stroke="#B8AFA4" strokeWidth="3" strokeDasharray="6 6" />
-          <text x="430" y="380" fill="#9A9085" fontSize="12" fontWeight="700">
+          <text x="546" y="384" textAnchor="end" fill="#9A9085" fontSize="11.5" fontWeight="700">
             只散步 / 久躺 → 加速流失
           </text>
 
