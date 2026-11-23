@@ -13,6 +13,9 @@ export interface BodyRole {
   howToHelp: string;
   scene: string;
   sceneCaption: string;
+  /** 真实医学科普解剖图路径（用于认识真实长相和位置） */
+  anatomyImg: string;
+  anatomyCaption: string;
   relatedCases: string[];
 }
 
@@ -33,6 +36,8 @@ export const BODY_ROLES: BodyRole[] = [
     howToHelp: "规律睡眠 + 适度运动，是帮警报器按时下班最稳的方法。",
     scene: "adrenaline-alarm",
     sceneCaption: "紧急情况拉响警报帮你冲刺；警报按时关掉，身体才能恢复。",
+    anatomyImg: "/anatomy/anatomy-adrenal.jpg",
+    anatomyCaption: "真实位置：两颗肾脏顶端像小帽子一样的淡黄色腺体就是肾上腺。",
     relatedCases: ["weekend-sleep", "8-hours-sleep", "exercise-offsets-sitting"],
   },
   {
@@ -51,6 +56,8 @@ export const BODY_ROLES: BodyRole[] = [
     howToHelp: "每天一个整蛋大多安全；多吃膳食纤维和规律运动有助于改善血脂结构。",
     scene: "cholesterol-truck",
     sceneCaption: "肝脏自产大部分胆固醇；LDL 送货、橙色 HDL 回收车帮忙清理道路。",
+    anatomyImg: "/anatomy/anatomy-cholesterol.jpg",
+    anatomyCaption: "真实结构：左侧是顺畅的健康血管，右侧是胆固醇斑块堆积变窄的对比。",
     relatedCases: ["eggs-cholesterol", "red-wine", "carbs-fat"],
   },
   {
@@ -69,6 +76,8 @@ export const BODY_ROLES: BodyRole[] = [
     howToHelp: "主食粗细搭配、饭后慢走 10 分钟、每周练两次肌肉，都是给胰岛素减负。",
     scene: "insulin-key",
     sceneCaption: "橙色胰岛素门禁卡刷开细胞大门，把血液里的糖顺利送进去供能。",
+    anatomyImg: "/anatomy/anatomy-organs.jpg",
+    anatomyCaption: "真实位置：胃后方的胰腺负责分泌胰岛素，调节全身血糖进出细胞。",
     relatedCases: ["walk-after-meal", "carbs-fat", "zero-sugar-drinks"],
   },
   {
@@ -87,6 +96,8 @@ export const BODY_ROLES: BodyRole[] = [
     howToHelp: "循序渐进加跑量、练好大腿和臀部肌肉，就是给膝盖最好的护具。",
     scene: "knee-sponge",
     sceneCaption: "每踩一步把旧液体挤出，每抬一步把新鲜关节液吸回软骨里。",
+    anatomyImg: "/anatomy/anatomy-cartilage.jpg",
+    anatomyCaption: "真实结构：膝关节骨头两端包裹着珠白色光滑的关节软骨与半月板缓冲垫。",
     relatedCases: ["running-knees", "static-stretch", "bed-rest"],
   },
   {
@@ -105,6 +116,8 @@ export const BODY_ROLES: BodyRole[] = [
     howToHelp: "每周至少 2 次力量训练，每组留 1–3 次余力，配合吃够优质蛋白质。",
     scene: "bed-balloon",
     sceneCaption: "长期不动肌肉会像气球漏气一样变瘪，动起来才会重新充实。",
+    anatomyImg: "/anatomy/anatomy-muscles-front.jpg",
+    anatomyCaption: "真实分布：全身浅层骨骼肌一览（切到「真实肌群图谱」可逐块点击查看作用）。",
     relatedCases: ["steps-vs-muscle", "elderly-strength", "thin-when-old", "bed-rest", "lactic-acid", "train-to-failure"],
   },
   {
@@ -123,6 +136,8 @@ export const BODY_ROLES: BodyRole[] = [
     howToHelp: "早上见见自然光，睡前半小时调暗灯光、少看亮屏，尽量固定起床时间。",
     scene: "sleep-bank",
     sceneCaption: "工作日反复透支睡眠，周末怎么补也难把生物钟的欠账填平。",
+    anatomyImg: "/anatomy/anatomy-organs.jpg",
+    anatomyCaption: "真实位置：松果体位于大脑深处，通过视网膜接收光线信号调控生物钟。",
     relatedCases: ["8-hours-sleep", "weekend-sleep"],
   },
   {
@@ -141,6 +156,8 @@ export const BODY_ROLES: BodyRole[] = [
     howToHelp: "别盲目停碘或猛补碘；如果莫名持续怕冷/心慌/体重剧变，抽一管甲功五项就能查清。",
     scene: "adrenaline-alarm",
     sceneCaption: "激素油门踩得太猛或太轻都会让身体失衡，稳在中间最舒服。",
+    anatomyImg: "/anatomy/anatomy-organs.jpg",
+    anatomyCaption: "真实位置：颈部正前方蝴蝶形的腺体就是甲状腺，主管全身代谢快慢。",
     relatedCases: ["8-hours-sleep", "skip-breakfast-fat"],
   },
   {
@@ -159,6 +176,8 @@ export const BODY_ROLES: BodyRole[] = [
     howToHelp: "运动、睡够和完成一件具体小事，能带来更稳、不反噬的多巴胺回路。",
     scene: "dopamine-lever",
     sceneCaption: "拉动橙色多巴胺拉杆，期待值瞬间飙升又回落。",
+    anatomyImg: "/anatomy/anatomy-organs.jpg",
+    anatomyCaption: "多巴胺由大脑特定神经核团释放，负责把「期待与行动」信号传给前额叶。",
     relatedCases: ["zero-sugar-drinks", "sugar-hyperactive", "weekend-sleep"],
   },
   {
@@ -177,6 +196,8 @@ export const BODY_ROLES: BodyRole[] = [
     howToHelp: "每天喝够水帮肾脏冲走尿酸，少喝啤酒、浓骨头汤和含糖/鲜榨果汁，控制体重。",
     scene: "fat-tank",
     sceneCaption: "控糖控浓汤 + 喝够水，帮身体把多余尿酸顺利排出去。",
+    anatomyImg: "/anatomy/anatomy-adrenal.jpg",
+    anatomyCaption: "真实路径：血液里约七成尿酸要靠肾脏过滤随尿排出，喝够水能帮它冲走。",
     relatedCases: ["bone-broth-calcium", "juice-detox", "red-wine", "8-glasses"],
   },
   {
@@ -195,6 +216,8 @@ export const BODY_ROLES: BodyRole[] = [
     howToHelp: "每天吃够蔬菜和全谷物，尽量吃完整水果而不是榨汁，不乱吃抗生素。",
     scene: "gut-city",
     sceneCaption: "投喂橙色膳食纤维，肚子里的有益菌群社区立刻活跃起来。",
+    anatomyImg: "/anatomy/anatomy-organs.jpg",
+    anatomyCaption: "真实位置：腹腔下方盘曲的大肠，是十万亿肠道菌群的主要栖息地。",
     relatedCases: ["juice-detox", "carbs-fat", "tea-after-meal"],
   },
   {
@@ -213,6 +236,8 @@ export const BODY_ROLES: BodyRole[] = [
     howToHelp: "每天盐少于 5 克，少喝酒，每周坚持运动，35 岁以上定期量一量血压。",
     scene: "cholesterol-truck",
     sceneCaption: "血管公路保持通畅有弹性，心脏泵血才省力。",
+    anatomyImg: "/anatomy/anatomy-cholesterol.jpg",
+    anatomyCaption: "真实结构：光滑有弹性的血管壁让血流平稳，硬化变窄后水压就会升高。",
     relatedCases: ["red-wine", "coffee-heart", "10000-steps", "steps-vs-muscle"],
   },
   {
@@ -231,6 +256,8 @@ export const BODY_ROLES: BodyRole[] = [
     howToHelp: "固定起床时间、白天适度运动、睡前远离工作消息和强光，帮皮质醇回到自然波浪线。",
     scene: "sleep-bank",
     sceneCaption: "作息规律，皮质醇和睡眠账本才能保持平衡。",
+    anatomyImg: "/anatomy/anatomy-adrenal.jpg",
+    anatomyCaption: "真实位置：皮质醇同样由肾脏顶端的肾上腺皮质分泌，按昼夜节律波动。",
     relatedCases: ["weekend-sleep", "8-hours-sleep", "exercise-offsets-sitting"],
   },
 ];

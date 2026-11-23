@@ -12,7 +12,59 @@ import { sfx } from "@/lib/sfx";
 import Mascot from "./Mascot";
 import Stamp from "./Stamp";
 import StickScene from "./StickScene";
+import { CategoryIcon } from "./Icons";
 import { RichText, Term } from "./Term";
+
+/* eslint-disable @next/next/no-img-element */
+
+function caseVisual(c: Case): { src: string; caption: string; linkHref: string; linkText: string } {
+  if (c.body === "knee") {
+    return {
+      src: "/anatomy/anatomy-cartilage.jpg",
+      caption: "膝关节解剖结构：光滑软骨与半月板负责缓冲减震",
+      linkHref: "/body?tab=roles&role=cartilage",
+      linkText: "去身体百科看关节软骨 →",
+    };
+  }
+  if (c.body === "heart") {
+    return {
+      src: "/anatomy/anatomy-cholesterol.jpg",
+      caption: "血管结构对比：畅通血管 vs 斑块堆积变窄",
+      linkHref: "/body?tab=roles&role=cholesterol",
+      linkText: "去身体百科看胆固醇与血管 →",
+    };
+  }
+  if (c.body === "arm" || c.category === "肌肉") {
+    return {
+      src: "/anatomy/anatomy-muscles-front.jpg",
+      caption: "真实骨骼肌分布：肌肉遵循「用进废退」规律",
+      linkHref: "/body",
+      linkText: "去点真实肌群图谱 →",
+    };
+  }
+  if (c.body === "spine") {
+    return {
+      src: "/anatomy/anatomy-muscles-back.jpg",
+      caption: "背部肌群与脊柱支撑：后链肌肉稳住骨头与腰背",
+      linkHref: "/body",
+      linkText: "去点真实肌群图谱 →",
+    };
+  }
+  if (c.body === "stomach") {
+    return {
+      src: "/anatomy/anatomy-organs.jpg",
+      caption: "消化与代谢器官位置：胃、胰腺与肠道协同处理食物与血糖",
+      linkHref: "/body?tab=roles&role=insulin",
+      linkText: "去身体百科看胰岛素与肠道 →",
+    };
+  }
+  return {
+    src: "/anatomy/anatomy-adrenal.jpg",
+    caption: "内分泌与应激调节：作息与激素节律共同影响恢复",
+    linkHref: "/body?tab=roles&role=adrenal",
+    linkText: "去身体百科看肾上腺与皮质醇 →",
+  };
+}
 
 export default function CaseDetail({ c }: { c: Case }) {
   const g = useGame();
@@ -46,18 +98,20 @@ export default function CaseDetail({ c }: { c: Case }) {
         </span>
       </div>
 
-      {/* 传闻头部：开阔排版，不用粗重框 */}
-      <header className="space-y-4">
-        <div className="flex items-center gap-3">
-          <span className="text-5xl">{c.emoji}</span>
-          <p className="text-sm text-ink-soft">{c.hook}</p>
+      {/* 传闻头部：开阔排版，去 emoji 堆砌 */}
+      <header className="space-y-3">
+        <div className="flex items-center gap-2 text-xs font-bold text-accent-dark">
+          <CategoryIcon category={c.category} width={15} height={15} />
+          <span>{c.category}</span>
+          <span className="text-line">·</span>
+          <span className="font-normal text-ink-soft">{c.hook}</span>
         </div>
         <h1 className="font-display text-4xl leading-tight text-ink sm:text-5xl">「{c.claim}」</h1>
         {forWho.length > 0 && (
           <div className="flex flex-wrap gap-2">
             {forWho.map((a) => (
               <span key={a.id} className="rounded-full border border-line bg-white px-2.5 py-0.5 text-xs text-ink-soft">
-                {a.emoji} {a.label}常问
+                {a.label}常问
               </span>
             ))}
           </div>
@@ -168,8 +222,37 @@ export default function CaseDetail({ c }: { c: Case }) {
                   <p className="mt-1 text-xs text-ink-soft">文中带橙色虚线的词都可以点开看大白话解释。</p>
                 </div>
 
-                {deep.scene && (
+                {deep.scene ? (
                   <StickScene scene={deep.scene} caption={deep.sceneCaption} play="view" height={235} />
+                ) : (
+                  (() => {
+                    const v = caseVisual(c);
+                    return (
+                      <figure className="overflow-hidden rounded-2xl border-[1.5px] border-line bg-white">
+                        <div className="grid items-center gap-4 p-4 sm:grid-cols-[200px_1fr]">
+                          <div className="flex h-44 items-center justify-center rounded-xl bg-cream p-2">
+                            <img src={v.src} alt={v.caption} className="max-h-full max-w-full rounded-lg object-contain" />
+                          </div>
+                          <div className="space-y-2.5">
+                            <div className="rounded-xl border border-red/30 bg-red/5 px-3.5 py-2.5 text-sm">
+                              <span className="block text-[11px] font-bold text-red-dark">常见直觉误区</span>
+                              <span className="text-ink">{c.hook}</span>
+                            </div>
+                            <div className="rounded-xl border border-green/35 bg-green/5 px-3.5 py-2.5 text-sm">
+                              <span className="block text-[11px] font-bold text-green-dark">身体里的真相</span>
+                              <span className="font-medium text-ink">{c.verdictLine}</span>
+                            </div>
+                          </div>
+                        </div>
+                        <figcaption className="flex flex-wrap items-center justify-between gap-2 border-t border-line/70 px-4 py-2.5 text-xs text-ink-soft">
+                          <span>{v.caption}</span>
+                          <Link href={v.linkHref} className="font-bold text-accent-dark hover:underline">
+                            {v.linkText}
+                          </Link>
+                        </figcaption>
+                      </figure>
+                    );
+                  })()
                 )}
 
                 <div className="space-y-3">

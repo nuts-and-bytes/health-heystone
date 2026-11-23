@@ -6,6 +6,7 @@ import { CASES, VERDICT_META, type Category } from "@/data/cases";
 import { getDeep } from "@/data/deep";
 import { AUDIENCES } from "@/data/audiences";
 import { useGame } from "@/lib/game";
+import { CategoryIcon } from "./Icons";
 
 const CATS: (Category | "全部")[] = ["全部", "运动", "饮食", "睡眠", "肌肉"];
 
@@ -33,8 +34,8 @@ export default function CaseList() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <h1 className="font-display text-4xl text-ink">📚 判决书档案室</h1>
-      <p className="mt-1 text-sm text-ink-soft">全部 {CASES.length} 案，每案都附来龙去脉与原理；标「含动画」的配有橙线小人讲解演示。</p>
+      <h1 className="font-display text-4xl text-ink">判决书档案室</h1>
+      <p className="mt-1 text-sm text-ink-soft">全部 {CASES.length} 案，每案都附原理图解与原始来源；标「含动画」的配有橙线小人演示。</p>
 
       <div className="mt-5 flex flex-wrap items-center gap-2">
         {CATS.map((c) => (
@@ -48,12 +49,12 @@ export default function CaseList() {
         </Link>
         {AUDIENCES.map((a) => (
           <Link key={a.id} href={href(cat, a.id)} className={chip(aud?.id === a.id)}>
-            {a.emoji} {a.label}
+            {a.label}
           </Link>
         ))}
       </div>
 
-      {/* 清爽列表，告别满屏卡片墙疲劳 */}
+      {/* 清爽列表，统一手绘图标，去 emoji */}
       <ul className="mt-6 divide-y divide-line border-t border-line">
         {list.map((c) => {
           const ans = c.slug in g.answered;
@@ -61,19 +62,21 @@ export default function CaseList() {
           const hasScene = Boolean(getDeep(c.slug)?.scene);
           return (
             <li key={c.slug}>
-              <Link href={`/cases/${c.slug}`} className="group flex items-center gap-4 py-4 transition hover:bg-white/60 sm:px-2">
-                <span className="text-3xl">{c.emoji}</span>
+              <Link href={`/cases/${c.slug}`} className="group flex items-center gap-3.5 py-4 transition hover:bg-white/60 sm:px-2">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-line bg-white text-ink-soft group-hover:border-accent group-hover:text-accent-dark">
+                  <CategoryIcon category={c.category} width={17} height={17} />
+                </span>
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="font-bold text-ink group-hover:text-accent-dark">「{c.claim}」</span>
                     {hasScene && (
                       <span className="rounded-md bg-accent-soft px-1.5 py-0.5 text-[11px] font-bold text-accent-dark">
-                        🎬 含动画
+                        含动画
                       </span>
                     )}
                     {c.podcast && (
                       <span className="rounded-md bg-cream px-1.5 py-0.5 text-[11px] font-medium text-ink-soft">
-                        🎧 播客
+                        播客
                       </span>
                     )}
                   </div>
@@ -82,7 +85,7 @@ export default function CaseList() {
                 <div className="shrink-0 text-right">
                   {ans ? (
                     <span className="rounded-lg border px-2 py-0.5 text-xs font-bold" style={{ color: m.dark, borderColor: m.color }}>
-                      {m.emoji} {m.label}
+                      {m.label}
                     </span>
                   ) : (
                     <span className="text-xs font-medium text-ink-soft">待审 →</span>

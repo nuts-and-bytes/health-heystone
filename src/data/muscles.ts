@@ -1,0 +1,163 @@
+export interface MuscleItem {
+  id: string;
+  side: "front" | "back";
+  name: string;
+  en: string;
+  /** 在 3:4 人体解剖图上的百分比坐标 */
+  x: number;
+  y: number;
+  dailyRole: string;
+  ifWeak: string;
+  homeMove: string;
+  relatedCases: string[];
+}
+
+export const MUSCLES: MuscleItem[] = [
+  // 正面 6 块核心肌群
+  {
+    id: "deltoid",
+    side: "front",
+    name: "三角肌（肩膀）",
+    en: "Deltoid",
+    x: 33,
+    y: 23,
+    dailyRole: "抬起手臂、往高处放行李、穿衣服全靠它发力。",
+    ifWeak: "抬手容易肩酸，拿稍重的东西就耸肩代偿。",
+    homeMove: "拿两瓶矿泉水做侧平举 / 推举（每组 10–12 次）",
+    relatedCases: ["women-bulky", "train-to-failure"],
+  },
+  {
+    id: "pectoralis",
+    side: "front",
+    name: "胸大肌",
+    en: "Pectoralis Major",
+    x: 44,
+    y: 26,
+    dailyRole: "负责「往前推」和「往怀里抱」，推门、抱东西、俯卧撑的主力。",
+    ifWeak: "上肢推力差，长期含胸办公还容易让胸肌又紧又短。",
+    homeMove: "扶墙俯卧撑 / 跪姿俯卧撑（循序渐进）",
+    relatedCases: ["steps-vs-muscle", "women-bulky"],
+  },
+  {
+    id: "biceps",
+    side: "front",
+    name: "肱二头肌（大臂前侧）",
+    en: "Biceps Brachii",
+    x: 28,
+    y: 34,
+    dailyRole: "弯曲手肘、拎菜篮子、把重物端起来。",
+    ifWeak: "提快递、拎重物时小臂和手腕容易先酸。",
+    homeMove: "哑铃或弹力带弯举（保持大臂贴身）",
+    relatedCases: ["lactic-acid", "elderly-strength"],
+  },
+  {
+    id: "abs",
+    side: "front",
+    name: "腹直肌与深层核心",
+    en: "Rectus Abdominis & Core",
+    x: 50,
+    y: 39,
+    dailyRole: "像天然护腰一样稳住躯干，走路搬重物时不让腰椎乱晃。",
+    ifWeak: "久坐或站久了容易腰酸，跑步时骨盆不稳。",
+    homeMove: "死虫式 / 平板支撑（比抱头仰卧起坐护腰得多）",
+    relatedCases: ["spot-reduction", "sit-ups-back"],
+  },
+  {
+    id: "quads",
+    side: "front",
+    name: "股四头肌（大腿前侧）",
+    en: "Quadriceps",
+    x: 42,
+    y: 60,
+    dailyRole: "上楼梯、从椅子站起来、跑步落地减震的头号发动机，也是护膝主力。",
+    ifWeak: "下楼膝盖发软打颤，年纪大了起身费劲。",
+    homeMove: "扶椅坐站起立 / 靠墙静蹲（膝盖不痛为度）",
+    relatedCases: ["running-knees", "elderly-strength", "bed-rest"],
+  },
+  {
+    id: "tibialis",
+    side: "front",
+    name: "胫骨前肌（小腿前侧）",
+    en: "Tibialis Anterior",
+    x: 43,
+    y: 79,
+    dailyRole: "走路和跑步时勾起脚尖，防止走路拖脚绊倒，缓冲脚跟着地冲击。",
+    ifWeak: "走快了小腿前面发紧发酸，老年人容易被小门槛绊倒。",
+    homeMove: "靠墙勾脚尖（脚跟撑地，脚尖反复向上抬）",
+    relatedCases: ["10000-steps", "running-knees"],
+  },
+
+  // 背面 6 块核心肌群
+  {
+    id: "trapezius",
+    side: "back",
+    name: "斜方肌（颈肩与上背）",
+    en: "Trapezius",
+    x: 50,
+    y: 21,
+    dailyRole: "稳住肩胛骨、托住脑袋；中下束负责把圆肩往后拉正。",
+    ifWeak: "低头看手机久了上束僵硬酸痛，背变圆。",
+    homeMove: "弹力带面拉 / 俯身 Y-T-W 伸展",
+    relatedCases: ["exercise-offsets-sitting", "static-stretch"],
+  },
+  {
+    id: "lats",
+    side: "back",
+    name: "背阔肌（背部两侧）",
+    en: "Latissimus Dorsi",
+    x: 39,
+    y: 33,
+    dailyRole: "负责「往回拉」和「往下拉」，拉开重门、提拉行李、撑起挺拔体态。",
+    ifWeak: "体态容易含胸驼背，拉重物全靠手臂硬拽。",
+    homeMove: "弹力带坐姿划船 / 哑铃单臂划船",
+    relatedCases: ["steps-vs-muscle", "osteoporosis-strength"],
+  },
+  {
+    id: "erector",
+    side: "back",
+    name: "竖脊肌（脊柱两侧）",
+    en: "Erector Spinae",
+    x: 50,
+    y: 39,
+    dailyRole: "贴着脊柱左右两排，帮你挺直腰背、弯腰捡东西后再稳稳起身。",
+    ifWeak: "久坐半小时腰就直不起来，稍微搬点东西就闪腰。",
+    homeMove: "鸟狗式 / 臀桥（安全练后链，不伤腰）",
+    relatedCases: ["exercise-offsets-sitting", "sit-ups-back", "osteoporosis-strength"],
+  },
+  {
+    id: "glutes",
+    side: "back",
+    name: "臀大肌（臀部）",
+    en: "Gluteus Maximus",
+    x: 44,
+    y: 50,
+    dailyRole: "人体最有力的发动机之一：走路蹬地、爬坡、保护腰椎和膝盖都靠它。",
+    ifWeak: "久坐「臀肌失忆」，走路发力转移到腰和膝盖，越走越累。",
+    homeMove: "臀桥 / 徒手深蹲（感受臀部夹紧发力）",
+    relatedCases: ["running-knees", "exercise-offsets-sitting", "elderly-strength"],
+  },
+  {
+    id: "hamstrings",
+    side: "back",
+    name: "腘绳肌（大腿后侧）",
+    en: "Hamstrings",
+    x: 56,
+    y: 63,
+    dailyRole: "屈膝与伸髋，跑步加速和急停时像刹车带一样保护膝关节韧带。",
+    ifWeak: "久坐又短又紧，突然冲刺或弯腰容易拉伤大腿后侧。",
+    homeMove: "单腿臀桥 / 轻重量罗马尼亚硬拉",
+    relatedCases: ["running-knees", "static-stretch"],
+  },
+  {
+    id: "calves",
+    side: "back",
+    name: "小腿三头肌（小腿后侧）",
+    en: "Gastrocnemius & Soleus",
+    x: 56,
+    y: 78,
+    dailyRole: "踮脚、迈步推进，还像「第二心脏」一样把下肢静脉血泵回心脏。",
+    ifWeak: "走远路脚底小腿容易发沉，久站易下肢浮肿。",
+    homeMove: "扶墙提踵（踮脚尖 2 秒再慢落，每天 2 组）",
+    relatedCases: ["10000-steps", "walk-after-meal", "ice-or-heat"],
+  },
+];
