@@ -12,8 +12,12 @@ export interface Episode {
   title: string;
   guest: string;
   host: string;
+  cover: string;
   url: string;
   audioUrl: string;
+  /** 可选视频播客嵌入（B站 BV 号或 YouTube 视频 ID） */
+  video?: { platform: "bilibili" | "youtube"; id: string };
+  videoSearchUrl?: string;
   minutes: number;
   pubDate: string;
   hook: string;
@@ -44,8 +48,10 @@ export const EPISODES: Episode[] = [
     title: "何继业教授：想要生活有尊严，肌肉从今天开始练！",
     guest: "何继业 · 上海交通大学医学院附属新华医院骨科主任医师",
     host: "李治中（菠萝）· 杜克大学癌症生物学博士",
+    cover: "/podcasts/pineapple-131.jpg",
     url: "https://www.xiaoyuzhoufm.com/episode/6acb13cb195d838e2af00dba",
     audioUrl: "https://media.xyzcdn.net/6693ae814ce7c8de0f47e220/lr5mhJe44lcUHhzVyLy8kHZMpxdz.m4a",
+    videoSearchUrl: "https://search.bilibili.com/all?keyword=%E8%8F%A0%E8%90%9D%E5%81%A5%E5%BA%B7%E6%B4%BE%20%E4%BD%95%E7%BB%A7%E4%B8%9A",
     minutes: 70,
     pubDate: "2026-10-12",
     hook: "「千金难买老来瘦」其实很糟？每天走一万步真的就健康吗？年纪大了走路变慢、容易摔跤，该怎么练？",
@@ -90,8 +96,10 @@ export const EPISODES: Episode[] = [
     title: "肌肉竟是抗衰器官？从吃到动教你科学存肌肉！",
     guest: "于康教授（北京协和医院临床营养科主任）· 姚宁（运动专家）",
     host: "李静 · 主持人",
+    cover: "/podcasts/jingjuli-muscle.jpg",
     url: "https://www.xiaoyuzhoufm.com/episode/6a82cd908156bf3362199e32",
     audioUrl: "https://media.xyzcdn.net/6a6fe5f9d09f30fe00773487/liGfxnUKMog0CKhBWQhP5TWMC0dy.m4a",
+    videoSearchUrl: "https://search.bilibili.com/all?keyword=%E5%81%A5%E5%BA%B7%E9%9D%99%E8%B7%9D%E7%A6%BB%20%E8%82%8C%E8%82%89",
     minutes: 58,
     pubDate: "2026-08-17",
     hook: "肌肉不只是审美装饰，更是人体最大的代谢与抗衰器官。协和营养科主任与运动专家从「吃」和「动」双视角讲透怎么存肌肉。",
@@ -128,8 +136,10 @@ export const EPISODES: Episode[] = [
     title: "反式脂肪酸的危害有多大？关于血脂与饮食的那些问题",
     guest: "李鹤（@鹤立烟雨 · 天津市南开医院心内科主治医师）",
     host: "李静 · 主持人",
+    cover: "/podcasts/jingjuli-lipids.jpg",
     url: "https://www.xiaoyuzhoufm.com/episode/6a7033c71b5e24969ce80cd7",
     audioUrl: "https://media.xyzcdn.net/6a6fe5f9d09f30fe00773487/ljSZY-G6UJVTozfbIoJVqEuMQMKK.m4a",
+    videoSearchUrl: "https://search.bilibili.com/all?keyword=%E5%81%A5%E5%BA%B7%E9%9D%99%E8%B7%9D%E7%A6%BB%20%E5%8F%8D%E5%BC%8F%E8%84%82%E8%82%AA%E9%85%B8",
     minutes: 51,
     pubDate: "2026-08-03",
     hook: "鸡蛋黄是胆固醇炸弹吗？血管斑块究竟怎么长出来的？家常炒菜为何也会藏着反式脂肪？心内科医生一次讲清血脂化验单。",

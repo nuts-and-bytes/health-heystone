@@ -89,7 +89,7 @@ export async function POST(req: Request) {
   let answer: string | null | undefined = null;
   let mode: "ai" | "local" = "local";
   try {
-    answer = (await callGemini(prompt)) ?? (await callOpenAI(prompt));
+    answer = (await callOpenAI(prompt)) ?? (await callGemini(prompt));
     if (answer) mode = "ai";
   } catch (e) {
     console.error("[smash] LLM error", e);

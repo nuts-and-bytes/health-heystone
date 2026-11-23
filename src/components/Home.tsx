@@ -176,17 +176,21 @@ export default function Home() {
         </Link>
       </section>
 
-      {/* 5. 播客精选：单条安静呈现 */}
+      {/* 5. 播客精选：带官方封面图 */}
       <section className="flex flex-col gap-4 border-t border-line pt-10 sm:flex-row sm:items-center sm:justify-between">
-        <div className="max-w-xl">
-          <p className="text-xs font-bold text-accent-dark">
-            灵感来源 · {ep.show} {ep.vol}
-          </p>
-          <h2 className="font-display mt-1 text-2xl text-ink">{ep.title}</h2>
-          <p className="mt-1 text-sm text-ink-soft">{ep.hook}</p>
+        <div className="flex items-center gap-4">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={ep.cover} alt={ep.show} className="h-20 w-20 shrink-0 rounded-2xl border border-line object-cover" />
+          <div className="max-w-lg">
+            <p className="text-xs font-bold text-accent-dark">
+              播客精读 · {ep.show} &amp; 健康静距离
+            </p>
+            <h2 className="font-display mt-0.5 text-2xl text-ink">{ep.title}</h2>
+            <p className="mt-1 line-clamp-2 text-sm text-ink-soft">{ep.hook}</p>
+          </div>
         </div>
         <Link href="/podcasts" className="btn btn-white shrink-0 text-sm">
-          看本期 16 个话题 →
+          进入精读工作台 →
         </Link>
       </section>
     </div>
