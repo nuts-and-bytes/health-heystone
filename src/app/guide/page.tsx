@@ -116,7 +116,7 @@ export default function GuidePage() {
           ⚖️ 懂了，去法庭审案
         </Link>
         <Link href="/cases" className="btn btn-white">
-          📚 翻翻全部 25 案
+          翻翻全部案件
         </Link>
       </div>
     </article>

@@ -49,7 +49,7 @@ export default function Home() {
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <Link href="/court" className="btn">
               <IconGavel width={17} height={17} />
-              <span>{done > 0 ? `继续审案（已审 ${done}/25）` : "从第一案开始"}</span>
+              <span>{done > 0 ? `继续审案（已审 ${done}/${CASES.length}）` : "从第一案开始"}</span>
             </Link>
             <Link href="/guide" className="btn btn-white">
               <IconEvidence width={17} height={17} />
@@ -132,7 +132,7 @@ export default function Home() {
           <div className="flex items-baseline justify-between">
             <h2 className="font-display text-2xl text-ink">{aud ? `${aud.emoji} 给${aud.label}挑的案子` : "热门案子"}</h2>
             <Link href={aud ? `/cases?for=${aud.id}` : "/cases"} className="text-xs font-bold text-ink-soft hover:text-accent-dark">
-              全部 25 案 →
+              全部 {CASES.length} 案 →
             </Link>
           </div>
           <ul className="mt-3 divide-y divide-line">

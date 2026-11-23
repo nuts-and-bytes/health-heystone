@@ -44,3 +44,6 @@ next-env.d.ts
 # 粉碎机待审卷宗（本地）
 /data/pending.jsonl
 /.scene-lab
+
+# HF 临时拉取样本
+/data/hf-*.json

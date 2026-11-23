@@ -33,7 +33,7 @@ export const AUDIENCES: Audience[] = [
     tagline: "久坐、外卖、熬夜三件套",
     color: "var(--blue)",
     dark: "var(--blue-dark)",
-    cases: ["exercise-offsets-sitting", "10000-steps", "walk-after-meal", "weekend-sleep", "spot-reduction", "zero-sugar-drinks", "30-min-fat-burn", "8-glasses"],
+    cases: ["exercise-offsets-sitting", "10000-steps", "walk-after-meal", "weekend-sleep", "spot-reduction", "zero-sugar-drinks", "30-min-fat-burn", "8-glasses", "coffee-calcium", "coffee-heart", "skip-breakfast-fat", "late-night-meal", "tea-after-meal"],
     advice: [
       { emoji: "🪑", title: "别一坐一整天", dose: "少坐多动，坐久了起来走几分钟", why: "久坐时间越长风险越高，用任何强度的活动替代久坐都有好处。", source: WHO_PA },
       { emoji: "🚶", title: "饭后走一走", dose: "饭后慢走 10–15 分钟", why: "轻度步行能明显降低餐后血糖。", source: { label: "Buffey 等，Sports Medicine 2022", url: pubmed("Buffey acute effects interrupting prolonged sitting standing light-intensity walking 2022") } },
@@ -48,7 +48,7 @@ export const AUDIENCES: Audience[] = [
     tagline: "长身体、赶作业、奶茶续命",
     color: "var(--yellow)",
     dark: "var(--yellow-dark)",
-    cases: ["teen-strength-height", "8-hours-sleep", "weekend-sleep", "carbs-fat", "zero-sugar-drinks", "running-knees", "30-min-fat-burn", "msg"],
+    cases: ["teen-strength-height", "8-hours-sleep", "weekend-sleep", "carbs-fat", "zero-sugar-drinks", "running-knees", "30-min-fat-burn", "msg", "sugar-hyperactive", "vitamin-c-cold", "juice-detox", "sunscreen-vitamin-d"],
     advice: [
       { emoji: "⚽", title: "每天动一小时", dose: "5–17 岁：平均每天 60 分钟中高强度活动", why: "每周还应有 3 天高强度活动和强健肌肉骨骼的运动。大学生按成人标准。", source: WHO_PA },
       { emoji: "🛏️", title: "青少年要睡更多", dose: "13–18 岁：每晚 8–10 小时", why: "比成年人多。熬夜刷题的效率，往往不如睡够觉。", source: { label: "Paruthi 等，美国睡眠医学会儿童睡眠共识 2016", url: pubmed("Paruthi recommended amount of sleep for pediatric populations consensus 2016") } },
@@ -63,7 +63,7 @@ export const AUDIENCES: Audience[] = [
     tagline: "肌肉是晚年的养老金",
     color: "var(--green)",
     dark: "var(--green-dark)",
-    cases: ["thin-when-old", "elderly-strength", "osteoporosis-strength", "bed-rest", "steps-vs-muscle", "10000-steps", "eggs-cholesterol", "red-wine"],
+    cases: ["thin-when-old", "elderly-strength", "osteoporosis-strength", "bed-rest", "steps-vs-muscle", "10000-steps", "eggs-cholesterol", "red-wine", "bone-broth-calcium", "overnight-water", "coffee-heart", "sunscreen-vitamin-d"],
     advice: [
       { emoji: "💪", title: "每周练两次肌肉", dose: "每周至少 2 天力量训练", why: "从弹力带、坐站起立开始，肌肉是走路、上楼、提东西的底气。", source: WHO_PA },
       { emoji: "🦩", title: "练平衡防跌倒", dose: "65 岁以上：每周 3 天以上平衡 + 力量的综合训练", why: "跌倒是老年人受伤的重要原因，平衡训练能降低风险。", source: WHO_PA },
@@ -78,7 +78,7 @@ export const AUDIENCES: Audience[] = [
     tagline: "练得多，也要练得对",
     color: "var(--red)",
     dark: "var(--red-dark)",
-    cases: ["train-to-failure", "protein-kidney", "lactic-acid", "static-stretch", "women-bulky", "spot-reduction", "carbs-fat", "running-knees"],
+    cases: ["train-to-failure", "protein-kidney", "lactic-acid", "static-stretch", "women-bulky", "spot-reduction", "carbs-fat", "running-knees", "sweat-fat-burn", "fasted-cardio", "sit-ups-back", "ice-or-heat"],
     advice: [
       { emoji: "🥩", title: "蛋白质吃够就好", dose: "每天每公斤体重 1.4–2.0 g", why: "这个范围对健康人安全有效，再多收益有限。", source: { label: "国际运动营养学会立场声明 2017", url: pubmed("International Society of Sports Nutrition position stand protein and exercise 2017") } },
       { emoji: "🔋", title: "别每组都力竭", dose: "每组结束时还能再做 1–3 下", why: "增肌效果差不多，恢复更快、受伤更少。", source: { label: "Grgic 等，J Sport Health Sci 2022", url: pubmed("Grgic resistance training performed to repetition failure or non-failure meta-analysis 2022") } },

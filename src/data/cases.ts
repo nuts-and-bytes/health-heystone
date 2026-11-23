@@ -1,3 +1,5 @@
+import { EXTRA_CASES } from "./cases-extra";
+
 export type Verdict = "true" | "false" | "depends";
 export type Category = "运动" | "饮食" | "睡眠" | "肌肉";
 export type BodyPart = "brain" | "heart" | "stomach" | "arm" | "spine" | "knee" | "feet";
@@ -640,6 +642,7 @@ export const CASES: Case[] = [
     podcast: { time: "22:35", topic: "一周几练最科学？练到力竭不可取" },
     keywords: ["力竭", "增肌", "练到力竭", "组数", "健身"],
   },
+  ...EXTRA_CASES,
 ];
 
 export const getCase = (slug: string) => CASES.find((c) => c.slug === slug);

@@ -34,7 +34,7 @@ export default function CaseList() {
   return (
     <div className="mx-auto max-w-3xl">
       <h1 className="font-display text-4xl text-ink">📚 判决书档案室</h1>
-      <p className="mt-1 text-sm text-ink-soft">全部 25 案，每案都附来龙去脉与原理；标「🎬 含动画」的配有橙线小人讲解演示。</p>
+      <p className="mt-1 text-sm text-ink-soft">全部 {CASES.length} 案，每案都附来龙去脉与原理；标「含动画」的配有橙线小人讲解演示。</p>
 
       <div className="mt-5 flex flex-wrap items-center gap-2">
         {CATS.map((c) => (

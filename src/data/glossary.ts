@@ -136,6 +136,40 @@ export const GLOSSARY: GlossaryTerm[] = [
     analogy: "一块活海绵，压一下、松一下才能喝饱水。",
     bodySlug: "cartilage",
   },
+  {
+    key: "甲状腺",
+    title: "甲状腺",
+    short: "脖子前方的蝴蝶形内分泌腺，控制全身能量代谢快慢。",
+    detail: "分泌过多（甲亢）会心慌怕热，过少（甲减）会犯困怕冷；体检常见的良性小结节大多只需定期复查。",
+    analogy: "全身代谢的「油门踏板」。",
+    bodySlug: "thyroid",
+  },
+  {
+    key: "多巴胺",
+    title: "多巴胺",
+    short: "大脑里驱动「期待、渴望与行动」的神经递质。",
+    detail: "它主要在期待奖励前飙升，而不是奖励到手后的长久满足；高频刷屏和高糖刺激容易拉高阈值。",
+    analogy: "拉响期待的「发动机」，不是快乐本身。",
+    bodySlug: "dopamine",
+  },
+  {
+    key: "尿酸",
+    aliases: ["嘌呤", "痛风"],
+    title: "尿酸 / 嘌呤",
+    short: "嘌呤代谢后的产物，过高会在关节析出针状结晶引发痛风。",
+    detail: "约八成来自自身代谢，两成来自饮食；啤酒、浓肉汤和大量果糖饮料特别容易推高血尿酸。",
+    analogy: "关节里的「隐形结晶」，多喝水才能帮它顺利冲走。",
+    bodySlug: "uric-acid",
+  },
+  {
+    key: "肠道菌群",
+    aliases: ["膳食纤维"],
+    title: "肠道菌群与膳食纤维",
+    short: "住在肠道里的十万亿微生物，靠你吃的蔬菜全谷物里的膳食纤维活着。",
+    detail: "榨汁会丢掉大部分膳食纤维；吃完整蔬果和全谷物，是养好肠道菌群最稳的方法。",
+    analogy: "肚子里的「十万亿房客」，膳食纤维是它们的正餐。",
+    bodySlug: "gut-microbiome",
+  },
 ];
 
 export const GLOSSARY_MAP = new Map<string, GlossaryTerm>();
