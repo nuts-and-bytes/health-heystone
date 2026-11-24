@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { CASES } from "@/data/cases";
 import {
   DILEMMAS,
   DILEMMA_VERDICT_META,
@@ -9,7 +10,16 @@ import {
   type Dilemma,
   type DilemmaTrack,
 } from "@/data/dilemmas";
+import { useGame } from "@/lib/game";
+import Mascot from "./Mascot";
+import { IconGavel } from "./Icons";
 import PodcastMarkdown from "./PodcastMarkdown";
+
+function dailyCase() {
+  const d = new Date();
+  const n = d.getFullYear() * 1000 + d.getMonth() * 40 + d.getDate();
+  return CASES[n % CASES.length];
+}
 
 interface RedLineNotice {
   type: "medical" | "commerce";
@@ -38,6 +48,12 @@ const HOT_SLUGS = [
 ];
 
 export default function HomeDecisionHub() {
+  const g = useGame();
+  const [today, setToday] = useState(CASES[0]);
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => setToday(dailyCase()), []);
+  const done = Object.keys(g.answered).length;
+
   const [track, setTrack] = useState<"all" | DilemmaTrack>("all");
   const [selected, setSelected] = useState<Dilemma | null>(DILEMMAS[0]);
   const [input, setInput] = useState("");
@@ -97,71 +113,106 @@ export default function HomeDecisionHub() {
 
   return (
     <div className="space-y-8">
-      {/* ① Hero：反焦虑日常健康决策器 */}
-      <section className="panel bg-white p-6 sm:p-8">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent-soft/70 px-3 py-1 text-xs font-bold text-accent-dark">
-            聚焦健身练吃 & 女性状态 · 真实高频纠结库
-          </span>
-          <Link
-            href="/principles"
-            className="text-xs font-bold text-ink-soft underline decoration-accent/60 underline-offset-4 transition hover:text-ink"
-          >
-            零带货 · 零诊疗 · 仅引一线权威指南 →
-          </Link>
-        </div>
-
-        <h1 className="font-display mt-4 text-3xl leading-tight text-ink sm:text-5xl">
-          此刻你在纠结什么？
-        </h1>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-soft sm:text-base">
-          不讲枯燥教材、不卖焦虑不带货。把小红书和健身房里吵翻天的日常纠结，用 <strong>ISSN / ACSM / WHO / ACOG</strong> 一线证据帮你 30 秒松一口气。
-        </p>
-
-        {/* 自由提问框 */}
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            askDecision();
-          }}
-          className="mt-5 flex flex-col gap-2.5 sm:flex-row"
-        >
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="例如：今天练完吃 KFC 喝可乐会白练吗？ / 生理期能练臀腿吗？"
-            className="min-w-0 flex-1 rounded-2xl border-2 border-ink bg-cream/40 px-4 py-3 text-sm text-ink outline-none transition placeholder:text-ink-soft/65 focus:bg-white"
-          />
-          <button
-            type="submit"
-            disabled={loading || input.trim().length < 2}
-            className="btn shrink-0 px-6 py-3 text-sm disabled:opacity-50"
-          >
-            {loading ? "核对权威证据中…" : "查证据定调"}
-          </button>
-        </form>
-
-        {/* 高频纠结一键芯片 */}
-        <div className="mt-4 flex flex-wrap items-center gap-2">
-          <span className="text-xs font-bold text-ink-soft">大家此刻最常纠结：</span>
-          {hotDilemmas.map((d) => {
-            const active = selected?.slug === d.slug && !aiReply;
-            return (
-              <button
-                key={d.slug}
-                type="button"
-                onClick={() => openDilemma(d)}
-                className={`cursor-pointer rounded-full border px-3 py-1 text-xs font-bold transition ${
-                  active
-                    ? "border-ink bg-ink text-white"
-                    : "border-line bg-cream/60 text-ink hover:border-ink hover:bg-white"
-                }`}
+      {/* ① Hero：左 反焦虑日常健康决策器 + 右 肌肉判官今日开庭卡 */}
+      <section className="grid items-stretch gap-5 md:grid-cols-[1.35fr_0.65fr]">
+        <div className="panel flex flex-col justify-between bg-white p-6 sm:p-7">
+          <div>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent-soft/70 px-3 py-1 text-xs font-bold text-accent-dark">
+                聚焦健身练吃 & 女性状态 · 真实高频纠结库
+              </span>
+              <Link
+                href="/principles"
+                className="text-xs font-bold text-ink-soft underline decoration-accent/60 underline-offset-4 transition hover:text-ink"
               >
-                {d.shortTag}
+                零带货 · 零诊疗 · 权威信源白名单 →
+              </Link>
+            </div>
+
+            <h1 className="font-display mt-4 text-3xl leading-tight text-ink sm:text-5xl">
+              此刻你在纠结什么？
+            </h1>
+            <p className="mt-2 max-w-xl text-sm leading-relaxed text-ink-soft sm:text-base">
+              不讲枯燥教材、不卖焦虑不带货。把小红书和健身房里吵翻天的日常纠结，用 <strong>ISSN / ACSM / WHO / ACOG</strong> 一线证据帮你 30 秒松一口气。
+            </p>
+
+            {/* 自由提问框 */}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                askDecision();
+              }}
+              className="mt-5 flex flex-col gap-2.5 sm:flex-row"
+            >
+              <input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="例如：今天练完吃 KFC 喝可乐会白练吗？ / 生理期能练臀腿吗？"
+                className="min-w-0 flex-1 rounded-2xl border-2 border-ink bg-cream/40 px-4 py-3 text-sm text-ink outline-none transition placeholder:text-ink-soft/65 focus:bg-white"
+              />
+              <button
+                type="submit"
+                disabled={loading || input.trim().length < 2}
+                className="btn shrink-0 px-6 py-3 text-sm disabled:opacity-50"
+              >
+                {loading ? "核对权威证据中…" : "查证据定调"}
               </button>
-            );
-          })}
+            </form>
+          </div>
+
+          {/* 高频纠结一键芯片 */}
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <span className="text-xs font-bold text-ink-soft">大家此刻最常纠结：</span>
+            {hotDilemmas.map((d) => {
+              const active = selected?.slug === d.slug && !aiReply;
+              return (
+                <button
+                  key={d.slug}
+                  type="button"
+                  onClick={() => openDilemma(d)}
+                  className={`cursor-pointer rounded-full border px-3 py-1 text-xs font-bold transition ${
+                    active
+                      ? "border-ink bg-ink text-white"
+                      : "border-line bg-cream/60 text-ink hover:border-ink hover:bg-white"
+                  }`}
+                >
+                  {d.shortTag}
+                </button>
+              );
+            })}
+          </div>
         </div>
+
+        {/* 肌肉判官卡片（保留站内趣味互动与今日开庭入口） */}
+        <aside className="panel flex flex-col overflow-hidden bg-[#fdeecf]">
+          <div className="relative flex-1 overflow-hidden">
+            <Mascot mood="hero" className="h-full min-h-[200px] w-full object-cover" />
+            <span className="absolute left-3 top-3 rounded-full border border-ink/20 bg-white/90 px-2.5 py-0.5 text-[11px] font-bold text-accent-dark backdrop-blur-sm">
+              肌肉判官 · 今日开庭
+            </span>
+          </div>
+          <div className="border-t-2 border-ink bg-white p-4">
+            <p className="text-xs font-bold text-ink-soft">先猜真假，再看反转证据</p>
+            <Link
+              href={`/cases/${today.slug}`}
+              className="font-display mt-1 block text-lg leading-snug text-ink hover:text-accent-dark"
+            >
+              「{today.claim}」
+            </Link>
+            <div className="mt-3 flex items-center gap-2">
+              <Link href="/court" className="btn flex-1 justify-center !py-2 text-xs">
+                <IconGavel width={15} height={15} />
+                <span>{done > 0 ? `继续审案 (${done}/${CASES.length})` : "滑卡审案 →"}</span>
+              </Link>
+              <Link
+                href={`/cases/${today.slug}`}
+                className="rounded-xl border-2 border-line bg-cream px-3 py-2 text-xs font-bold text-ink transition hover:border-ink"
+              >
+                看本案
+              </Link>
+            </div>
+          </div>
+        </aside>
       </section>
 
       {/* ② 即时决策结果区（AI 回答或当前选中的已核验纠结卡） */}
