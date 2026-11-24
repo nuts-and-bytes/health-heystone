@@ -7,12 +7,10 @@ import { game, useGame } from "@/lib/game";
 import { getAudience } from "@/data/audiences";
 import {
   BrandMark,
-  IconArchive,
   IconBody,
   IconBolt,
   IconEvidence,
   IconFlame,
-  IconGavel,
   IconHeart,
   IconPodcast,
   IconSmash,
@@ -20,20 +18,17 @@ import {
 } from "./Icons";
 
 const NAV = [
-  { href: "/court", label: "法庭", Icon: IconGavel },
-  { href: "/body", label: "身体百科", Icon: IconBody },
-  { href: "/cases", label: "档案", Icon: IconArchive },
-  { href: "/guide", label: "看懂证据", Icon: IconEvidence },
-  { href: "/podcasts", label: "播客", Icon: IconPodcast },
-  { href: "/smash", label: "谣言粉碎机", Icon: IconSmash },
+  { href: "/", label: "纠结决策", Icon: IconSmash, exact: true },
+  { href: "/body", label: "身体解剖", Icon: IconBody, exact: false },
+  { href: "/podcasts", label: "播客精读", Icon: IconPodcast, exact: false },
+  { href: "/principles", label: "内容红线", Icon: IconEvidence, exact: false },
 ];
 
 const MOBILE_NAV = [
-  { href: "/court", label: "法庭", Icon: IconGavel },
-  { href: "/body", label: "身体", Icon: IconBody },
-  { href: "/cases", label: "档案", Icon: IconArchive },
-  { href: "/guide", label: "证据", Icon: IconEvidence },
-  { href: "/smash", label: "谣言粉碎机", Icon: IconSmash },
+  { href: "/", label: "纠结决策", Icon: IconSmash, exact: true },
+  { href: "/body", label: "身体解剖", Icon: IconBody, exact: false },
+  { href: "/podcasts", label: "播客精读", Icon: IconPodcast, exact: false },
+  { href: "/principles", label: "内容红线", Icon: IconEvidence, exact: false },
 ];
 
 function Stat({
@@ -81,14 +76,14 @@ export default function TopBar() {
             <span className="font-display text-xl leading-none lg:text-2xl">懂点健康</span>
           </Link>
 
-          <nav className="ml-1 hidden items-center gap-0.5 md:flex lg:ml-2 lg:gap-1">
-            {NAV.map(({ href, label, Icon }) => {
-              const active = path.startsWith(href);
+          <nav className="ml-2 hidden items-center gap-1 md:flex lg:ml-4 lg:gap-1.5">
+            {NAV.map(({ href, label, Icon, exact }) => {
+              const active = exact ? path === "/" : path.startsWith(href);
               return (
                 <Link
                   key={href}
                   href={href}
-                  className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl border-2 px-2 py-1 text-xs font-bold transition lg:px-2.5 lg:text-sm ${
+                  className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl border-2 px-2.5 py-1 text-xs font-bold transition lg:px-3 lg:text-sm ${
                     active
                       ? "border-ink bg-accent-soft text-accent-dark"
                       : "border-transparent text-ink-soft hover:border-ink/20 hover:bg-white hover:text-ink"
@@ -127,8 +122,8 @@ export default function TopBar() {
 
       {/* mobile bottom nav：统一手绘线条图标，去 emoji 廉价感 */}
       <nav className="fixed inset-x-0 bottom-0 z-40 flex justify-around border-t-[2.5px] border-ink bg-white py-1.5 md:hidden">
-        {MOBILE_NAV.map(({ href, label, Icon }) => {
-          const active = path.startsWith(href);
+        {MOBILE_NAV.map(({ href, label, Icon, exact }) => {
+          const active = exact ? path === "/" : path.startsWith(href);
           return (
             <Link
               key={href}

@@ -1,5 +1,5 @@
-import Home from "@/components/Home";
+import HomeDecisionHub from "@/components/HomeDecisionHub";
 
-export default function Page() {
-  return <Home />;
+export default function HomePage() {
+  return <HomeDecisionHub />;
 }

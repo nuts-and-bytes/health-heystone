@@ -1,0 +1,744 @@
+export type DilemmaTrack = "fitness-eat" | "fitness-train" | "women";
+export type DilemmaVerdict = "ok" | "adjust" | "stop";
+export type EvidenceLevel = "强证据" | "中等证据" | "有限证据";
+
+export interface AuthoritySource {
+  org: string;
+  title: string;
+  year: number;
+  url?: string;
+}
+
+export interface Dilemma {
+  slug: string;
+  track: DilemmaTrack;
+  shortTag: string;
+  question: string;
+  verdict: DilemmaVerdict;
+  verdictLabel: string;
+  reassurance: string;
+  debate: {
+    sideA: string;
+    sideB: string;
+  };
+  science: string;
+  actionNow: string;
+  evidenceLevel: EvidenceLevel;
+  sources: AuthoritySource[];
+  redLine?: string;
+  keywords: string[];
+}
+
+export const TRACK_META: Record<DilemmaTrack, { label: string; sub: string }> = {
+  "fitness-eat": { label: "健身吃喝", sub: "放纵餐 · 饮料 · 营养时机" },
+  "fitness-train": { label: "训练体感", sub: "熬夜 · 酸痛 · 恢复与频率" },
+  women: { label: "女性状态", sub: "经期 · 体态 · 皮肤与能量红线" },
+};
+
+export const DILEMMA_VERDICT_META: Record<
+  DilemmaVerdict,
+  { badge: string; tone: string; dot: string }
+> = {
+  ok: {
+    badge: "别慌 · 放心",
+    tone: "border-emerald-700/25 bg-emerald-50 text-emerald-800",
+    dot: "#15803d",
+  },
+  adjust: {
+    badge: "看情况 · 换个做法",
+    tone: "border-amber-700/25 bg-amber-50 text-amber-800",
+    dot: "#b45309",
+  },
+  stop: {
+    badge: "别硬扛 · 注意红线",
+    tone: "border-red-700/25 bg-red-50 text-red-800",
+    dot: "#b91c1c",
+  },
+};
+
+export const DILEMMAS: Dilemma[] = [
+  // ==================== 一、健身人群 · 吃喝与放纵餐纠结（10 题） ====================
+  {
+    slug: "post-workout-kfc-cola",
+    track: "fitness-eat",
+    shortTag: "练完吃 KFC 会白练吗",
+    question: "今天健身了，去吃 KFC / 麦当劳喝可乐，会白练吗？",
+    verdict: "ok",
+    verdictLabel: "偶尔一顿不会白练",
+    reassurance: "不会白练！决定体脂和肌肉的是长期总热量与总蛋白，不是这一顿快餐。",
+    debate: {
+      sideA: "高油高盐高糖，吃一顿今天在健身房流的汗全白费了。",
+      sideB: "我减脂期每周吃两次双吉或原味鸡，算好总热量照样掉秤。",
+    },
+    science:
+      "力量或耐力训练后肌糖原下降，适量碳水反而有助糖原回补；快餐真正的问题在于炸物的高饱和脂肪、高热量与高钠（钠会让你第二天短暂水肿 1–2 斤，不是立刻长了纯脂肪）。",
+    actionNow:
+      "优先选烤制类肉品或去皮原味鸡，薯条换玉米/生菜或少吃，含糖可乐换无糖版或气泡水；吃完不用次日绝食，回归正常三餐即可。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "ISSN", title: "International Society of Sports Nutrition Position Stand: Nutrient Timing", year: 2017, url: "https://jissn.biomedcentral.com/articles/10.1186/s12970-017-0189-4" },
+      { org: "ACSM", title: "Nutrition and Athletic Performance Joint Position Statement", year: 2016 },
+    ],
+    keywords: ["kfc", "肯德基", "麦当劳", "汉堡", "炸鸡", "可乐", "快餐", "白练", "放纵餐"],
+  },
+  {
+    slug: "zero-cola-fat-loss",
+    track: "fitness-eat",
+    shortTag: "喝无糖可乐会胖吗",
+    question: "减脂期喝无糖可乐 / 零度可乐，到底会不会长胖？",
+    verdict: "adjust",
+    verdictLabel: "短期控卡友好，别当水喝",
+    reassurance: "代糖本身几乎零热量，不会凭空让你长脂肪；解馋适量喝完全没问题，但别完全替代白开水。",
+    debate: {
+      sideA: "0 糖 0 卡随便喝，减脂期续命神器。",
+      sideB: "代糖刺激胰岛素还伤肠道，喝无糖可乐反而更胖。",
+    },
+    science:
+      "短期随机对照试验显示，用无糖饮料替代含糖饮料能减少总热量摄入；但 WHO 2023 年非糖甜味剂指南基于长期观察性队列给出「有条件建议」：不建议把代糖当成长期减重工具，整体逐步降低嗜甜度更稳妥。",
+    actionNow:
+      "想喝含糖可乐时用无糖版解馋是务实选择（每天 1 罐以内较稳妥）；日常补水仍以白水、茶、无糖气泡水为主。",
+    evidenceLevel: "中等证据",
+    sources: [
+      { org: "WHO", title: "Use of Non-Sugar Sweeteners: WHO Guideline", year: 2023, url: "https://www.who.int/publications/i/item/9789240073616" },
+    ],
+    keywords: ["无糖可乐", "零度可乐", "代糖", "阿斯巴甜", "赤藓糖醇", "减脂", "长胖"],
+  },
+  {
+    slug: "hotpot-gain-2jin",
+    track: "fitness-eat",
+    shortTag: "大餐后重 2 斤怎么办",
+    question: "昨晚吃了一顿火锅/烧烤，今早重了 2 斤，是长胖了吗？要断食补救吗？",
+    verdict: "ok",
+    verdictLabel: "绝大多数是水分，千万别极端断食",
+    reassurance: "别慌！一顿饭几乎不可能长出 2 斤纯脂肪，秤上多出来的主要是盐锁住的水和食物残渣。",
+    debate: {
+      sideA: "一夜暴涨 2 斤崩溃了，今天必须液断一天拉回来！",
+      sideB: "高盐高碳水锁水而已，清淡吃两天体重自己就掉回去了。",
+    },
+    science:
+      "1 公斤纯脂肪约对应 7,700 大卡额外热量盈余，一顿火锅远达不到这个量级。但高钠会引发水钠潴留，且每储存 1 克肌糖原会同时绑定约 3–4 克水分，叠加消化道内食物重量，次日秤上波动 1–3 斤极其正常。",
+    actionNow:
+      "绝对不要催吐或极端绝食（极易诱发下一轮报复性暴食）。接下来 2–3 天正常吃清淡高钾蔬果、多喝水、照常活动，体重会自然回落。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "ACSM", title: "Appropriate Physical Activity Intervention Strategies for Weight Loss", year: 2009 },
+      { org: "PubMed", title: "Glycogen storage and water binding physiology", year: 2015 },
+    ],
+    redLine: "若经常出现「暴食后强烈自责并采取催吐/极端断食」循环，建议寻求专业心理或营养科支持。",
+    keywords: ["火锅", "烧烤", "大餐", "重了两斤", "重了2斤", "暴涨", "断食", "液断", "水肿"],
+  },
+  {
+    slug: "anabolic-window-30min",
+    track: "fitness-eat",
+    shortTag: "练完半小时必须喝蛋白粉吗",
+    question: "练完半小时内不喝蛋白粉或不吃饭，肌肉就会掉吗？",
+    verdict: "ok",
+    verdictLabel: "不用卡死 30 分钟",
+    reassurance: "全天吃够总蛋白质远比「练完 30 分钟内喝完」重要，安心洗完澡回家吃正餐就行。",
+    debate: {
+      sideA: "错过 30 分钟合成窗口期，今天铁白举了！",
+      sideB: "那是早年补剂商炒出来的概念，只要全天蛋白够量就没事。",
+    },
+    science:
+      "ISSN 营养时机立场声明指出，抗阻训练后肌肉对蛋白质的敏感期可持续数小时甚至 24 小时。如果你练前 3–4 小时吃过含蛋白质的正餐，血液里本就有充足氨基酸，根本不需要在更衣室争分夺秒。",
+    actionNow:
+      "把注意力放在全天总蛋白（规律训练者一般约 1.4–2.0 g/kg 体重/天），均匀分到 3–4 顿正餐里；仅在长时间空腹训练后才需要尽快进食。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "ISSN", title: "Position Stand: Nutrient Timing", year: 2017, url: "https://jissn.biomedcentral.com/articles/10.1186/s12970-017-0189-4" },
+      { org: "PubMed", title: "Schoenfeld et al., The effect of protein timing on muscle strength and hypertrophy", year: 2013 },
+    ],
+    keywords: ["窗口期", "半小时", "蛋白粉", "练完吃饭", "掉肌肉", "蛋白质"],
+  },
+  {
+    slug: "alcohol-after-workout",
+    track: "fitness-eat",
+    shortTag: "健身期聚餐喝酒影响多大",
+    question: "健身期聚餐喝了酒（啤酒/微醺小酒），对增肌减脂影响多大？",
+    verdict: "adjust",
+    verdictLabel: "过量伤恢复，偶尔小酌别焦虑",
+    reassurance: "偶尔小喝一两杯不会毁掉你的身材，但大量醉酒确实会拖慢肌肉合成并拉垮睡眠。",
+    debate: {
+      sideA: "喝一口酒就分解肌肉，健身人必须滴酒不沾。",
+      sideB: "社交偶尔喝点微醺而已，没必要活得像苦行僧。",
+    },
+    science:
+      "研究（Parr et al., PLOS ONE）显示，训练后大量摄入酒精会短暂抑制约 24%–37% 的肌肉蛋白合成信号，同时酒精本身含热量（7 kcal/g）且破坏深睡眠。但这是针对大剂量饮酒，偶尔少量社交饮酒对长期体成分影响有限。",
+    actionNow:
+      "如果避不开聚餐：尽量控制饮酒量、边喝边配大量白水和蛋白质菜品、避免空腹狂饮，也别指望次日宿醉硬扛大重量训练。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "PubMed", title: "Parr et al., Alcohol Ingestion Impairs Maximal Post-Exercise Rates of Myofibrillar Protein Synthesis", year: 2014 },
+      { org: "WHO", title: "Alcohol and Health Fact Sheet", year: 2024 },
+    ],
+    keywords: ["喝酒", "啤酒", "微醺", "酒精", "聚餐", "掉肌", "增肌"],
+  },
+  {
+    slug: "milk-tea-fat-loss",
+    track: "fitness-eat",
+    shortTag: "减脂期能喝奶茶吗",
+    question: "减脂期能喝奶茶吗？点三分糖 / 不加小料行不行？",
+    verdict: "adjust",
+    verdictLabel: "选鲜奶+真茶+不另加糖就行",
+    reassurance: "让你胖的不是「茶+奶」，而是植脂末、厚奶盖、全糖和满满小料。",
+    debate: {
+      sideA: "一杯奶茶等于两碗米饭，减脂期绝对碰不得。",
+      sideB: "鲜奶茶不另加糖去小料，本质就是一杯牛奶泡茶，才 100 多大卡。",
+    },
+    science:
+      "一杯全糖植脂末+芝士奶盖+珍珠的奶茶热量常高达 500–700 kcal；但换成纯鲜奶/轻乳 + 原叶茶底 + 不另加糖且不加小料，中杯热量通常仅 100–160 kcal，还带一点乳蛋白与钙。",
+    actionNow:
+      "点单三步：选「真茶+鲜奶」基底 → 甜度选「不另加糖」或最低糖 → 去掉奶盖、珍珠、芋泥、脆波波。偶尔解馋完全不必有负罪感。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "中国营养学会", title: "《中国居民膳食指南（2022）》添加糖控制建议", year: 2022 },
+      { org: "WHO", title: "Guideline: Sugars intake for adults and children", year: 2015 },
+    ],
+    keywords: ["奶茶", "三分糖", "轻乳茶", "小料", "奶盖", "减脂"],
+  },
+  {
+    slug: "iced-americano-preworkout",
+    track: "fitness-eat",
+    shortTag: "练前喝冰美式心慌怎么办",
+    question: "练前喝冰美式真的能多燃脂吗？喝完心慌还能练吗？",
+    verdict: "adjust",
+    verdictLabel: "能提神微促代谢，但心慌立刻别硬练",
+    reassurance: "黑咖啡确实能让你更有劲、轻微提高脂肪氧化，但它不是燃脂神药，不耐受完全不用强喝。",
+    debate: {
+      sideA: "练前必灌一大杯冰美式，出汗多掉秤快一倍。",
+      sideB: "我喝完心跳飙到 130 手抖反胃，差点在跑步机晕过去。",
+    },
+    science:
+      "ISSN 咖啡因立场声明指出，适量咖啡因（约 3–6 mg/kg 体重，对多数人仅相当于 1–2 杯美式）能提升耐力与力量表现、轻微增加运动中脂肪供能比例。但个体代谢差异极大，敏感者或空腹饮用极易引发心悸、胃部不适与晚间失眠。",
+    actionNow:
+      "日常不喝咖啡的人别为了「燃脂」硬灌；下午 3 点后尽量少喝以免毁睡眠；若喝完明显心慌手抖，多喝水坐下休息，降低今日强度或改日再练。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "ISSN", title: "International Society of Sports Nutrition Position Stand: Caffeine and Exercise Performance", year: 2021, url: "https://jissn.biomedcentral.com/articles/10.1186/s12970-020-00383-4" },
+    ],
+    redLine: "若出现明显心悸、胸闷、眼前发黑或胸痛，应立即停止运动；反复发作请及时前往心内科检查。",
+    keywords: ["冰美式", "黑咖啡", "咖啡因", "心慌", "手抖", "燃脂", "练前"],
+  },
+  {
+    slug: "fasted-cardio",
+    track: "fitness-eat",
+    shortTag: "空腹有氧更掉脂吗",
+    question: "空腹有氧（早起不吃饭去跑步/爬坡）真的比吃饱了更掉脂肪吗？",
+    verdict: "ok",
+    verdictLabel: "长期减脂效果几乎一样，按体感选",
+    reassurance: "不用逼自己饿着肚子早起爬坡！吃点东西再去练，长期掉的脂肪和空腹几乎没有差别。",
+    debate: {
+      sideA: "空腹血糖低直接烧脂肪，早起空腹爬坡效率翻倍。",
+      sideB: "热量缺口一样，空腹练没力气反而掉肌肉还容易低血糖。",
+    },
+    science:
+      "Schoenfeld 等系统综述与随机对照试验表明，在总热量和蛋白质摄入相同的前提下，空腹有氧与进食后有氧在数周后的体脂下降幅度没有显著差异——运动中多烧的那一点脂肪，会被当天其余时间身体的能量调节平衡掉。",
+    actionNow:
+      "如果你早起空腹慢走/低强度爬坡觉得很舒服，可以继续；如果容易头晕、没劲或准备做高强度间歇/大重量，练前 30–60 分钟吃半根香蕉或一片全麦面包表现更好。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "PubMed", title: "Schoenfeld et al., Body composition changes associated with fasted versus non-fasted aerobic exercise", year: 2014 },
+      { org: "PubMed", title: "Hackett & Hagstrom, Effect of Overnight Fasted Exercise on Weight Loss and Body Composition: Systematic Review", year: 2017 },
+    ],
+    redLine: "有低血糖史、贫血或糖尿病用药人群切勿盲目空腹运动，具体运动饮食方案请遵医嘱。",
+    keywords: ["空腹有氧", "空腹爬坡", "早起跑步", "低血糖", "燃脂"],
+  },
+  {
+    slug: "eat-after-9pm-workout",
+    track: "fitness-eat",
+    shortTag: "晚上 9 点练完能吃饭吗",
+    question: "晚上 9 点以后练完，还能不能吃晚饭？吃了会胖吗？",
+    verdict: "ok",
+    verdictLabel: "能吃，不会因为「晚」就额外变胖",
+    reassurance: "放心吃！脂肪不会看手表决定几点长出来，练完饿着睡觉反而睡不好、恢复差。",
+    debate: {
+      sideA: "晚上 8 点后吃碳水，代谢慢了全变成肚子上的肥肉。",
+      sideB: "练完不补蛋白和碳水，半夜饿醒还掉肌肉。",
+    },
+    science:
+      "在全天总热量不超标的前提下，晚间训练后进食并不会额外增加体脂。相反，训练后补充适量易消化蛋白质与温和碳水，有助于修复肌纤维、平复皮质醇并改善入睡质量。",
+    actionNow:
+      "选好消化、少油辣的组合（如温热牛奶/无糖酸奶 + 鸡蛋/鸡胸/豆腐 + 少量主食），距离躺平睡觉留出约 1 小时以上避免反酸即可。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "ISSN", title: "Position Stand: Diets and Body Composition", year: 2017 },
+      { org: "PubMed", title: "Kinsey & Ormsbee, The Health Impact of Nighttime Eating", year: 2015 },
+    ],
+    keywords: ["晚上9点", "晚上吃晚饭", "宵夜", "练完饿", "晚上吃碳水"],
+  },
+  {
+    slug: "are-supplements-necessary",
+    track: "fitness-eat",
+    shortTag: "蛋白粉和肌酸必须吃吗",
+    question: "普通人健身，蛋白粉、肌酸、氮泵这些补剂是必须吃的吗？",
+    verdict: "ok",
+    verdictLabel: "都不是必须品，先吃好三餐",
+    reassurance: "一个都不必须！普通人好好吃够三餐蛋白质、规律训练、睡好觉，就已经拿到了 90% 以上的效果。",
+    debate: {
+      sideA: "不吃蛋白粉和肌酸根本长不了肌肉，铁白举了。",
+      sideB: "补剂都是智商税，正常吃饭就够了。",
+    },
+    science:
+      "ISSN 共识明确指出：蛋白粉本质只是「方便的乳清/植物蛋白食物」，饭里吃够了就完全不需要；一水肌酸是运动科学中证据最充分的增力补剂之一，但也属于「锦上添花」而非必需品；任何补剂都无法替代训练和睡眠。",
+    actionNow:
+      "先算一下自己平时肉蛋奶豆吃够了没有；如果确实没时间做饭再考虑把蛋白粉当便捷食物补充。本站严守零带货原则，不推荐任何具体品牌。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "ISSN", title: "Position Stand: Protein and Exercise", year: 2017 },
+      { org: "ISSN", title: "Position Stand: Safety and Efficacy of Creatine Supplementation", year: 2017 },
+    ],
+    redLine: "有肾脏基础疾病、痛风或正在服药者，在考虑任何高蛋白饮食或运动补剂前请务必咨询医生。",
+    keywords: ["蛋白粉", "肌酸", "氮泵", "补剂", "必须吃", "推荐"],
+  },
+
+  // ==================== 二、健身人群 · 训练体感与恢复纠结（8 题） ====================
+  {
+    slug: "stay-up-late-workout",
+    track: "fitness-train",
+    shortTag: "熬夜到 2 点明天还练吗",
+    question: "昨晚熬夜到 2 点，今天早起还该不该去健身？",
+    verdict: "stop",
+    verdictLabel: "别上大重量，优先补觉",
+    reassurance: "今天不练不是偷懒！熬夜后硬扛高强度反而伤心脏、易拉伤，把觉补回来明天练得更香。",
+    debate: {
+      sideA: "自律的人风雨无阻，困了喝杯黑咖啡照样冲深蹲。",
+      sideB: "熬夜后强行健身风险极高，肌肉也不长还容易出意外。",
+    },
+    science:
+      "睡眠剥夺会显著升高交感神经张力与皮质醇，降低反应速度、平衡感与肌肉蛋白合成效率。在疲劳状态下做大重量或高强度间歇，动作变形拉伤和心血管负荷风险都会上升。",
+    actionNow:
+      "睡少于 5–6 小时时，把大重量/高强度训练顺延一天；实在想动只做 15–20 分钟散步或温和拉伸，今晚早点睡。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "PubMed", title: "Knowles et al., Inadequate sleep and muscle strength: Implications for resistance training", year: 2018 },
+      { org: "ACSM", title: "Sleep and Athletic Performance Resources", year: 2020 },
+    ],
+    redLine: "通宵或严重缺觉后若伴随胸闷、心慌、头晕，严禁进行任何剧烈运动。",
+    keywords: ["熬夜", "2点", "没睡好", "睡眠不足", "猝死", "补觉", "第二天健身"],
+  },
+  {
+    slug: "no-soreness-wasted",
+    track: "fitness-train",
+    shortTag: "练完不酸是白练吗",
+    question: "练完第二天肌肉完全不酸，是不是白练了？",
+    verdict: "ok",
+    verdictLabel: "绝对不是白练",
+    reassurance: "酸痛只是身体遇到新刺激时的副产品，不是增肌或减脂的合格证！",
+    debate: {
+      sideA: "练完不酸说明没刺激到位，必须加到第二天爬不起床。",
+      sideB: "老手练完大多只微酸甚至不酸，看重量和次数有没有进步才靠谱。",
+    },
+    science:
+      "延迟性肌肉酸痛（DOMS）主要来自不熟悉的动作或较强的离心收缩，身体适应几次后酸痛感会自然减弱（重复 bout 效应）。Schoenfeld 等研究明确指出，DOMS 程度与长期肌肉增长并不成正比。",
+    actionNow:
+      "判断有没有练到位，看 3 个指标：动作是否标准、目标肌群训练中是否有泵感/力竭感、几周下来重量或次数是否稳步提升。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "PubMed", title: "Schoenfeld & Contreras, Is Postexercise Muscle Soreness a Valid Indicator of Muscular Adaptations?", year: 2013 },
+    ],
+    keywords: ["不酸", "酸痛", "白练", "DOMS", "乳酸", "没感觉"],
+  },
+  {
+    slug: "dizzy-after-leg-day",
+    track: "fitness-train",
+    shortTag: "练腿头晕恶心正常吗",
+    question: "练完腿 / 硬拉觉得头晕、恶心、眼前发黑，正常吗？",
+    verdict: "stop",
+    verdictLabel: "这不是练到位，立刻坐下休息",
+    reassurance: "练腿头晕很常见，但绝不是「高手练吐的勋章」，通常是血压波动、屏气过久或血糖水分不够。",
+    debate: {
+      sideA: "练腿不练到想吐说明强度不够！",
+      sideB: "这是体位性低血压或低血糖信号，硬扛可能直接晕倒。",
+    },
+    science:
+      "下肢大肌群需血量巨大，加上大重量深蹲/硬拉时长时间屏气（瓦氏动作）后突然起身，容易造成短暂脑供血不足；若同时空腹或饮水不足，就会出现头晕、冷汗、恶心。",
+    actionNow:
+      "立刻停止动作坐下或平躺、抬高双腿、小口喝温水或补一点碳水；下次练腿前 1–2 小时吃够碳水、组间充分呼吸休息、别猛然起身。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "ACSM", title: "ACSM's Guidelines for Exercise Testing and Prescription", year: 2021 },
+    ],
+    redLine: "如果反复出现运动中晕厥、眼前发黑、胸痛或休息后仍不缓解，必须停练并前往医院心内科/全科排查贫血、心律或血压问题。",
+    keywords: ["练腿", "头晕", "恶心", "发黑", "想吐", "硬拉", "深蹲", "低血糖"],
+  },
+  {
+    slug: "twice-a-week-enough",
+    track: "fitness-train",
+    shortTag: "一周只练 2 次有用吗",
+    question: "上班/上学太忙，一周只能练 2 次，或每次只练 25 分钟，还有用吗？",
+    verdict: "ok",
+    verdictLabel: "非常有用，远超「白练」",
+    reassurance: "完全够用！每周 2 次全身力量训练已经能拿到健康与力量收益的大头。",
+    debate: {
+      sideA: "一周低于 4 练纯属自我安慰，不如不去。",
+      sideB: "我一周两练坚持半年，体态和精力明显比以前强太多。",
+    },
+    science:
+      "WHO 身体活动指南与多项抗阻训练「最低有效剂量」研究表明，每周 2 次覆盖主要肌群的力量训练，就能显著提升肌力、骨密度与代谢健康，并大幅降低全因死亡风险。",
+    actionNow:
+      "时间紧就选「全身复合动作」（深蹲/箭步蹲、推举/俯卧撑、划船/下拉、臀桥），每次 25–35 分钟认真练 2 次，比定一个坚持不了的 6 练计划强十倍。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "WHO", title: "WHO Guidelines on Physical Activity and Sedentary Behaviour", year: 2020, url: "https://www.who.int/publications/i/item/9789240015128" },
+      { org: "PubMed", title: "Iversen et al., No Time to Lift? Designing Time-Efficient Training Programs", year: 2021 },
+    ],
+    keywords: ["一周两次", "一周2次", "25分钟", "没时间", "频率", "有用吗"],
+  },
+  {
+    slug: "beginner-weight-gain",
+    track: "fitness-train",
+    shortTag: "新手健身重了 2 斤",
+    question: "刚开始健身满一个月，怎么体重反而重了 1–2 斤？",
+    verdict: "ok",
+    verdictLabel: "新手期常见「假性增重」",
+    reassurance: "别被体重秤吓退！刚运动时肌肉储水和糖原增加会让体重短期微涨，往往是身体在变好的信号。",
+    debate: {
+      sideA: "越练越重，肯定是运动后胃口变大吃胖了。",
+      sideB: "新手前几周肌肉充水储糖原，体重涨了腰围却变细了。",
+    },
+    science:
+      "开始规律抗阻训练的头 2–6 周，肌纤维微损伤修复会伴随短暂水分储留，同时肌肉为了适应训练会储存更多肌糖原（每克糖原带 3–4 克水），容易让秤上多出 1–3 斤。",
+    actionNow:
+      "别只盯体重秤！每周固定时间量一次腰围/臀围、穿同一条牛仔裤感受松紧，同时简单核对下自己运动后有没有无意识多吃高热量零食。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "ACSM", title: "Body Composition and Exercise Adaptation Overview", year: 2021 },
+    ],
+    keywords: ["重了", "越练越重", "新手", "体重上涨", "一个月", "没掉秤"],
+  },
+  {
+    slug: "workout-with-cold",
+    track: "fitness-train",
+    shortTag: "感冒发烧能出汗排毒吗",
+    question: "感冒、嗓子疼或有点低烧，还能去健身「出出汗排毒」吗？",
+    verdict: "stop",
+    verdictLabel: "发烧/全身痛绝对别练，休息最快好",
+    reassurance: "出汗不能「排病毒」！发烧或胸闷时硬练不仅好得更慢，还有诱发心肌炎的风险。",
+    debate: {
+      sideA: "去跑 5 公里捂一身汗，第二天感冒就好了。",
+      sideB: "发烧硬去健身房，真有人跑出病毒性心肌炎进医院。",
+    },
+    science:
+      "运动医学常用的「颈部法则（Neck Check）」：如果症状仅在颈部以上（轻微流涕、打喷嚏、无发热），可做极低强度散步；一旦出现发热、肌肉酸痛、剧烈咳嗽、胸闷或肠胃不适，免疫系统正全力作战，剧烈运动会抑制免疫并增加心肌受累风险。",
+    actionNow:
+      "发烧、咽痛明显或浑身乏力时果断停练休息、多喝水；退烧且症状完全消失后再从平时 50%–60% 强度循序恢复。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "ACSM", title: "Return to Exercise After Illness / Neck Check Clinical Consensus", year: 2020 },
+    ],
+    redLine: "感冒或病毒感染后若出现胸闷、气短、心慌、莫名极度乏力，请立即停止一切运动并尽快就医排查心肌炎。",
+    keywords: ["感冒", "发烧", "嗓子疼", "出汗排毒", "心肌炎", "生病健身"],
+  },
+  {
+    slug: "cardio-only-no-weights",
+    track: "fitness-train",
+    shortTag: "只做有氧不撸铁行吗",
+    question: "只做有氧（跑步 / 帕梅拉 / 跳操）不撸铁，能瘦出好看线条吗？",
+    verdict: "adjust",
+    verdictLabel: "能掉秤，但加一点力量线条更稳",
+    reassurance: "只做有氧当然能瘦，但如果不想瘦完松垮、怕反弹，每周顺手加 2 次基础力量会事半功倍。",
+    debate: {
+      sideA: "跑步跳操掉秤最快，撸铁太累还会变壮。",
+      sideB: "只做有氧配节食，瘦下来成了松垮泡芙人，一吃就反弹。",
+    },
+    science:
+      "有氧擅长消耗热量和提升心肺，但在热量缺口下，单纯节食+大量有氧更容易伴随一定比例的肌肉流失。加入抗阻训练能保住瘦体重、稳住基础代谢并让体态更挺拔紧致。",
+    actionNow:
+      "不必一开始就泡在力量区：保留你喜欢的有氧，每周抽出 2 次、每次 20 分钟做深蹲、俯卧撑/推举、划船、臀桥即可。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "ACSM", title: "Resistance Training for Weight Loss and Body Composition", year: 2019 },
+      { org: "WHO", title: "Guidelines on Physical Activity and Sedentary Behaviour", year: 2020 },
+    ],
+    keywords: ["有氧", "跑步", "帕梅拉", "跳操", "撸铁", "线条", "泡芙人"],
+  },
+  {
+    slug: "train-sore-muscle-next-day",
+    track: "fitness-train",
+    shortTag: "酸痛没好能接着练吗",
+    question: "同一个部位酸痛还没完全好，隔天能接着练吗？",
+    verdict: "adjust",
+    verdictLabel: "微酸可轻动，明显酸痛换部位或歇一天",
+    reassurance: "肌肉是在休息时修复长大的！明显酸痛时换个部位练或散步拉伸，比硬怼更涨进步。",
+    debate: {
+      sideA: "以痛攻痛，第二天接着练排酸更快。",
+      sideB: "肌纤维还没修好就接着撕，越练越累还容易拉伤。",
+    },
+    science:
+      "高强度抗阻训练后，同一肌群通常需要约 48 小时完成主要修复与蛋白合成。轻微酸胀时做低强度活动（如散步、动态拉伸）有助于局部血流恢复，但立刻再上大重量会降低动作质量并拉长疲劳。",
+    actionNow:
+      "昨天练腿今天酸，今天就改练上肢或核心，或者做 20 分钟轻松散步。特别注意区分「肌肉酸胀」和「关节刺痛」。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "ACSM", title: "Progression Models in Resistance Training for Healthy Adults", year: 2009 },
+    ],
+    redLine: "如果出现的是关节尖锐刺痛、局部肿胀淤青或单侧放射性疼痛，绝非正常酸痛，请立刻停练并就医评估。",
+    keywords: ["酸痛", "隔天", "接着练", "以痛攻痛", "排酸", "恢复"],
+  },
+
+  // ==================== 三、女性健康 · 经期、体态与饮食焦虑（10 题） ====================
+  {
+    slug: "period-workout-glutes-core",
+    track: "women",
+    shortTag: "经期能练臀腿核心吗",
+    question: "生理期能不能健身？能不能练臀腿和核心？",
+    verdict: "ok",
+    verdictLabel: "可以练，按自己当天体感调强度",
+    reassurance: "没有「经期绝对不能练」的医学禁令！体感舒服照常练完全安全，温和运动甚至能缓解痛经。",
+    debate: {
+      sideA: "经期必须躺平静养，练臀腿和卷腹会子宫下垂/内异症！",
+      sideB: "我经期第二天照常练力量，出点汗小腹反而没那么坠了。",
+    },
+    science:
+      "PubMed 多项系统综述与 ACOG 临床共识表明，经期（卵泡早期）女性的基础肌力并未出现必然断崖，正常抗阻与有氧训练不会造成生殖器官损伤；相反，规律的中低强度运动能促进内啡肽分泌与盆腔血流，有助减轻原发性痛经。",
+    actionNow:
+      "以体感为准：精力不错就正常练（可略降大重量与腹压极高的憋气动作）；如果前两天经量大、腰酸腹痛明显，放心降级为散步、拉伸或直接休息。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "PubMed", title: "McNulty et al., The Effects of Menstrual Cycle Phase on Exercise Performance in Eumenorrheic Women: Systematic Review & Meta-Analysis", year: 2020 },
+      { org: "PubMed", title: "Armour et al., Exercise for Dysmenorrhoea (Cochrane Systematic Review)", year: 2019 },
+      { org: "ACOG", title: "Physical Activity and Exercise Guidelines", year: 2020 },
+    ],
+    redLine: "若出现严重影响生活的剧烈痛经、经量异常过多（如 1–2 小时浸透卫生巾）或明显头晕乏力，应暂停训练并挂妇科排查原因。",
+    keywords: ["经期", "生理期", "大姨妈", "练臀腿", "核心", "卷腹", "痛经", "能练吗"],
+  },
+  {
+    slug: "period-iced-americano",
+    track: "women",
+    shortTag: "经期能喝冰美式吗",
+    question: "生理期喝冰美式 / 吃冰的，真的会伤子宫或加重痛经吗？",
+    verdict: "adjust",
+    verdictLabel: "不会「冻伤子宫」，看个人肠胃耐受",
+    reassurance: "不存在冰水直接流进子宫把子宫冻坏的事！喝了没事就别焦虑，喝了肚子不舒服就换热的。",
+    debate: {
+      sideA: "经期喝一口冰美式就宫寒、血块变多、痛经加重！",
+      sideB: "好多女生经期照常喝冰美式吃冰淇淋，一点事也没有。",
+    },
+    science:
+      "冰饮进入食道和胃后很快被体温中和，不会直接降低子宫温度。但部分女性经期前列腺素水平升高，胃肠道更敏感，低温或大量咖啡因可能诱发肠痉挛、心悸或加重主观腹痛感——这属于个体敏感差异，而非普遍损伤。",
+    actionNow:
+      "以你自己的真实体感做决定：以前喝冰的容易肚子绞痛就换成温热美式/温水；如果平时喝了完全舒服，适量喝无需被「宫寒」吓到。",
+    evidenceLevel: "有限证据",
+    sources: [
+      { org: "ACOG", title: "Dysmenorrhea: Painful Periods FAQ", year: 2022 },
+    ],
+    keywords: ["经期", "冰美式", "喝冰的", "宫寒", "痛经", "咖啡", "生理期"],
+  },
+  {
+    slug: "pms-cravings-bloating",
+    track: "women",
+    shortTag: "经期前暴食水肿正常吗",
+    question: "生理期前一周疯狂想吃甜食、水肿重了 3 斤，是我意志力太差吗？",
+    verdict: "ok",
+    verdictLabel: "100% 正常生理波动，不是你自律差",
+    reassurance: "千万别骂自己管不住嘴！这是黄体期激素波动带来的正常信号，经期结束后水肿多会自然退掉。",
+    debate: {
+      sideA: "一到姨妈前就破功暴食，秤上多 3 斤，彻底摆烂了。",
+      sideB: "黄体期激素本来就会让人馋碳水+锁水，别在这几天上秤自找焦虑。",
+    },
+    science:
+      "黄体晚期雌激素与孕激素下降，会影响大脑血清素活性与肾素-血管紧张素水钠调节，导致对甜食/碳水渴望上升、基础代谢轻微波动及 1–3 斤水分潴留，这在育龄女性中非常普遍。",
+    actionNow:
+      "经前一周干脆把体重秤收起来；提前准备一点黑巧、水果、温热酸奶或复合碳水顺应食欲，减少重盐外卖，温柔度过这几天。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "ACOG", title: "Premenstrual Syndrome (PMS) Clinical Guidance", year: 2023 },
+      { org: "PubMed", title: "Fluid retention and appetite fluctuations across the menstrual cycle", year: 2016 },
+    ],
+    redLine: "如果经前情绪崩溃、抑郁、失眠或失控暴食严重影响正常生活（疑似经前烦躁障碍 PMDD），建议前往妇科或心理科评估。",
+    keywords: ["经期前", "黄体期", "暴食", "想吃甜食", "水肿", "重了3斤", "PMS"],
+  },
+  {
+    slug: "women-lifting-bulky-legs",
+    track: "women",
+    shortTag: "女生练力量会腿粗吗",
+    question: "女生练力量（深蹲 / 臀桥）会不会越练腿越粗、变成「金刚芭比」？",
+    verdict: "ok",
+    verdictLabel: "极难变大块头，初期「变粗」多是暂时的",
+    reassurance: "女生睾酮水平只有男生的约 1/10–1/20，普通力量训练几乎不可能把你练成健美大块头。",
+    debate: {
+      sideA: "才练两周深蹲，大腿前侧明显变粗，赶紧停了！",
+      sideB: "那是刚练完充血+体脂还没降，坚持下去线条紧致又显瘦。",
+    },
+    science:
+      "视觉上「越练越粗」通常有三个原因：1）练后数小时的肌肉充血肿胀；2）体脂尚未明显下降时，脂肪下面多了一点紧实肌肉；3）深蹲/臀桥时臀部没充分启动，大腿前侧（股四头肌）过度代偿。",
+    actionNow:
+      "放心继续力量训练；如果觉得大腿前侧太酸而臀部没感觉，练前加 2 组臀桥/蚌式激活、适当放慢下放速度，并配合整体饮食控脂，围度会越来越紧致。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "ACSM", title: "Resistance Training for Women: Physiology & Myths", year: 2019 },
+      { org: "PubMed", title: "Roberts et al., Sex Differences in Resistance Training Adaptations", year: 2020 },
+    ],
+    keywords: ["女生", "腿粗", "金刚芭比", "深蹲", "股四头肌", "代偿", "力量训练"],
+  },
+  {
+    slug: "thick-traps-posture",
+    track: "women",
+    shortTag: "斜方肌厚是练背练的吗",
+    question: "女生斜方肌显得很厚、脖子显短，是练背练出来的吗？",
+    verdict: "ok",
+    verdictLabel: "多半是圆肩驼背+耸肩紧张，不是肌肉太大",
+    reassurance: "普通练背很难把上斜方肌练大！你看到的「厚」，大多数是长期低头含胸把它拉紧顶起来了。",
+    debate: {
+      sideA: "千万别练背练肩，斜方肌越练越大只能去打瘦肩针！",
+      sideB: "我改掉耸肩、练强中下背把肩膀拉回去后，脖子反而变长了。",
+    },
+    science:
+      "长期伏案低头看手机会导致头前引、圆肩和上斜方肌持续紧张痉挛，在锁骨上方隆起显厚；练划船或侧平举时不自觉「耸肩」也会让上斜方肌代偿紧绷。",
+    actionNow:
+      "训练时用轻重量练习「沉肩下压」（想象把肩膀放进裤兜），多练面拉、划船和 Y 字伸展强化中下斜方肌与菱形肌；日常把电脑屏幕垫高。本站绝不推荐任何医美注射项目。",
+    evidenceLevel: "中等证据",
+    sources: [
+      { org: "PubMed", title: "Upper trapezius overactivity and scapular dyskinesis in neck/shoulder posture", year: 2018 },
+    ],
+    redLine: "若伴随持续颈肩麻木、放射性手臂疼痛，请前往康复科或骨科面诊，切勿盲目跟风医美注射。",
+    keywords: ["斜方肌", "脖子短", "练背", "圆肩", "驼背", "耸肩", "瘦肩针"],
+  },
+  {
+    slug: "quit-sugar-dairy-acne",
+    track: "women",
+    shortTag: "戒糖戒奶真的防长痘吗",
+    question: "为了抗痘，「戒糖、戒奶」真的管用吗？连米饭都要戒吗？",
+    verdict: "adjust",
+    verdictLabel: "少吃高糖和部分脱脂奶有依据，但绝别戒主食",
+    reassurance: "要控的是奶茶甜品这类「高 GI 精制糖」，不是让你把米饭全戒了——乱戒主食反而容易掉发乱姨妈！",
+    debate: {
+      sideA: "戒糖戒奶一个月皮肤直接换头，碳水全是毒药！",
+      sideB: "我跟着戒主食戒到脱发闭经，痘痘照样长。",
+    },
+    science:
+      "美国皮肤病学会（AAD）综述指出，高升糖指数（高 GI）饮食和部分人群摄入脱脂/低脂牛奶与痤疮加重存在中等相关性（可能通过胰岛素与 IGF-1 通路刺激皮脂分泌）；但长痘同时受遗传、激素、作息与毛囊角化影响，并非人人戒奶都有效。",
+    actionNow:
+      "先试着把含糖饮料、蛋糕零食减掉，主食换成杂粮饭/燕麦/薯类而不是断碳；如果怀疑牛奶致痘，可尝试停喝牛奶 3–4 周观察（酸奶通常影响更小），观察自身皮肤反馈。",
+    evidenceLevel: "中等证据",
+    sources: [
+      { org: "AAD", title: "American Academy of Dermatology: Can the right diet get rid of acne?", year: 2023, url: "https://www.aad.org/public/diseases/acne/causes/diet" },
+      { org: "PubMed", title: "Juhl et al., Dairy Intake and Acne Vulgaris: A Systematic Review and Meta-Analysis", year: 2018 },
+    ],
+    redLine: "反复中重度痤疮、囊肿痘或伴随月经紊乱/多毛，请直接挂皮肤科（必要时查内分泌/妇科），本站不推荐护肤品与处方药。",
+    keywords: ["戒糖", "戒奶", "抗痘", "长痘", "痤疮", "牛奶", "米饭", "主食"],
+  },
+  {
+    slug: "dieting-hair-loss-amenorrhea",
+    track: "women",
+    shortTag: "减脂掉发/姨妈推迟警报",
+    question: "女生减脂期「掉头发、大姨妈推迟或不来了」，是因为练太狠还是吃太少？",
+    verdict: "stop",
+    verdictLabel: "身体在拉高危警报，立刻停止极端节食",
+    reassurance: "这不是「掉秤的必经过程」，而是身体能量和营养严重不够，被迫先关掉生殖和头发这类「非保命功能」。",
+    debate: {
+      sideA: "减肥都会掉点头发、推迟几天，瘦下来就好了。",
+      sideB: "这是相对能量不足（RED-S）！拖成闭经骨密度都会掉，必须立刻恢复饮食看医生！",
+    },
+    science:
+      "国际奥委会（IOC）运动相对能量不足（RED-S）共识明确指出：长期热量缺口过大、碳水/脂肪或铁蛋白摄入不足，会抑制下丘脑-垂体-卵巢轴导致功能性下丘脑闭经，同时诱发休止期脱发、畏寒与骨量流失。",
+    actionNow:
+      "立刻停止极端节食和过量有氧，恢复正常三餐（确保足够主食、优质脂肪与含铁红肉/蛋白），降低训练量，并优先去医院做基础检查。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "IOC", title: "2023 International Olympic Committee Consensus Statement on Relative Energy Deficiency in Sport (REDs)", year: 2023, url: "https://bjsm.bmj.com/content/57/17/1073" },
+    ],
+    redLine: "高危就医红线：连续闭经（或推迟超过 2–3 个月）、明显成把掉发，请务必尽快前往妇科与内分泌科检查性激素、甲功与铁蛋白，切勿自行吃网红补剂拖延。",
+    keywords: ["掉发", "脱发", "闭经", "大姨妈不来", "推迟", "节食", "RED-S", "减脂"],
+  },
+  {
+    slug: "female-body-fat-lower-better",
+    track: "women",
+    shortTag: "女生体脂越低越好吗",
+    question: "女生体脂率越低越好吗？清晰马甲线是不是人人都能长期保持？",
+    verdict: "stop",
+    verdictLabel: "绝非越低越好，健康比极致低体脂更重要",
+    reassurance: "女性生理上天生需要更高的必需脂肪来维持激素和骨骼健康，不必拿职业健美备赛期的体脂来焦虑自己。",
+    debate: {
+      sideA: "体脂刷到 16% 才高级，有马甲线才算自律。",
+      sideB: "女生体脂长期压太低会怕冷、失眠、姨妈出走，根本没法长期扛。",
+    },
+    science:
+      "ACSM 体成分标准指出，女性必需脂肪约 10%–13%，一般健康且精力充沛的体脂范围约为 20%–30%。且腹部脂肪分布与马甲线清晰度高度受基因影响，很多人健康体脂下本来就不容易常年显露刀刻腹肌。",
+    actionNow:
+      "把目标从「把体脂刷到某个极端数字」换成「精力充沛、月经规律、力量在涨、体态舒展」；能维持好状态的体脂才是你的最佳体脂。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "ACSM", title: "ACSM's Health-Related Physical Fitness Assessment Manual", year: 2021 },
+    ],
+    keywords: ["体脂率", "体脂", "马甲线", "越低越好", "女性体脂", "16%"],
+  },
+  {
+    slug: "crunches-lower-belly-postpartum",
+    track: "women",
+    shortTag: "狂做卷腹能减肚子吗",
+    question: "久坐办公或生完娃觉得小腹突出，狂做卷腹能减掉小肚子吗？",
+    verdict: "adjust",
+    verdictLabel: "不存在局部减脂，产后盲目卷腹反而有风险",
+    reassurance: "每天 200 个卷腹不会把小肚子「烧」没，而且小腹鼓鼓的未必全是脂肪！",
+    debate: {
+      sideA: "跟着 7 天瘦肚子卷腹打卡，腰围立减 5 厘米！",
+      sideB: "脂肪是全身一起掉的，产后有腹直肌分离还卷腹会越卷越鼓。",
+    },
+    science:
+      "随机对照试验反复证实「不存在局部减脂」——卷腹练的是腹直肌耐力，不能定向消耗腹部皮下脂肪。此外，骨盆前倾、胀气便秘以及产后腹直肌分离都会让小腹在视觉上明显突出。",
+    actionNow:
+      "减肚子靠全身热量管理+全身复合力量训练+改善久坐骨盆前倾；产后女性在恢复卷腹前，先确认是否存在腹直肌分离与盆底肌薄弱。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "PubMed", title: "Vispute et al., The effect of abdominal exercise on abdominal fat", year: 2011 },
+      { org: "ACOG", title: "Exercise After Pregnancy", year: 2022 },
+    ],
+    redLine: "产后出现明显腹部中线膨出、漏尿或腰背持续疼痛，建议先挂产后康复科或妇产科评估，勿盲目跟练高腹压动作。",
+    keywords: ["卷腹", "小肚子", "局部减脂", "产后", "腹直肌分离", "骨盆前倾"],
+  },
+  {
+    slug: "tired-anti-inflammatory-supplements",
+    track: "women",
+    shortTag: "总累喝气血茶/抗炎补剂有用吗",
+    question: "熬夜压力大之后脸黄、怎么睡都累，喝「气血茶 / 抗炎补剂」有用吗？",
+    verdict: "adjust",
+    verdictLabel: "没有补剂能抵消缺觉，先查睡眠与基础营养",
+    reassurance: "别急着交几百块的网红补剂智商税！持续疲惫最常见的原因其实是缺觉、缺铁或蛋白吃太少。",
+    debate: {
+      sideA: "小红书爆火的 XX 抗炎粉/气血饮，喝完感觉气色变好了。",
+      sideB: "喝了一堆瓶瓶罐罐还是累，去医院一查其实是缺铁性贫血。",
+    },
+    science:
+      "高质量睡眠与均衡饮食（足够蛋白质、铁、维生素 D、蔬果多酚）才是抗炎和恢复精力的核心地基。市面上很多「抗炎/气血」复合粉剂缺乏高质量临床对照证据，且无法抵消长期熬夜带来的皮质醇与代谢紊乱。",
+    actionNow:
+      "先连续 2 周保证 7–8 小时睡眠、每天吃够肉蛋奶豆和深色蔬菜；如果睡够了依然每天极度疲惫、心慌头晕，花几十块钱去医院查个体检比买几百块补剂靠谱得多。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "WHO", title: "Anaemia in Women and Children Global Health Observatory", year: 2023 },
+      { org: "中国营养学会", title: "《中国居民膳食指南（2022）》育龄女性铁与营养建议", year: 2022 },
+    ],
+    redLine: "若长期极度乏力、面色苍白、畏寒或莫名水肿，建议挂全科/内分泌科查血常规、铁蛋白、维生素 D 与甲状腺功能；本站不推荐任何补剂或茶饮品牌。",
+    keywords: ["气血茶", "抗炎", "补剂", "怎么睡都累", "脸黄", "熬夜", "疲惫", "缺铁"],
+  },
+];
+
+export function getDilemma(slug: string): Dilemma | undefined {
+  return DILEMMAS.find((d) => d.slug === slug);
+}
+
+/** 简单高命中的本地纠结匹配（供首页即时检索与 /api/smash 双库检索） */
+export function matchDilemmas(input: string, limit = 4): { d: Dilemma; score: number }[] {
+  const q = input.trim().toLowerCase();
+  if (!q) return [];
+  const scored = DILEMMAS.map((d) => {
+    let score = 0;
+    const hay = `${d.shortTag} ${d.question} ${d.science} ${d.keywords.join(" ")}`.toLowerCase();
+    for (const kw of d.keywords) {
+      if (q.includes(kw.toLowerCase())) score += 10;
+    }
+    if (d.shortTag.toLowerCase().includes(q) || d.question.toLowerCase().includes(q)) {
+      score += 14;
+    }
+    // 2-gram 重叠
+    for (let i = 0; i < q.length - 1; i++) {
+      const bi = q.slice(i, i + 2);
+      if (/^[\u4e00-\u9fa5a-z0-9]{2}$/.test(bi) && hay.includes(bi)) score += 1.5;
+    }
+    return { d, score };
+  })
+    .filter((x) => x.score >= 3)
+    .sort((a, b) => b.score - a.score);
+
+  return scored.slice(0, limit);
+}
