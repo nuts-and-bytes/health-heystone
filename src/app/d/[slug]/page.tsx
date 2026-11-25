@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DILEMMAS, DILEMMA_VERDICT_META, TRACK_META, getDilemma } from "@/data/dilemmas";
 import DilemmaShareCard from "@/components/DilemmaShareCard";
+import DilemmaVisual from "@/components/DilemmaVisual";
 
 export function generateStaticParams() {
   return DILEMMAS.map((d) => ({ slug: d.slug }));
@@ -70,18 +71,9 @@ export default async function DilemmaDetailPage({
 
           <h1 className="font-display text-2xl leading-snug text-ink sm:text-3xl">{d.question}</h1>
 
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div className="rounded-2xl border border-line bg-cream/45 p-3.5">
-              <p className="text-[11px] font-bold text-ink-soft">评论区常见焦虑说法</p>
-              <p className="mt-1 text-sm leading-relaxed text-ink">「{d.debate.sideA}」</p>
-            </div>
-            <div className="rounded-2xl border border-line bg-cream/45 p-3.5">
-              <p className="text-[11px] font-bold text-ink-soft">评论区另一派体感</p>
-              <p className="mt-1 text-sm leading-relaxed text-ink">「{d.debate.sideB}」</p>
-            </div>
-          </div>
+          <DilemmaVisual dilemma={d} />
 
-          <div className="rounded-2xl border-2 border-ink bg-accent-soft/45 p-4">
+          <div className="rounded-2xl bg-accent-soft/55 p-4">
             <p className="text-xs font-bold text-accent-dark">① 一句话定心丸 · {d.verdictLabel}</p>
             <p className="mt-1 text-base font-bold leading-relaxed text-ink">{d.reassurance}</p>
           </div>

@@ -15,6 +15,7 @@ import Mascot from "./Mascot";
 import { IconGavel } from "./Icons";
 import PodcastMarkdown from "./PodcastMarkdown";
 import DilemmaShareCard from "./DilemmaShareCard";
+import DilemmaVisual from "./DilemmaVisual";
 
 function dailyCase() {
   const d = new Date();
@@ -366,52 +367,38 @@ export default function HomeDecisionHub() {
         )}
 
         {selected && !aiReply && (
-          <article className="panel space-y-5 bg-white p-6 sm:p-8">
-            {/* 头部：标签 + 问题 */}
-            <div className="space-y-2">
-              <div className="flex flex-wrap items-center gap-2 text-xs">
-                <span className="font-bold text-ink-soft">{TRACK_META[selected.track].label}</span>
-                <span className="text-line">·</span>
-                <span
-                  className={`rounded-full border px-2.5 py-0.5 font-bold ${
-                    DILEMMA_VERDICT_META[selected.verdict].tone
-                  }`}
-                >
-                  {DILEMMA_VERDICT_META[selected.verdict].badge}
-                </span>
-                <span className="font-mono text-[11px] font-bold text-ink-soft">{selected.evidenceLevel}</span>
+          <article className="panel space-y-5 bg-white p-5 sm:p-7">
+            {/* 一图胜千言：左 结论定心丸 + 右 小橙手绘动画图解 */}
+            <div className="grid items-center gap-5 md:grid-cols-[1.2fr_0.8fr]">
+              <div className="space-y-3">
+                <div className="flex flex-wrap items-center gap-2 text-xs">
+                  <span className="font-bold text-ink-soft">{TRACK_META[selected.track].label}</span>
+                  <span className="text-line">·</span>
+                  <span
+                    className={`rounded-full border px-2.5 py-0.5 font-bold ${
+                      DILEMMA_VERDICT_META[selected.verdict].tone
+                    }`}
+                  >
+                    {DILEMMA_VERDICT_META[selected.verdict].badge}
+                  </span>
+                  <span className="font-mono text-[11px] font-bold text-ink-soft">{selected.evidenceLevel}</span>
+                </div>
+
+                <h2 className="font-display text-2xl leading-snug text-ink sm:text-[28px]">{selected.question}</h2>
+
+                <div className="rounded-2xl bg-accent-soft/60 px-4 py-3">
+                  <p className="text-xs font-bold text-accent-dark">结论 · {selected.verdictLabel}</p>
+                  <p className="mt-1 text-[15px] font-bold leading-relaxed text-ink">{selected.reassurance}</p>
+                </div>
               </div>
-              <h2 className="font-display text-2xl leading-snug text-ink sm:text-3xl">{selected.question}</h2>
+
+              <DilemmaVisual dilemma={selected} />
             </div>
 
-            {/* 网友两派吵法：轻排版引用，不再套厚重卡片 */}
-            <div className="grid gap-3 border-y border-line py-3.5 text-sm sm:grid-cols-2 sm:gap-6">
-              <div>
-                <p className="text-[11px] font-bold text-ink-soft">评论区常有人吓唬你</p>
-                <p className="mt-1 leading-relaxed text-ink/85">「{selected.debate.sideA}」</p>
-              </div>
-              <div className="sm:border-l sm:border-line sm:pl-6">
-                <p className="text-[11px] font-bold text-ink-soft">另一派真实体感</p>
-                <p className="mt-1 leading-relaxed text-ink/85">「{selected.debate.sideB}」</p>
-              </div>
-            </div>
-
-            {/* ① 一句话定心丸 */}
-            <div className="rounded-2xl bg-accent-soft/55 px-4 py-3.5">
-              <p className="text-xs font-bold text-accent-dark">定心丸 · {selected.verdictLabel}</p>
-              <p className="mt-1 text-base font-bold leading-relaxed text-ink">{selected.reassurance}</p>
-            </div>
-
-            {/* ② 原理 & ③ 此刻做法：干净双栏排版 */}
-            <div className="grid gap-5 md:grid-cols-2 md:gap-8">
-              <div>
-                <p className="text-xs font-bold text-ink-soft">身体到底发生了什么</p>
-                <p className="mt-1.5 text-sm leading-relaxed text-ink/90">{selected.science}</p>
-              </div>
-              <div>
-                <p className="text-xs font-bold text-accent-dark">此刻最省心的做法（零带货）</p>
-                <p className="mt-1.5 text-sm leading-relaxed text-ink/90">{selected.actionNow}</p>
-              </div>
+            {/* 3 秒抓重点：此刻就做这一件事 */}
+            <div className="flex flex-col gap-1 border-t border-line pt-4 sm:flex-row sm:items-baseline sm:gap-3">
+              <span className="shrink-0 text-xs font-extrabold text-accent-dark">此刻怎么做</span>
+              <p className="text-sm leading-relaxed text-ink">{selected.actionNow}</p>
             </div>
 
             {selected.redLine && (
@@ -420,6 +407,20 @@ export default function HomeDecisionHub() {
                 {selected.redLine}
               </p>
             )}
+
+            {/* 深度原理 & 网友争论默认折叠，避免文字墙疲劳 */}
+            <details className="rounded-xl bg-cream/55 px-4 py-3 text-sm">
+              <summary className="cursor-pointer text-xs font-bold text-ink-soft hover:text-ink">
+                展开看：身体原理 & 评论区两派怎么吵
+              </summary>
+              <div className="mt-3 space-y-3 border-t border-line/80 pt-3">
+                <p className="leading-relaxed text-ink/90">{selected.science}</p>
+                <div className="grid gap-2 text-xs text-ink-soft sm:grid-cols-2">
+                  <p>焦虑派：「{selected.debate.sideA}」</p>
+                  <p>另一派：「{selected.debate.sideB}」</p>
+                </div>
+              </div>
+            </details>
 
             {/* 底部信源 + 分享操作 */}
             <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4">
