@@ -232,6 +232,41 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     return idx;
   }, [transcript, currentTime]);
 
+  // 接入浏览器 Media Session API：支持手机锁屏封面/标题、蓝牙耳机线控、后退 15s / 快进 30s
+  useEffect(() => {
+    if (typeof navigator === "undefined" || !("mediaSession" in navigator)) return;
+    const ms = navigator.mediaSession;
+    const coverAbs =
+      typeof window !== "undefined" ? new URL(episode.cover, window.location.origin).href : episode.cover;
+    try {
+      ms.metadata = new MediaMetadata({
+        title: episode.title,
+        artist: episode.guest,
+        album: `${episode.show} · 懂点健康`,
+        artwork: [{ src: coverAbs, sizes: "512x512", type: "image/jpeg" }],
+      });
+      ms.setActionHandler("play", () => {
+        const a = audioRef.current;
+        if (!a) return;
+        a.playbackRate = rate;
+        a.play().catch(() => {});
+      });
+      ms.setActionHandler("pause", () => audioRef.current?.pause());
+      ms.setActionHandler("seekbackward", (d) => skip(-(d.seekOffset ?? 15)));
+      ms.setActionHandler("seekforward", (d) => skip(d.seekOffset ?? 30));
+      ms.setActionHandler("seekto", (d) => {
+        if (typeof d.seekTime === "number") seekTo(d.seekTime, false);
+      });
+    } catch {}
+  }, [episode, rate, skip, seekTo]);
+
+  useEffect(() => {
+    if (typeof navigator === "undefined" || !("mediaSession" in navigator)) return;
+    try {
+      navigator.mediaSession.playbackState = playing ? "playing" : "paused";
+    } catch {}
+  }, [playing]);
+
   return (
     <AudioCtx.Provider
       value={{
@@ -261,6 +296,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         data-episode-id={episode.id}
         src={episode.audioUrl}
         preload="metadata"
+        playsInline
         onLoadedMetadata={(e) => {
           const a = e.currentTarget;
           if (a !== audioRef.current || playback.current.id !== episode.id) return;
