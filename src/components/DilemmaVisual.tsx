@@ -36,6 +36,14 @@ export const SCENE_MAP: Record<string, { scene: string; caption: string }> = {
   "female-body-fat-lower-better": { scene: "dilemma-red-flag", caption: "点击看：过度压低体脂会触发能量警报" },
   "crunches-lower-belly-postpartum": { scene: "move-plank", caption: "点击看：核心稳定比盲目卷腹更护腰腹" },
   "tired-anti-inflammatory-supplements": { scene: "sleep-bank", caption: "点击看：先补满睡眠罐，比网红补剂管用十倍" },
+  "pelvic-fluid-cervical-ectopy": { scene: "women-checkup-report", caption: "点击看：放大镜分清生理术语与异常复查项" },
+  "vaginal-douching-wash": { scene: "women-flora-shield", caption: "点击看：拦住强力洗液，守住有益菌群保护盾" },
+  "hpv-vaccine-over-26": { scene: "women-hpv-umbrella", caption: "点击看：撑开保护伞挡住未感染型别 + 定期筛查" },
+  "period-delayed-one-week": { scene: "women-cycle-calendar", caption: "点击看：日历±7天正常波动窗与就医红线" },
+  "soy-milk-breast-nodules": { scene: "women-soy-balance", caption: "点击看：大豆异黄酮温和双向调节，稳在安全区" },
+  "cold-hands-dizzy-iron": { scene: "women-iron-battery", caption: "点击看：放慢起身 + 血常规与铁蛋白排查" },
+  "collagen-peptide-drinks": { scene: "women-collagen-brick", caption: "点击看：胶原拆成普通氨基酸，防晒睡眠是真地基" },
+  "running-leak-pelvic-floor": { scene: "women-pelvic-hammock", caption: "点击看：练紧盆底肌吊床，稳稳托住跑跳压力" },
 
   // 日常普适
   "running-hurts-knees": { scene: "knee-sponge", caption: "点击看：膝盖软骨像海绵，规律慢跑反而促营养" },

@@ -1,8 +1,7 @@
-import { appendFile, mkdir } from "node:fs/promises";
-import path from "node:path";
 import { VERDICT_META } from "@/data/cases";
 import { matchCases, caseBrief } from "@/data/search";
 import { matchDilemmas, type Dilemma } from "@/data/dilemmas";
+import { dispatchFeedback } from "@/lib/feedback-notify";
 
 interface RedLineNotice {
   type: "medical" | "commerce";
@@ -116,27 +115,7 @@ async function callGemini(prompt: string) {
 }
 
 async function savePending(text: string) {
-  const webhook = process.env.FEEDBACK_WEBHOOK_URL?.trim();
-  if (webhook) {
-    try {
-      await fetch(webhook, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          msg_type: "text",
-          content: { text: `【未命中真实纠结】${text}` },
-          text: `【未命中真实纠结】${text}`,
-        }),
-      });
-    } catch {}
-  }
-  try {
-    const dir = path.join(process.cwd(), "data");
-    await mkdir(dir, { recursive: true });
-    await appendFile(path.join(dir, "pending.jsonl"), JSON.stringify({ text, at: new Date().toISOString() }) + "\n");
-  } catch {
-    // Serverless 只读环境自动忽略
-  }
+  await dispatchFeedback({ kind: "unmatched", content: text });
 }
 
 export async function POST(req: Request) {

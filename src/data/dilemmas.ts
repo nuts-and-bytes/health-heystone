@@ -711,6 +711,195 @@ export const DILEMMAS: Dilemma[] = [
     redLine: "若长期极度乏力、面色苍白、畏寒或莫名水肿，建议挂全科/内分泌科查血常规、铁蛋白、维生素 D 与甲状腺功能；本站不推荐任何补剂或茶饮品牌。",
     keywords: ["气血茶", "抗炎", "补剂", "怎么睡都累", "脸黄", "熬夜", "疲惫", "缺铁"],
   },
+  {
+    slug: "pelvic-fluid-cervical-ectopy",
+    track: "women",
+    shortTag: "体检写盆腔积液/宫颈异位严重吗",
+    question: "体检 B 超写「盆腔积液」或「宫颈柱状上皮异位（旧称宫颈糜烂）」，严重吗？",
+    verdict: "ok",
+    verdictLabel: "多数是正常生理现象，别被吓人的旧名词吓坏",
+    reassurance: "少量盆腔积液（尤其排卵期或经期前后）和单纯的宫颈柱状上皮异位，绝大多数都不是大病，更不需要盲目花钱做过度治疗。",
+    debate: {
+      sideA: "看到「糜烂」「积液」吓得睡不着，私立诊所说要立刻做理疗手术！",
+      sideB: "三甲妇科医生看了一眼直接让我回家，说正常人排卵后本来就有一点积液。",
+    },
+    science:
+      "「宫颈糜烂」早在第 7 版妇产科教材就已取消，规范名称叫「宫颈柱状上皮异位」，多是育龄女性雌激素充足时的正常外观；而 1–2 cm 以内的少量盆腔积液也常是排卵滤泡液或腹膜润滑液，无腹痛发热通常无需处理。",
+    actionNow:
+      "先看自己有没有下腹痛、异常出血、发烧或异味分泌物；无症状只需按年龄定期做正规宫颈癌筛查（TCT/HPV），切勿轻信夸大恐吓。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "ACOG", title: "Cervical Cancer Screening & Benign Cervical Findings", year: 2021 },
+      { org: "WHO", title: "Guideline for Screening and Treatment of Cervical Pre-cancer Lesions", year: 2021 },
+    ],
+    redLine: "若盆腔积液量较大，或伴随下腹坠痛、发烧、同房后出血、异常分泌物，以及乳腺结节提示 BI-RADS 4 类及以上，务必前往正规医院妇科或乳腺外科面诊。",
+    keywords: ["盆腔积液", "宫颈糜烂", "柱状上皮异位", "体检", "B超", "乳腺结节", "妇科体检"],
+  },
+  {
+    slug: "vaginal-douching-wash",
+    track: "women",
+    shortTag: "私处需要每天用洗液冲洗吗",
+    question: "女生私处需要每天用专门的洗液冲洗吗？这样是不是更干净？",
+    verdict: "stop",
+    verdictLabel: "不要冲洗阴道内部，温清水外洗就够了",
+    reassurance: "阴道本身有以乳酸杆菌为主的「自净微生态」，天天用洗液冲反而会把好细菌一起冲掉，更容易发炎！",
+    debate: {
+      sideA: "每天用抑菌洗液冲洗才干净卫生、没异味。",
+      sideB: "越洗越痒越反复，妇科医生让我停掉所有洗液只用清水，反而好了。",
+    },
+    science:
+      "ACOG 临床指南明确反对常规阴道冲洗（Douching）：正常阴道呈弱酸性（pH 3.8–4.5），洗液、香皂或灌洗会破坏酸碱平衡与乳酸杆菌保护盾，反而显著升高细菌性阴道病、念珠菌感染与盆腔炎风险。",
+    actionNow:
+      "日常洗澡用流动温清水清洗外阴褶皱处即可，保持透气棉质内裤干燥；绝不要自行往阴道内部灌洗或塞非医嘱产品。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "ACOG", title: "Vaginitis & Vulvovaginal Care FAQ (Advising Against Douching)", year: 2022, url: "https://www.acog.org/womens-health/faqs/vaginitis" },
+    ],
+    redLine: "如果出现明显瘙痒、豆腐渣样/灰白色鱼腥味白带或排尿灼痛，请直接挂妇科做白带常规对症处理，勿自行买洗液掩盖症状。",
+    keywords: ["洗液", "私处护理", "冲洗", "白带", "异味", "瘙痒", "微生态"],
+  },
+  {
+    slug: "hpv-vaccine-over-26",
+    track: "women",
+    shortTag: "超过 26 岁还有必要打 HPV 疫苗吗",
+    question: "超过 26 岁，或者已经有过性生活了，还有必要打 HPV 疫苗吗？",
+    verdict: "ok",
+    verdictLabel: "依然有保护价值，但不能替代定期筛查",
+    reassurance: "当然有意义！一个人同时感染疫苗覆盖的所有高危型别的概率极低，接种依然能帮你挡住还没遇到过的型别。",
+    debate: {
+      sideA: "超过 26 岁或有过性生活打了就白花钱，没效果了。",
+      sideB: "只要没把所有型别都感染一遍，打疫苗照样能防剩下的高危型。",
+    },
+    science:
+      "WHO 与 ACOG 指南指出，虽然在首次性生活前接种保护效力最高，但 26–45 岁女性接种仍对未感染过的疫苗型别具有良好免疫保护。不过任何价数的疫苗都不能覆盖 100% 致癌型别，定期宫颈筛查（TCT/HPV）始终是核心防线。",
+    actionNow:
+      "结合自身年龄和预算评估即可，不必为了等某一种高价苗无限期空等；无论打没打疫苗，有性生活的适龄女性都要按规范定期做宫颈筛查。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "WHO", title: "Human Papillomavirus Vaccines: WHO Position Paper", year: 2022 },
+      { org: "ACOG", title: "Human Papillomavirus Vaccination Practice Advisory", year: 2020 },
+    ],
+    redLine: "具体接种禁忌、孕期/哺乳期安排及异常筛查结果解读，请咨询正规接种门诊或妇科医生。",
+    keywords: ["HPV", "HPV疫苗", "九价", "26岁", "性生活", "宫颈癌", "筛查"],
+  },
+  {
+    slug: "period-delayed-one-week",
+    track: "women",
+    shortTag: "姨妈推迟一周要吃药催经吗",
+    question: "熬夜或压力大导致大姨妈推迟了一周，要不要买点药催经？",
+    verdict: "adjust",
+    verdictLabel: "先排除早孕，7 天内偶尔波动别乱吃药",
+    reassurance: "正常的月经周期本来就会受熬夜、出差、考试压力影响而波动 ±7 天，偶尔推迟几天先别慌，更不要自己乱买激素药催经。",
+    debate: {
+      sideA: "推迟 5 天急死了，上网买点黄体酮或益母草赶紧催下来。",
+      sideB: "医生说有性生活先测早孕，没怀孕的话偶尔晚一周很常见，先调作息观察。",
+    },
+    science:
+      "正常育龄女性月经周期在 21–35 天内、每次波动在 7 天以内均属常见生理范围。下丘脑对压力、睡眠剥夺与快速减重极其敏感，可能导致排卵推迟从而让经期顺延。自行服用激素类药物会打乱内分泌节律，且漏诊早孕存在风险。",
+    actionNow:
+      "第一步：只要近期有性生活，先用正规早孕试纸排查怀孕；第二步：排除怀孕后，若只是偶尔推迟 1 周内且无不适，调整睡眠饮食观察几天即可。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "ACOG", title: "Abnormal Uterine Bleeding & Menstrual Cycle Regularity", year: 2022 },
+    ],
+    redLine: "严禁自行网购处方药催经。若排除早孕后推迟超过 2 周以上、连续 2–3 个周期紊乱或伴随剧烈腹痛/异常出血，请直接挂妇科查 B 超与激素。",
+    keywords: ["推迟", "大姨妈推迟", "催经", "黄体酮", "月经不调", "早孕"],
+  },
+  {
+    slug: "soy-milk-breast-nodules",
+    track: "women",
+    shortTag: "喝豆浆会长乳腺结节吗",
+    question: "女生天天喝豆浆、吃豆腐，会雌激素过高、长乳腺结节吗？",
+    verdict: "ok",
+    verdictLabel: "完全不会，日常吃豆制品反而友好",
+    reassurance: "放心喝！豆浆里的「植物雌激素（大豆异黄酮）」和人体雌激素完全不是一回事，正常喝豆浆吃豆腐不会把乳腺结节吃出来。",
+    debate: {
+      sideA: "体检有乳腺结节，医生/网上说绝对不能喝豆浆吃豆腐，含雌激素！",
+      sideB: "多项大型研究都给豆制品平反了，亚洲女性常吃豆制品乳腺癌风险反而更低。",
+    },
+    science:
+      "大豆异黄酮属于植物雌激素，活性仅为人体内源雌激素的千分之一左右，且具有「双向调节」特点（体内雌激素高时反而能温和竞争受体起到缓冲作用）。美国癌症协会（ACS）与多项 PubMed 荟萃分析均证实，日常适量摄入天然豆制品对乳腺健康安全甚至有益。",
+    actionNow:
+      "每天喝一杯纯豆浆或吃一拳豆腐/豆干非常健康（优质植物蛋白+钙）；唯一要避开的是高浓缩「大豆异黄酮保健胶囊」，吃天然食物就行。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "PubMed", title: "Soy food intake and breast cancer survival/risk: Systematic Review & Meta-analysis", year: 2019 },
+      { org: "中国营养学会", title: "《中国居民膳食指南（2022）》大豆及坚果类摄入建议", year: 2022 },
+    ],
+    redLine: "乳腺结节具体分级（BI-RADS）复查频率请遵乳腺外科医嘱；不建议自行服用高剂量雌激素或异黄酮浓缩补剂。",
+    keywords: ["豆浆", "豆腐", "豆制品", "乳腺结节", "雌激素", "大豆异黄酮"],
+  },
+  {
+    slug: "cold-hands-dizzy-iron",
+    track: "women",
+    shortTag: "手脚冰凉蹲起发黑是贫血吗",
+    question: "女生经常手脚冰凉、蹲下猛站起来眼前发黑，是贫血还是低血压？",
+    verdict: "adjust",
+    verdictLabel: "多见于体位性低血压或缺铁，花几十块查血常规最准",
+    reassurance: "别盲目买一堆红糖、阿胶或网红补血饮！蹲起发黑常是体位性低血压，而育龄女性也确实高发缺铁，做个基础抽血就能一眼分清。",
+    debate: {
+      sideA: "这是气血虚，买点红糖膏/阿胶/补血口服液天天喝。",
+      sideB: "我查了血常规和铁蛋白才发现是严重缺铁，喝一年红糖水毛用没有。",
+    },
+    science:
+      "WHO 数据显示，全球约 30% 育龄女性存在贫血，其中缺铁性贫血占比最高（常因经血流失+红肉摄入不足）；而蹲久骤起瞬间眼前发黑，多因重力使血液短暂滞留双腿引起的「体位性低血压」。红糖含铁极低且吸收率差，根本无法补铁。",
+    actionNow:
+      "平时蹲起动作放慢、每天喝够水、规律吃适量瘦牛肉/猪肝/鸭血等血红素铁来源并搭配维 C 蔬果；长期头晕乏力直接去医院查「血常规 + 血清铁蛋白」。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "WHO", title: "Global Anaemia Estimates in Women of Reproductive Age", year: 2023 },
+      { org: "中国营养学会", title: "《中国居民膳食指南（2022）》育龄女性铁摄入参考", year: 2022 },
+    ],
+    redLine: "若频繁眼前发黑、晕厥、爬两层楼就心慌气短或经量过大，请尽快挂全科/血液科/妇科查血常规、铁蛋白与甲功，缺铁需遵医嘱规范补铁。",
+    keywords: ["手脚冰凉", "眼前发黑", "蹲起", "贫血", "低血压", "铁蛋白", "补血", "气血"],
+  },
+  {
+    slug: "collagen-peptide-drinks",
+    track: "women",
+    shortTag: "25 岁后喝胶原蛋白肽有用吗",
+    question: "25 岁以后喝胶原蛋白肽、抗糖饮，真的能让皮肤变紧致不长皱纹吗？",
+    verdict: "adjust",
+    verdictLabel: "证据有限且性价比低，防晒+睡眠+三餐蛋白强十倍",
+    reassurance: "别被「25 岁胶原断崖」的焦虑话术收割！目前小样本研究虽见轻微保湿改善，但远不如做好防晒、睡够觉、三餐吃够蛋白质管用。",
+    debate: {
+      sideA: "25 岁不喝胶原蛋白肽和抗糖饮，30 岁脸直接垮掉！",
+      sideB: "吃进肚子全消化成氨基酸了，不如省下几百块买防晒帽和鸡蛋牛肉。",
+    },
+    science:
+      "口服胶原蛋白水解肽进入消化道后会被拆解为氨基酸和少量短肽，并不存在「喝哪补哪、直接贴回脸上」。部分由厂商资助的短周期 RCT 提示对皮肤水分/弹性有轻微统计差异，但独立高质量长期证据仍有限；而紫外线光老化才是皮肤松弛长皱纹的头号元凶（约占外源老化 80%）。",
+    actionNow:
+      "把钱和精力花在证据最硬的三件事上：全年物理/防晒霜防晒 + 每天吃够优质蛋白和蔬果 + 少熬夜少吃高糖零食。本站零带货，不推荐任何口服美容品牌。",
+    evidenceLevel: "有限证据",
+    sources: [
+      { org: "AAD", title: "American Academy of Dermatology: Sun Protection & Skin Aging Evidence", year: 2023 },
+      { org: "PubMed", title: "Pu et al., Effects of Oral Collagen for Skin Anti-Aging: Systematic Review and Meta-Analysis (Nutrients)", year: 2023 },
+    ],
+    keywords: ["胶原蛋白", "胶原蛋白肽", "抗糖饮", "25岁", "抗老", "口服美容", "智商税"],
+  },
+  {
+    slug: "running-leak-pelvic-floor",
+    track: "women",
+    shortTag: "跑步跳绳时有点漏尿正常吗",
+    question: "跑步、跳绳或大笑打喷嚏时有点漏尿，正常吗？没生过娃也会有吗？",
+    verdict: "adjust",
+    verdictLabel: "很常见但「不是只能忍」，练对盆底肌大多可明显改善",
+    reassurance: "千万别觉得丢人不好意思说！不仅是产后妈妈，很多没生过娃的健身女生也会遇到「压力性尿失禁」，而且通过科学盆底训练大多能显著好转。",
+    debate: {
+      sideA: "生完娃/年纪大了漏点尿很正常，垫个护垫忍忍就行。",
+      sideB: "我没生过娃跳绳也漏，去康复科学会正确呼吸和凯格尔训练两个月就改善了。",
+    },
+    science:
+      "跑跳、咳嗽或大重量憋气时腹压骤增，如果底部像「弹性吊床」一样的盆底肌力量薄弱或过度紧张失衡，就可能出现少量漏尿（压力性尿失禁）。Cochrane 系统综述证实，规范的盆底肌训练（PFMT）是一线首选的非手术改善方案。",
+    actionNow:
+      "先暂停诱发漏尿的高冲击跳绳，训练时避免死命憋气向下压腹压；学习在呼气时轻柔向上提拉的规范盆底肌训练（而非盲目夹腿或排尿中断练习）。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "PubMed", title: "Dumoulin et al., Pelvic floor muscle training versus no treatment for urinary incontinence in women (Cochrane Review)", year: 2018 },
+      { org: "ACOG", title: "Urinary Incontinence in Women Practice Bulletin", year: 2022 },
+    ],
+    redLine: "若漏尿频率较高、伴随盆腔下坠感、排尿疼痛或产后长期未恢复，建议挂妇科泌尿门诊或盆底康复科做专业肌力评估，切勿网购来路不明的家用仪器。",
+    keywords: ["漏尿", "跳绳漏尿", "跑步漏尿", "盆底肌", "凯格尔", "压力性尿失禁", "产后"],
+  },
 
   // ==================== 四、日常普适 · 人人都关心的经典纠结（6 题） ====================
   {
