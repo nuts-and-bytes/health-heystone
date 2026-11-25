@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { EPISODES, secToTime, timeToSec, type Chapter, type Episode } from "@/data/podcasts";
 import { getCase } from "@/data/cases";
 import { getBodyRole } from "@/data/body-pedia";
@@ -21,6 +21,8 @@ const USAGE_KEY = "health-podcast-qa-use-v1";
 
 const SIDEBAR = { min: 176, max: 340, def: 224, snap: 120 };
 const PANEL = { min: 320, max: 820, def: 460, snap: 220 };
+const STAGE_MIN_WIDTH = 280;
+const SPLITTER_WIDTH = 14;
 
 interface PaneLayout {
   sidebar: number;
@@ -138,6 +140,17 @@ async function streamPodcastAI(
   if (rest) onDelta(rest);
 }
 
+async function readAiStatus(signal?: AbortSignal) {
+  try {
+    const response = await fetch("/api/podcast-qa", { signal });
+    if (!response.ok) return null;
+    const status = await response.json();
+    return { configured: Boolean(status.configured), model: status.model || "gpt-4o-mini" };
+  } catch {
+    return null;
+  }
+}
+
 export default function PodcastStudio() {
   const audio = useAudio();
   const ep = audio.episode;
@@ -146,10 +159,14 @@ export default function PodcastStudio() {
   const [mediaMode, setMediaMode] = useState<"audio" | "video">("audio");
   const [rightTab, setRightTab] = useState<"subtitle" | "poster" | "guide" | "qa">("subtitle");
   const [query, setQuery] = useState("");
+  const [episodeQuery, setEpisodeQuery] = useState("");
+  const [share, setShare] = useState<{ episodeId: string; manualUrl?: string } | null>(null);
   const [customVideos, setCustomVideos] = useState<Record<string, { platform: "bilibili" | "youtube"; id: string }>>({});
   const [videoDraft, setVideoDraft] = useState("");
 
   // 三栏宽度状态（支持 localStorage 记忆）
+  const workspaceRef = useRef<HTMLDivElement>(null);
+  const [workspaceWidth, setWorkspaceWidth] = useState(1488);
   const [pane, setPane] = useState<PaneLayout>({
     sidebar: SIDEBAR.def,
     sideOpen: true,
@@ -177,67 +194,84 @@ export default function PodcastStudio() {
   const [showPresets, setShowPresets] = useState(false);
   const qaAbortRef = useRef<AbortController | null>(null);
   const qaEndRef = useRef<HTMLDivElement>(null);
-  const activeSubRef = useRef<HTMLButtonElement>(null);
+  const activeCueRef = useRef<HTMLButtonElement>(null);
+  const cueListRef = useRef<HTMLDivElement>(null);
+
+  const [previousEpisodeId, setPreviousEpisodeId] = useState(ep.id);
+  if (previousEpisodeId !== ep.id) {
+    setPreviousEpisodeId(ep.id);
+    setGuideStreaming(false);
+    setGuideError("");
+    setGuideErrorCode("");
+    setQaStreaming(false);
+    setQaError("");
+    setQaErrorCode("");
+  }
 
   const checkAiStatus = async () => {
-    try {
-      const r = await fetch("/api/podcast-qa");
-      if (r.ok) {
-        const j = await r.json();
-        setAiStatus({ configured: Boolean(j.configured), model: j.model || "gpt-4o-mini" });
-      }
-    } catch {}
+    const status = await readAiStatus();
+    if (status) setAiStatus(status);
   };
 
   useEffect(() => {
-    checkAiStatus();
+    const controller = new AbortController();
+    void readAiStatus(controller.signal).then((status) => {
+      if (status && !controller.signal.aborted) setAiStatus(status);
+    });
+    return () => controller.abort();
   }, []);
 
-  // 监听桌面断点，确保内联 width 仅在 md (>=768px) 生效，避免与 Tailwind 媒体查询冲突
+  // 桌面宽屏才锁定三栏。小窗口沿页面顺序浏览，避免右栏被切掉。
   useEffect(() => {
-    const mq = window.matchMedia("(min-width: 768px)");
+    const mq = window.matchMedia("(min-width: 1024px)");
     const sync = () => setIsDesktop(mq.matches);
     sync();
     mq.addEventListener("change", sync);
     return () => mq.removeEventListener("change", sync);
   }, []);
 
-  // 读取本地持久化状态
   useEffect(() => {
-    try {
-      const savedPane = JSON.parse(localStorage.getItem(LAYOUT_KEY) || "{}");
-      setPane((prev) => ({ ...prev, ...savedPane }));
-    } catch {}
-    try {
-      setCustomVideos(JSON.parse(localStorage.getItem(VIDEO_KEY) || "{}"));
-    } catch {}
-    try {
-      setGuides(JSON.parse(localStorage.getItem(GUIDE_KEY) || "{}"));
-    } catch {}
-    try {
-      setChats(JSON.parse(localStorage.getItem(CHAT_KEY) || "{}"));
-    } catch {}
-    try {
-      setQaUsage(JSON.parse(localStorage.getItem(USAGE_KEY) || "{}"));
-    } catch {}
+    const workspace = workspaceRef.current;
+    if (!workspace) return;
+    const observer = new ResizeObserver(([entry]) => {
+      setWorkspaceWidth(entry.contentRect.width);
+    });
+    observer.observe(workspace);
+    return () => observer.disconnect();
   }, []);
 
-  // 切换单集时中止上一集未完成的流
+  // 首次渲染使用服务端默认值，下一帧从浏览器恢复。
   useEffect(() => {
-    guideAbortRef.current?.abort();
-    qaAbortRef.current?.abort();
-    setGuideStreaming(false);
-    setQaStreaming(false);
-    setGuideError("");
-    setQaError("");
-  }, [ep.id]);
+    const frame = requestAnimationFrame(() => {
+      try {
+        const savedPane = JSON.parse(localStorage.getItem(LAYOUT_KEY) || "{}");
+        setPane((prev) => ({ ...prev, ...savedPane }));
+      } catch {}
+      try {
+        setCustomVideos(JSON.parse(localStorage.getItem(VIDEO_KEY) || "{}"));
+      } catch {}
+      try {
+        setGuides(JSON.parse(localStorage.getItem(GUIDE_KEY) || "{}"));
+      } catch {}
+      try {
+        setChats(JSON.parse(localStorage.getItem(CHAT_KEY) || "{}"));
+      } catch {}
+      try {
+        setQaUsage(JSON.parse(localStorage.getItem(USAGE_KEY) || "{}"));
+      } catch {}
+    });
+    return () => cancelAnimationFrame(frame);
+  }, []);
 
-  // 字幕跟随播放滚动
-  useEffect(() => {
-    if (audio.playing && rightTab === "subtitle" && activeSubRef.current) {
-      activeSubRef.current.scrollIntoView({ block: "nearest", behavior: "smooth" });
-    }
-  }, [audio.activeSegIndex, audio.playing, rightTab]);
+  // 切集与离开页面时中止旧请求，下一集在接收交互前释放控制器。
+  useLayoutEffect(() => {
+    return () => {
+      guideAbortRef.current?.abort();
+      qaAbortRef.current?.abort();
+      guideAbortRef.current = null;
+      qaAbortRef.current = null;
+    };
+  }, [ep.id]);
 
   // 问答流式输出时滚到底部
   useEffect(() => {
@@ -273,16 +307,41 @@ export default function PodcastStudio() {
     audio.seekTo(sec);
   };
 
+  const chooseEpisode = (id: string) => {
+    setQuery("");
+    audio.selectEpisode(id);
+  };
+
+  const copyPlayLink = async () => {
+    const url = new URL("/podcasts", window.location.origin);
+    url.searchParams.set("episode", ep.id);
+    url.searchParams.set("t", String(Math.floor(audio.currentTime)));
+    try {
+      await navigator.clipboard.writeText(url.href);
+      setShare({ episodeId: ep.id });
+    } catch {
+      setShare({ episodeId: ep.id, manualUrl: url.href });
+    }
+  };
+
   const allChapters: Chapter[] = useMemo(() => ep.sections.flatMap((s) => s.chapters), [ep]);
   const activeVideo = customVideos[ep.id] ?? ep.video ?? null;
 
   const shows = useMemo(() => {
+    const keywords = episodeQuery.toLowerCase().trim().split(/\s+/).filter(Boolean);
     const map = new Map<string, Episode[]>();
     for (const item of EPISODES) {
+      if (keywords.length) {
+        const index = [
+          item.title, item.show, item.guest, item.host, item.hook,
+          ...item.sections.flatMap((section) => [section.title, ...section.chapters.map((chapter) => chapter.title)]),
+        ].join(" ").toLowerCase();
+        if (!keywords.every((word) => index.includes(word))) continue;
+      }
       map.set(item.show, [...(map.get(item.show) ?? []), item]);
     }
     return Array.from(map.entries());
-  }, []);
+  }, [episodeQuery]);
 
   // 按使用频率排序的预置提问卡（SubCast byUse 逻辑）
   const orderedPresets = useMemo(
@@ -315,9 +374,11 @@ export default function PodcastStudio() {
 
     try {
       await streamPodcastAI({ episodeId: epId, action: "guide" }, ctrl.signal, (chunk) => {
+        if (ctrl.signal.aborted) return;
         acc += chunk;
         setGuides((prev) => ({ ...prev, [epId]: acc }));
       });
+      if (ctrl.signal.aborted) return;
       setGuides((prev) => {
         const next = { ...prev, [epId]: acc };
         persistGuides(next);
@@ -325,18 +386,21 @@ export default function PodcastStudio() {
       });
     } catch (err) {
       const e = err as Error & { code?: string };
-      if (e.name !== "AbortError") {
+      const aborted = ctrl.signal.aborted || e.name === "AbortError";
+      if (!aborted && guideAbortRef.current === ctrl) {
         setGuideError(e.message || "导读生成失败，请稍后重试");
         setGuideErrorCode(e.code || "ERROR");
-      } else if (acc) {
+      } else if (aborted && acc) {
         setGuides((prev) => {
-          const next = { ...prev, [epId]: acc };
-          persistGuides(next);
-          return next;
+          if (prev[epId] === acc) persistGuides(prev);
+          return prev;
         });
       }
     } finally {
-      setGuideStreaming(false);
+      if (guideAbortRef.current === ctrl) {
+        guideAbortRef.current = null;
+        setGuideStreaming(false);
+      }
     }
   };
 
@@ -382,6 +446,7 @@ export default function PodcastStudio() {
         { episodeId: epId, action: "chat", messages: reqMessages },
         ctrl.signal,
         (chunk) => {
+          if (ctrl.signal.aborted) return;
           acc += chunk;
           setChats((prev) => {
             const cur = prev[epId] ?? withPlaceholder;
@@ -390,6 +455,7 @@ export default function PodcastStudio() {
           });
         }
       );
+      if (ctrl.signal.aborted) return;
       setChats((prev) => {
         const finalList: ChatMsg[] = [...reqMessages, { role: "assistant", content: acc }];
         const next = { ...prev, [epId]: finalList };
@@ -398,20 +464,22 @@ export default function PodcastStudio() {
       });
     } catch (err) {
       const e = err as Error & { code?: string };
-      if (e.name !== "AbortError") {
+      const aborted = ctrl.signal.aborted || e.name === "AbortError";
+      if (!aborted && qaAbortRef.current === ctrl) {
         setQaError(e.message || "回答生成失败，请重试");
         setQaErrorCode(e.code || "ERROR");
         setChats((prev) => ({ ...prev, [epId]: reqMessages }));
-      } else if (acc) {
+      } else if (aborted && acc) {
         setChats((prev) => {
-          const finalList: ChatMsg[] = [...reqMessages, { role: "assistant", content: acc }];
-          const next = { ...prev, [epId]: finalList };
-          persistChats(next);
-          return next;
+          if (prev[epId]?.at(-1)?.content === acc) persistChats(prev);
+          return prev;
         });
       }
     } finally {
-      setQaStreaming(false);
+      if (qaAbortRef.current === ctrl) {
+        qaAbortRef.current = null;
+        setQaStreaming(false);
+      }
     }
   };
 
@@ -449,6 +517,19 @@ export default function PodcastStudio() {
     return idx;
   }, [allChapters, audio.currentTime]);
 
+  // 也跟随暂停时的定位，只滚动字幕栏，避免窄窗口跳离播放器。
+  useEffect(() => {
+    const list = cueListRef.current;
+    const cue = activeCueRef.current;
+    if (rightTab !== "subtitle" || !list || !cue) return;
+    const visible = list.getBoundingClientRect();
+    const active = cue.getBoundingClientRect();
+    const offset = active.top < visible.top ? active.top - visible.top : Math.max(0, active.bottom - visible.bottom);
+    if (!offset) return;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    list.scrollBy({ top: offset, behavior: audio.playing && !reduceMotion ? "smooth" : "instant" });
+  }, [activeChapterIdx, audio.activeSegIndex, audio.playing, query, rightTab]);
+
   const currentLine =
     audio.transcript && audio.activeSegIndex >= 0
       ? audio.transcript[audio.activeSegIndex]?.text
@@ -459,19 +540,32 @@ export default function PodcastStudio() {
       : allChapters[activeChapterIdx + 1]?.title ?? "";
 
   const q = query.trim().toLowerCase();
+  const subtitleLabel = audio.transcript ? "字幕" : "章节";
+  const visibleSubtitles = audio.transcript?.filter((segment) => !q || segment.text.toLowerCase().includes(q));
+  const visibleChapters = allChapters.filter((chapter) => !q || chapter.title.toLowerCase().includes(q));
+  const sidebarOpen = !isDesktop || pane.sideOpen;
+  const panelOpen = !isDesktop || pane.panelOpen;
+  const sidebarMax = Math.max(
+    SIDEBAR.min,
+    Math.min(SIDEBAR.max, workspaceWidth - STAGE_MIN_WIDTH - SPLITTER_WIDTH - (pane.panelOpen ? PANEL.min + SPLITTER_WIDTH : 0)),
+  );
+  const sidebarWidth = pane.sideOpen ? Math.min(pane.sidebar, sidebarMax) : 64;
+  const panelMax = Math.max(PANEL.min, Math.min(PANEL.max, workspaceWidth - STAGE_MIN_WIDTH - sidebarWidth - SPLITTER_WIDTH * 2));
+  const panelWidth = Math.min(pane.panel, panelMax);
+  const shareResult = share?.episodeId === ep.id ? share : null;
   const epGuide = guides[ep.id] ?? "";
   const epChat = chats[ep.id] ?? [];
 
   return (
-    <div className="flex flex-col gap-3 md:h-full md:gap-0">
-      {/* 手机端顶部横向节目切换条（768px 以上使用左栏） */}
+    <div className="flex flex-col gap-3 lg:h-full lg:gap-0">
+      {/* 手机端顶部横向节目切换条 */}
       <div className="flex gap-2.5 overflow-x-auto pb-1 md:hidden">
         {EPISODES.map((item) => {
           const active = item.id === ep.id;
           return (
             <button
               key={item.id}
-              onClick={() => audio.selectEpisode(item.id)}
+              onClick={() => chooseEpisode(item.id)}
               className={`flex w-60 shrink-0 cursor-pointer items-center gap-2.5 rounded-2xl border-[1.5px] p-2.5 text-left transition ${
                 active ? "border-ink bg-accent-soft/70" : "border-line bg-white"
               }`}
@@ -486,25 +580,32 @@ export default function PodcastStudio() {
         })}
       </div>
 
-      {/* 桌面端（>=768px）完整复刻 SubCast 全高三栏独立滚动 + 真实拖拽分隔线 */}
-      <div className="flex flex-col gap-4 md:min-h-0 md:flex-1 md:flex-row md:items-stretch md:gap-0">
+      <div ref={workspaceRef} className="flex flex-col gap-4 lg:min-h-0 lg:flex-1 lg:flex-row lg:items-stretch lg:gap-0">
         {/* ① 左栏：播客节目与单集列表 */}
         <aside
           data-pane="sidebar"
-          style={isDesktop ? { width: pane.sideOpen ? pane.sidebar : 64 } : undefined}
-          className="hidden shrink-0 flex-col overflow-y-auto rounded-2xl border border-line bg-white/90 p-3 md:flex md:h-full"
+          style={isDesktop ? { width: sidebarWidth } : undefined}
+          className="hidden min-w-0 shrink-0 flex-col overflow-hidden rounded-2xl border border-line bg-white/90 p-3 md:flex lg:h-full"
         >
-          <div className="flex items-center justify-between border-b border-line pb-2.5">
-            {pane.sideOpen ? (
+          <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-line pb-2.5">
+            {sidebarOpen ? (
               <>
                 <h1 className="font-display text-xl text-ink">播客精读</h1>
                 <button
                   onClick={() => updatePane({ sideOpen: false })}
-                  className="cursor-pointer rounded-md px-1.5 py-0.5 text-xs font-bold text-ink-soft hover:bg-cream hover:text-ink"
+                  className="hidden cursor-pointer rounded-md px-2 py-1 text-xs font-bold text-ink-soft hover:bg-cream hover:text-ink lg:block"
                   title="收起左栏"
                 >
                   «
                 </button>
+                <input
+                  type="search"
+                  aria-label="搜索节目"
+                  placeholder="搜主题、标题或嘉宾"
+                  value={episodeQuery}
+                  onChange={(event) => setEpisodeQuery(event.target.value)}
+                  className="h-9 min-w-0 rounded-lg border border-line bg-cream px-2.5 text-sm text-ink placeholder:text-ink-soft focus-visible:outline-2 focus-visible:outline-accent-dark lg:w-full"
+                />
               </>
             ) : (
               <button
@@ -517,30 +618,36 @@ export default function PodcastStudio() {
             )}
           </div>
 
-          <div className="mt-3 flex-1 space-y-4">
+          {shows.length === 0 && (
+            <p role="status" className="px-2 py-4 text-sm leading-relaxed text-ink-soft">
+              没有找到节目。试试「睡眠」或嘉宾姓名。
+            </p>
+          )}
+          <div className="mt-3 flex min-h-0 flex-1 gap-4 overflow-x-auto pb-2 lg:block lg:space-y-4 lg:overflow-x-hidden lg:overflow-y-auto lg:pb-0">
             {shows.map(([showName, items]) => (
-              <div key={showName} className="space-y-1.5">
-                {pane.sideOpen && <p className="px-2 text-[11px] font-bold tracking-wide text-ink-soft">{showName}</p>}
-                <div className="space-y-1">
+              <div key={showName} className="shrink-0 space-y-1.5">
+                {sidebarOpen && <p className="px-2 text-xs font-bold text-ink-soft">{showName}</p>}
+                <div className="flex items-stretch gap-1 lg:block lg:space-y-1">
                   {items.map((item) => {
                     const active = item.id === ep.id;
                     return (
                       <button
                         key={item.id}
-                        onClick={() => audio.selectEpisode(item.id)}
+                        onClick={() => chooseEpisode(item.id)}
                         title={item.title}
-                        className={`flex w-full cursor-pointer items-start gap-2.5 rounded-xl p-1.5 text-left transition ${
+                        aria-pressed={active}
+                        className={`flex w-49 cursor-pointer items-start gap-2.5 rounded-xl p-1.5 text-left transition focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent-dark lg:w-full ${
                           active ? "bg-accent-soft/80 text-ink" : "text-ink-soft hover:bg-cream hover:text-ink"
-                        } ${pane.sideOpen ? "" : "justify-center"}`}
+                        } ${sidebarOpen ? "" : "justify-center"}`}
                       >
                         <img
                           src={item.cover}
-                          alt={item.show}
+                          alt=""
                           className={`h-9 w-9 shrink-0 rounded-lg border object-cover ${active ? "border-accent" : "border-line"}`}
                         />
-                        {pane.sideOpen && (
+                        {sidebarOpen && (
                           <div className="min-w-0 flex-1">
-                            <p className={`line-clamp-2 text-xs leading-snug ${active ? "font-bold text-ink" : "font-medium"}`}>
+                            <p className={`text-xs leading-snug ${active ? "font-bold text-ink" : "font-medium"}`}>
                               {item.title}
                             </p>
                             <p className="mt-0.5 font-mono text-[10px] text-ink-soft">{item.minutes} 分钟</p>
@@ -554,30 +661,32 @@ export default function PodcastStudio() {
             ))}
           </div>
 
-          {pane.sideOpen && (
-            <div className="mt-4 rounded-xl bg-cream p-3 text-[11px] leading-relaxed text-ink-soft">
-              拖动竖线可调宽任意栏，双击恢复默认。AI 导读与问答基于整期完整简体逐字稿。
+          {sidebarOpen && (
+            <div className="mt-3 hidden shrink-0 px-2 text-[11px] leading-relaxed text-ink-soft lg:block">
+              拖动边线可调宽，双击恢复默认。
             </div>
           )}
         </aside>
 
         {/* 左-中全高拖拽分隔线 */}
-        <Splitter
-          value={pane.sideOpen ? pane.sidebar : 64}
-          min={SIDEBAR.min}
-          max={SIDEBAR.max}
-          def={SIDEBAR.def}
-          snap={SIDEBAR.snap}
-          edge="right"
-          label="调节左侧节目栏宽度"
-          onChange={(w) => updatePane({ sidebar: w, sideOpen: true })}
-          onCollapse={() => updatePane({ sideOpen: false })}
-        />
+        {isDesktop && pane.sideOpen && (
+          <Splitter
+            value={sidebarWidth}
+            min={SIDEBAR.min}
+            max={sidebarMax}
+            def={SIDEBAR.def}
+            snap={SIDEBAR.snap}
+            edge="right"
+            label="调节左侧节目栏宽度"
+            onChange={(w) => updatePane({ sidebar: w, sideOpen: true })}
+            onCollapse={() => updatePane({ sideOpen: false })}
+          />
+        )}
 
         {/* ② 中栏：极简居中封面 + 歌词式滚动字幕 + 播控 + 简介 */}
         <section
           data-pane="stage"
-          className="min-w-0 flex-1 space-y-4 md:h-full md:min-w-[280px] md:overflow-y-auto md:px-2 md:py-0.5"
+          className="min-w-0 flex-1 space-y-4 lg:h-full lg:min-w-[280px] lg:overflow-y-auto lg:px-2 lg:py-0.5"
         >
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
@@ -601,10 +710,10 @@ export default function PodcastStudio() {
                   仅音频
                 </button>
               </div>
-              {!pane.panelOpen && (
+              {!panelOpen && (
                 <button
                   onClick={() => updatePane({ panelOpen: true })}
-                  className="hidden cursor-pointer rounded-lg border border-ink bg-accent-soft px-2.5 py-1 text-xs font-bold text-accent-dark md:inline-flex"
+                  className="hidden cursor-pointer rounded-lg border border-ink bg-accent-soft px-2.5 py-1 text-xs font-bold text-accent-dark lg:inline-flex"
                   title="展开右侧字幕/一图读懂/AI栏"
                 >
                   展开右栏
@@ -655,12 +764,12 @@ export default function PodcastStudio() {
               )}
             </div>
           ) : (
-            <div className="rounded-3xl border border-line bg-white px-5 py-7 text-center sm:px-8">
-              <div className="mx-auto aspect-square w-48 overflow-hidden rounded-2xl border border-line/80 shadow-[0_14px_34px_rgba(28,25,23,0.12)] sm:w-56">
+            <div className="rounded-3xl border border-line bg-white px-5 py-7 text-center sm:px-8 md:flex md:items-center md:gap-4 md:rounded-2xl md:p-4 md:text-left">
+              <div className="mx-auto aspect-square w-48 overflow-hidden rounded-2xl border border-line/80 shadow-[0_14px_34px_rgba(28,25,23,0.12)] sm:w-56 md:mx-0 md:w-24 md:shrink-0 md:rounded-xl md:shadow-none">
                 <img src={ep.cover} alt={ep.title} className="h-full w-full object-cover" />
               </div>
-              <div className="mx-auto mt-6 min-h-[76px] max-w-md space-y-2">
-                <p className="text-[17px] font-bold leading-snug text-ink">{currentLine}</p>
+              <div className="mx-auto mt-6 min-h-[76px] max-w-md space-y-2 md:mx-0 md:mt-0 md:min-h-0 md:min-w-0">
+                <p className="text-[17px] font-bold leading-snug text-ink md:text-base">{currentLine}</p>
                 {nextLine && <p className="line-clamp-2 text-sm leading-relaxed text-ink-soft/60">{nextLine}</p>}
               </div>
             </div>
@@ -697,6 +806,49 @@ export default function PodcastStudio() {
             </button>
           </div>
 
+          <section aria-labelledby="podcast-quick-listen" className="hidden rounded-2xl border border-line bg-white px-4 py-3 md:block">
+            <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
+              <h3 id="podcast-quick-listen" className="font-display text-lg text-ink">先听一段</h3>
+              <button
+                type="button"
+                onClick={copyPlayLink}
+                className="min-h-8 cursor-pointer rounded-md px-1 text-xs font-bold text-accent-dark hover:underline focus-visible:outline-2 focus-visible:outline-accent-dark"
+              >
+                复制收听链接
+              </button>
+            </div>
+            <ul className="mt-1 divide-y divide-line">
+              {ep.visualSummary.highlights.slice(0, 3).map((highlight) => (
+                <li key={highlight.time}>
+                  <button
+                    type="button"
+                    onClick={() => jumpTo(timeToSec(highlight.time))}
+                    className="group flex w-full cursor-pointer items-baseline gap-3 rounded-md px-1 py-2 text-left text-sm hover:bg-cream focus-visible:outline-2 focus-visible:outline-accent-dark"
+                  >
+                    <span className="shrink-0 font-mono text-xs font-semibold tabular-nums text-accent-dark">{highlight.time}</span>
+                    <span className="font-medium text-ink group-hover:text-accent-dark">{highlight.tag}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+            {shareResult && (
+              <div className="mt-2 space-y-1">
+                <p role="status" className="text-xs text-ink-soft">
+                  {shareResult.manualUrl ? "可以手动复制收听链接。" : "已复制链接"}
+                </p>
+                {shareResult.manualUrl && (
+                  <input
+                    readOnly
+                    aria-label="收听链接"
+                    value={shareResult.manualUrl}
+                    onFocus={(event) => event.currentTarget.select()}
+                    className="w-full rounded-md border border-line px-2 py-1.5 text-xs text-ink focus-visible:outline-2 focus-visible:outline-accent-dark"
+                  />
+                )}
+              </div>
+            )}
+          </section>
+
           <details open className="rounded-2xl border border-line bg-white p-4">
             <summary className="flex cursor-pointer items-center justify-between text-sm font-bold text-ink">
               <span>本集简介</span>
@@ -716,11 +868,11 @@ export default function PodcastStudio() {
         </section>
 
         {/* 中-右全高拖拽分隔线（拉宽右栏看大图「一图读懂」或长导读） */}
-        {pane.panelOpen && (
+        {isDesktop && pane.panelOpen && (
           <Splitter
-            value={pane.panel}
+            value={panelWidth}
             min={PANEL.min}
-            max={PANEL.max}
+            max={panelMax}
             def={PANEL.def}
             snap={PANEL.snap}
             edge="left"
@@ -731,18 +883,18 @@ export default function PodcastStudio() {
         )}
 
         {/* ③ 右栏：字幕 / 一图读懂 / AI 导读 / 流式 AI 问答 */}
-        {pane.panelOpen && (
+        {panelOpen && (
           <section
             data-pane="panel"
-            style={isDesktop ? { width: pane.panel } : undefined}
-            className="panel flex min-h-0 w-full shrink-0 flex-col bg-white p-4 sm:p-5 md:h-full md:overflow-hidden"
+            style={isDesktop ? { width: panelWidth } : undefined}
+            className="panel flex min-h-0 w-full min-w-0 shrink-0 flex-col bg-white p-4 sm:p-5 md:h-[min(36rem,85dvh)] md:overflow-hidden lg:h-full"
           >
             {/* 右栏顶部标签栏 */}
             <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-line pb-3">
               <div className="flex gap-1 overflow-x-auto">
                 {(
                   [
-                    ["subtitle", "字幕"],
+                    ["subtitle", subtitleLabel],
                     ["poster", "一图读懂"],
                     ["guide", "导读"],
                     ["qa", "问答"],
@@ -750,7 +902,11 @@ export default function PodcastStudio() {
                 ).map(([id, label]) => (
                   <button
                     key={id}
-                    onClick={() => setRightTab(id)}
+                      aria-pressed={rightTab === id}
+                      onClick={() => {
+                        if (id !== rightTab) setQuery("");
+                        setRightTab(id);
+                      }}
                     className={`shrink-0 cursor-pointer rounded-lg px-2.5 py-1.5 text-xs font-bold transition sm:text-sm ${
                       rightTab === id ? "border-b-2 border-ink bg-cream text-ink" : "text-ink-soft hover:text-ink"
                     }`}
@@ -762,15 +918,17 @@ export default function PodcastStudio() {
               <div className="flex items-center gap-1.5">
                 {(rightTab === "subtitle" || rightTab === "guide") && (
                   <input
+                    type="search"
+                    aria-label={rightTab === "guide" ? "搜索本集章节" : `搜索本集${subtitleLabel}`}
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    placeholder="搜关键词…"
-                    className="w-24 rounded-lg border border-line bg-cream/60 px-2 py-1 text-xs outline-none focus:border-ink sm:w-28"
+                    placeholder={rightTab === "guide" ? "搜本集章节" : `搜本集${subtitleLabel}`}
+                    className="w-25 rounded-lg border border-line bg-cream/60 px-2 py-1 text-xs text-ink placeholder:text-ink-soft focus-visible:outline-2 focus-visible:outline-accent-dark sm:w-28"
                   />
                 )}
                 <button
                   onClick={() => updatePane({ panelOpen: false })}
-                  className="hidden cursor-pointer rounded-md px-1.5 py-1 text-xs font-bold text-ink-soft hover:bg-cream hover:text-ink md:inline-flex"
+                  className="hidden cursor-pointer rounded-md px-1.5 py-1 text-xs font-bold text-ink-soft hover:bg-cream hover:text-ink lg:inline-flex"
                   title="收起右栏"
                 >
                   »
@@ -778,18 +936,21 @@ export default function PodcastStudio() {
               </div>
             </div>
 
-            {/* Tab 1: 简体字幕（自动高亮并滚入视野；手机端限高避免 2800 行把页面撑超长） */}
+            {/* 简体字幕和章节跟随播放位置，手机端滚动区限高。 */}
             {rightTab === "subtitle" && (
-              <div className="mt-3 max-h-[56dvh] min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1 md:max-h-none">
-                {audio.transcript ? (
-                  audio.transcript
-                    .filter((s) => !q || s.text.toLowerCase().includes(q))
+              <div ref={cueListRef} className="mt-3 max-h-[56dvh] min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1 md:max-h-none">
+                {q && (visibleSubtitles?.length ?? visibleChapters.length) === 0 && (
+                  <p role="status" className="px-3 py-4 text-sm text-ink-soft">本集没有匹配的{subtitleLabel}。</p>
+                )}
+                {visibleSubtitles ? (
+                  visibleSubtitles
                     .map((s, i) => {
                       const isNow = !q && i === audio.activeSegIndex;
                       return (
                         <button
                           key={i}
-                          ref={isNow ? activeSubRef : undefined}
+                          ref={isNow ? activeCueRef : undefined}
+                          aria-current={isNow ? "time" : undefined}
                           onClick={() => jumpTo(s.start)}
                           className={`flex w-full cursor-pointer items-start gap-2.5 rounded-xl border px-3 py-2 text-left text-sm transition ${
                             isNow ? "border-accent/40 bg-accent-soft/65" : "border-transparent hover:bg-cream"
@@ -803,13 +964,14 @@ export default function PodcastStudio() {
                       );
                     })
                 ) : (
-                  allChapters
-                    .filter((ch) => !q || ch.title.toLowerCase().includes(q))
-                    .map((ch, idx) => {
-                      const isNow = idx === activeChapterIdx;
+                  visibleChapters
+                    .map((ch) => {
+                      const isNow = !q && ch.time === allChapters[activeChapterIdx]?.time;
                       return (
                         <button
                           key={ch.time}
+                          ref={isNow ? activeCueRef : undefined}
+                          aria-current={isNow ? "time" : undefined}
                           onClick={() => jumpTo(timeToSec(ch.time))}
                           className={`flex w-full cursor-pointer items-start gap-2.5 rounded-xl border px-3 py-2 text-left text-sm transition ${
                             isNow ? "border-accent/40 bg-accent-soft/65" : "border-transparent hover:bg-cream"

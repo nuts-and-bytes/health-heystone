@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 const loaded = new Map<string, Promise<void>>();
 
@@ -37,41 +37,35 @@ export default function StickScene({
 }) {
   const hostRef = useRef<HTMLDivElement>(null);
   const elRef = useRef<HTMLElement | null>(null);
-  const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    const host = hostRef.current;
+    if (!host) return;
     let cancelled = false;
-    setReady(false);
     loadScript("/scenes/stick.js")
       .then(() => loadScript("/scenes/theme.js"))
       .then(() => loadScript(`/scenes/${scene}.js`))
       .then(() => {
-        if (!cancelled) setReady(true);
+        if (cancelled) return;
+        const el = document.createElement("stick-scene");
+        el.setAttribute("scene", scene);
+        el.setAttribute("play", play);
+        el.setAttribute("no-font", "");
+        el.style.height = `${height}px`;
+        el.style.width = "100%";
+        el.style.cursor = "pointer";
+        host.appendChild(el);
+        elRef.current = el;
       })
-      .catch((e) => console.error(e));
+      .catch((error) => {
+        if (!cancelled) console.error(error);
+      });
     return () => {
       cancelled = true;
-    };
-  }, [scene]);
-
-  useEffect(() => {
-    const host = hostRef.current;
-    if (!ready || !host) return;
-    host.innerHTML = "";
-    const el = document.createElement("stick-scene");
-    el.setAttribute("scene", scene);
-    el.setAttribute("play", play);
-    el.setAttribute("no-font", "");
-    el.style.height = `${height}px`;
-    el.style.width = "100%";
-    el.style.cursor = "pointer";
-    host.appendChild(el);
-    elRef.current = el;
-    return () => {
+      elRef.current?.remove();
       elRef.current = null;
-      host.innerHTML = "";
     };
-  }, [ready, scene, play, height]);
+  }, [scene, play, height]);
 
   // 外部按钮触发（如 About 页点「投喂小橘子」）直接模拟点击画布播放
   useEffect(() => {

@@ -7,9 +7,9 @@ export default function MainShell({ children }: { children: React.ReactNode }) {
   const isPodcast = path.startsWith("/podcasts");
 
   if (isPodcast) {
-    /* 播客工作台：桌面端锁定视口全高独立三栏滚动（与 SubCast 一致），手机端自然滚动 */
+    /* 播客工作台在宽屏保留独立三栏，窄窗口随页面滚动。 */
     return (
-      <main className="mx-auto w-full max-w-[1520px] px-3 pb-24 pt-3 sm:px-4 md:h-[calc(100dvh-56px)] md:overflow-hidden md:pb-3">
+      <main className="mx-auto w-full max-w-[1520px] px-3 pb-24 pt-3 sm:px-4 md:pb-8 lg:h-[calc(100dvh-56px)] lg:overflow-hidden lg:pb-3">
         {children}
       </main>
     );

@@ -10,12 +10,18 @@ import {
   type Dilemma,
   type DilemmaTrack,
 } from "@/data/dilemmas";
+import { EPISODES, timeToSec } from "@/data/podcasts";
 import { useGame } from "@/lib/game";
 import Mascot from "./Mascot";
-import { IconGavel } from "./Icons";
+import { IconArrowRight, IconGavel } from "./Icons";
 import PodcastMarkdown from "./PodcastMarkdown";
 import DilemmaShareCard from "./DilemmaShareCard";
 import DilemmaVisual from "./DilemmaVisual";
+
+const STARTER_DILEMMA = DILEMMAS.find((d) => d.slug === "fasted-cardio") ?? DILEMMAS[0];
+const STARTER_EPISODE = EPISODES[0];
+const STARTER_HIGHLIGHT = STARTER_EPISODE.visualSummary.highlights[0];
+const INITIAL_QUESTION_COUNT = 8;
 
 function dailyCase() {
   const d = new Date();
@@ -49,7 +55,7 @@ export default function HomeDecisionHub() {
   const [selected, setSelected] = useState<Dilemma | null>(DILEMMAS[0]);
   const [showSharePoster, setShowSharePoster] = useState(false);
   const [showListIndex, setShowListIndex] = useState(false);
-  const [mobileExpandAll, setMobileExpandAll] = useState(false);
+  const [expandAll, setExpandAll] = useState(false);
   const [copiedSlug, setCopiedSlug] = useState("");
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -188,6 +194,39 @@ export default function HomeDecisionHub() {
               {loading ? "核对证据中…" : "查证据"}
             </button>
           </form>
+
+          <div className="mt-5 hidden grid-cols-2 divide-x divide-line border-y border-line md:grid">
+            <button
+              type="button"
+              aria-controls="home-dilemma-result"
+              onClick={() => {
+                openDilemma(STARTER_DILEMMA, true);
+                resultRef.current?.focus({ preventScroll: true });
+              }}
+              className="flex min-w-0 cursor-pointer items-center justify-between gap-2 px-3 py-3 text-left hover:bg-white focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent-dark"
+            >
+              <span className="min-w-0">
+                <span className="block text-xs font-bold text-accent-dark">看一道题</span>
+                <span className="mt-0.5 block text-sm font-bold text-ink">{STARTER_DILEMMA.shortTag}？</span>
+              </span>
+              <IconArrowRight width={16} height={16} className="shrink-0 text-accent-dark" />
+            </button>
+            <Link
+              href={{
+                pathname: "/podcasts",
+                query: { episode: STARTER_EPISODE.id, t: timeToSec(STARTER_HIGHLIGHT.time) },
+              }}
+              className="flex min-w-0 items-center justify-between gap-2 px-3 py-3 hover:bg-white focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent-dark"
+            >
+              <span className="min-w-0">
+                <span className="block text-xs font-bold text-accent-dark">
+                  先听一段 <span className="ml-1 font-mono tabular-nums">{STARTER_HIGHLIGHT.time}</span>
+                </span>
+                <span className="mt-0.5 block text-sm font-bold text-ink">{STARTER_HIGHLIGHT.tag}</span>
+              </span>
+              <IconArrowRight width={16} height={16} className="shrink-0 text-accent-dark" />
+            </Link>
+          </div>
         </div>
 
         {/* 肌肉判官卡片（手机端紧凑横排，桌面端完整竖排主视觉） */}
@@ -288,18 +327,17 @@ export default function HomeDecisionHub() {
           </div>
         </div>
 
-        {/* 轻盈错落的纠结气泡云（手机端「全部」默认展示前 8 个最热气泡，避免 34 个气泡霸屏 1.5 屏；桌面端与切专区展示全部） */}
-        <div className="flex flex-wrap gap-2">
+        <div id="home-question-list" className="flex flex-wrap gap-2">
           {filtered.map((d, idx) => {
             const active = selected?.slug === d.slug && !aiReply;
+            if (track === "all" && !expandAll && idx >= INITIAL_QUESTION_COUNT && !active) return null;
             const dot = DILEMMA_VERDICT_META[d.verdict].dot;
-            const hideOnMobile = track === "all" && !mobileExpandAll && idx >= 8 && !active;
             return (
               <button
                 key={d.slug}
                 type="button"
                 onClick={() => openDilemma(d, true)}
-                className={`${hideOnMobile ? "hidden md:inline-flex" : "inline-flex"} cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-bold transition sm:px-3.5 sm:text-[13px] ${
+                className={`inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-bold transition sm:px-3.5 sm:text-[13px] ${
                   active
                     ? "border-ink bg-ink text-white shadow-sm"
                     : "border-line bg-white text-ink hover:-translate-y-0.5 hover:border-ink"
@@ -313,20 +351,22 @@ export default function HomeDecisionHub() {
               </button>
             );
           })}
-          {track === "all" && filtered.length > 8 && (
+          {track === "all" && filtered.length > INITIAL_QUESTION_COUNT && (
             <button
               type="button"
-              onClick={() => setMobileExpandAll((v) => !v)}
-              className="inline-flex cursor-pointer items-center rounded-full border border-dashed border-ink/40 bg-cream px-3 py-1.5 text-xs font-bold text-ink-soft hover:border-ink hover:text-ink md:hidden"
+              aria-controls="home-question-list"
+              aria-expanded={expandAll}
+              onClick={() => setExpandAll((v) => !v)}
+              className="inline-flex cursor-pointer items-center rounded-full border border-dashed border-ink/40 bg-cream px-3 py-1.5 text-xs font-bold text-ink-soft hover:border-ink hover:text-ink"
             >
-              {mobileExpandAll ? "收起部分气泡 ↑" : `展开全部 ${filtered.length} 个纠结 ↓`}
+              {expandAll ? "收起部分气泡 ↑" : `展开全部 ${filtered.length} 个纠结 ↓`}
             </button>
           )}
         </div>
       </section>
 
       {/* ③ 单张清爽「定心丸便签」（scroll-mt-16 避免手机点气泡滚过来被顶栏遮住） */}
-      <div ref={resultRef} className="scroll-mt-16">
+      <div id="home-dilemma-result" ref={resultRef} role="region" aria-label="问题结果" tabIndex={-1} className="scroll-mt-16">
         {error && (
           <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
         )}
@@ -589,7 +629,7 @@ export default function HomeDecisionHub() {
         <Link href="/podcasts" className="group block">
           <p className="text-xs font-bold text-accent-dark">播客精读</p>
           <p className="font-display mt-0.5 text-xl text-ink group-hover:text-accent-dark">三栏工作台与一图读懂 →</p>
-          <p className="mt-1 text-xs text-ink-soft">5 期精选健康播客，简体字幕、海报导出与流式 AI。</p>
+          <p className="mt-1 text-xs text-ink-soft">{EPISODES.length} 期精选健康播客，支持章节跳播。</p>
         </Link>
         <Link href="/cases" className="group block">
           <p className="text-xs font-bold text-accent-dark">经典档案</p>

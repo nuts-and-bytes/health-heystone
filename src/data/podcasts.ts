@@ -330,4 +330,150 @@ export const EPISODES: Episode[] = [
       },
     ],
   },
+  {
+    id: "pineapple-107",
+    show: "菠萝健康派",
+    vol: "vol.107 · 运动与膝盖",
+    title: "何继业教授：很多人的膝盖，不是跑坏的，是养废的",
+    guest: "何继业 · 上海交通大学医学院附属新华医院骨科主任医师",
+    host: "李治中（菠萝）· 杜克大学癌症生物学博士",
+    cover: "/podcasts/pineapple-131.jpg",
+    url: "https://www.xiaoyuzhoufm.com/episode/6a1bf4ef7460cabdeb58a9b0",
+    audioUrl: "https://media.xyzcdn.net/6693ae814ce7c8de0f47e220/lrj5pHtD_X7v_Z5zyInrd_QojGnN.m4a",
+    minutes: 65,
+    pubDate: "2026-06-01",
+    hook: "跑步、深蹲和爬楼梯对膝盖有什么不同的影响？骨科医生何继业从几种常见运动聊起。可按章节收听。",
+    visualSummary: {
+      headline: "从跑步到下山，听何继业聊膝盖怎样承受运动负荷",
+      stats: [
+        { value: "65 分钟", label: "节目时长" },
+        { value: "3 组", label: "章节主题" },
+      ],
+      highlights: [
+        { tag: "跑步", text: "从跑步聊起，拆解运动与膝关节负荷的关系。", time: "15:56" },
+        { tag: "运动后酸痛", text: "区分运动时的疲劳和过一段时间才出现的酸痛。", time: "26:55" },
+        { tag: "深蹲与楼梯", text: "把深蹲、靠墙蹲和爬楼放在一起比较。", time: "32:36" },
+        { tag: "上下坡", text: "从上下坡的区别理解膝盖与肌肉在运动中的分工。", time: "38:10" },
+      ],
+      action: "想先弄清跑步和膝盖的关系，可以从 15:56 听起。",
+    },
+    sections: [
+      {
+        title: "有氧、力量与跑步",
+        chapters: [
+          { time: "11:13", title: "有氧运动和力量训练怎样搭配？", bodyRole: "muscle" },
+          { time: "15:56", title: "跑步与膝关节负荷", caseSlug: "running-knees", bodyRole: "cartilage" },
+          { time: "21:03", title: "空腹跑步与减脂" },
+        ],
+      },
+      {
+        title: "酸痛、关节响与不同动作",
+        chapters: [
+          { time: "26:55", title: "运动后酸痛和乳酸有什么关系？", caseSlug: "lactic-acid" },
+          { time: "30:14", title: "节目怎样讨论膝关节响声？" },
+          { time: "32:36", title: "深蹲、靠墙蹲与爬楼的动作比较" },
+          { time: "38:10", title: "上坡和下坡时，膝盖的负荷有何不同？" },
+        ],
+      },
+      {
+        title: "运动防护",
+        chapters: [
+          { time: "48:21", title: "常见的运动损伤与预防话题" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "duoyizhong-sleep-04",
+    show: "多一种生活",
+    vol: "EP4 · 睡眠",
+    title: "睡眠科医生教你睡觉，但睡不着你也别太着急",
+    guest: "范滕滕 · 北京大学第六医院睡眠医学中心医生",
+    host: "王卉、五月 · 三联中读",
+    cover: "https://image.xyzcdn.net/FjB4jy61L3Xu7KKXcPI5RDWT2C-W.jpg@small",
+    url: "https://www.xiaoyuzhoufm.com/episode/65f97003676495707943ac10",
+    audioUrl: "https://media.xyzcdn.net/logx0sULJ_-XPJZIg_29yVRGDkTt.m4a",
+    minutes: 66,
+    pubDate: "2024-03-19",
+    hook: "手环给出的睡眠分数怎么看？补觉和睡不着时的焦虑怎么理解？范滕滕医生聊日常睡眠里的常见疑问。可按章节收听。",
+    visualSummary: {
+      headline: "从睡眠分数、周末补觉到睡不着时的焦虑",
+      stats: [
+        { value: "66 分钟", label: "节目时长" },
+        { value: "2 组", label: "章节主题" },
+      ],
+      highlights: [
+        { tag: "手环", text: "聊睡眠手环测到的信息，以及它有哪些局限。", time: "07:14" },
+        { tag: "补觉", text: "从生活中的作息差异聊起，看看节目怎样讨论补觉。", time: "16:23" },
+        { tag: "焦虑", text: "聚焦对睡不着的担心怎样影响人入睡时的感受。", time: "22:57" },
+        { tag: "酒精", text: "围绕睡前饮酒，区分入睡体验和整晚的睡眠。", time: "32:02" },
+      ],
+      action: "想先听睡眠手环这段，可以从 07:14 开始。",
+    },
+    sections: [
+      {
+        title: "怎样理解自己的睡眠",
+        chapters: [
+          { time: "01:04", title: "短睡眠的说法与个人睡眠差异", caseSlug: "8-hours-sleep" },
+          { time: "07:14", title: "睡眠手环能告诉我们什么？" },
+          { time: "16:23", title: "周末补觉与日常作息", caseSlug: "weekend-sleep" },
+        ],
+      },
+      {
+        title: "睡不着时的焦虑与日常习惯",
+        chapters: [
+          { time: "22:57", title: "睡不着和担心睡不着怎样相互影响？" },
+          { time: "32:02", title: "睡前饮酒与睡眠体验" },
+          { time: "45:40", title: "年纪大了，睡眠会有哪些变化？" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "wanwu-gut-95",
+    show: "万物生长FM",
+    vol: "E.95 · 肠道微生物",
+    title: "肠道微生物：大脑才是“第二大脑”",
+    guest: "李辉 · 成都医学院副教授、生物学博士",
+    host: "张红亮（玉米）· 万物生长FM",
+    cover: "https://image.xyzcdn.net/FnM3QfDIDJG9n9HybyDxDtFO_O9S.jpg@small",
+    url: "https://www.xiaoyuzhoufm.com/episode/674dd8f10ed328720a0a2b0e",
+    audioUrl: "https://media.xyzcdn.net/ll9W3eUNn6HXbOSGVS1nBZYjzZlg.m4a",
+    minutes: 60,
+    pubDate: "2024-12-03",
+    hook: "「脑肠轴」这个说法从哪来？研究者怎么区分相关性和因果？从微生物组研究者的视角看懂这类新闻。可按章节收听。",
+    visualSummary: {
+      headline: "脑肠轴是什么，肠道微生物研究又能说明什么？",
+      stats: [
+        { value: "60 分钟", label: "节目时长" },
+        { value: "2 组", label: "章节主题" },
+      ],
+      highlights: [
+        { tag: "脑肠轴", text: "从研究的起点认识脑肠轴这个概念。", time: "18:13" },
+        { tag: "研究方向", text: "了解研究者如何观察肠道微生物与大脑的联系。", time: "21:55" },
+        { tag: "验证方法", text: "听研究者讨论如何检验菌群与健康变化的关系。", time: "40:08" },
+        { tag: "个体差异", text: "看看节目怎样讨论不同人的菌群组成。", time: "48:33" },
+      ],
+      action: "第一次听到脑肠轴，可以从 18:13 听起。",
+    },
+    sections: [
+      {
+        title: "从日常观察到脑肠轴",
+        chapters: [
+          { time: "06:04", title: "饮食偏好与肠道菌群的假说" },
+          { time: "18:13", title: "脑肠轴概念的来历", bodyRole: "gut-microbiome" },
+          { time: "21:55", title: "菌群与大脑之间有哪些研究方向？" },
+        ],
+      },
+      {
+        title: "怎样解读研究和市场宣传",
+        chapters: [
+          { time: "38:42", title: "把菌群研究用于临床时有哪些难点？" },
+          { time: "40:08", title: "怎样验证调节菌群产生的作用？" },
+          { time: "42:50", title: "菌群相关产品宣传为什么容易引发争议？" },
+          { time: "48:33", title: "不同人的菌群组成有哪些差别？", bodyRole: "gut-microbiome" },
+        ],
+      },
+    ],
+  },
 ];
