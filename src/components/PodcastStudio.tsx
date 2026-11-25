@@ -903,9 +903,9 @@ export default function PodcastStudio() {
               </div>
             </div>
 
-            {/* Tab 1: 简体字幕（自动高亮并滚入视野） */}
+            {/* 简体字幕和章节跟随播放位置，手机端滚动区限高。 */}
             {rightTab === "subtitle" && (
-              <div ref={cueListRef} className="mt-3 min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
+              <div ref={cueListRef} className="mt-3 max-h-[56dvh] min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1 md:max-h-none">
                 {q && (visibleSubtitles?.length ?? visibleChapters.length) === 0 && (
                   <p role="status" className="px-3 py-4 text-sm text-ink-soft">本集没有匹配的{subtitleLabel}。</p>
                 )}

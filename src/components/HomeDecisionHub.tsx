@@ -183,7 +183,7 @@ export default function HomeDecisionHub() {
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="比如：刚练完吃麦当劳会白练吗？ / 熬夜到 2 点明天还练吗？"
+              placeholder="例如：练完吃 KFC 会白练吗？经期能练吗？"
               className="min-w-0 flex-1 rounded-2xl border-2 border-ink bg-white px-4 py-3 text-sm text-ink outline-none transition placeholder:text-ink-soft/60 focus:shadow-[0_0_0_3px_rgba(249,115,22,0.16)]"
             />
             <button
@@ -251,9 +251,9 @@ export default function HomeDecisionHub() {
               </Link>
             </div>
             <div className="mt-2.5 flex items-center gap-2 md:mt-3">
-              <Link href="/court" className="btn flex-1 justify-center !py-1.5 text-xs md:!py-2">
-                <IconGavel width={14} height={14} />
-                <span>{done > 0 ? `继续审案 (${done}/${CASES.length})` : "滑卡审案 →"}</span>
+              <Link href="/court" className="btn flex-1 justify-center whitespace-nowrap !py-1.5 text-xs md:!py-2">
+                <IconGavel width={14} height={14} className="shrink-0" />
+                <span>{done > 0 ? `审案 ${done}/${CASES.length}` : "滑卡审案"}</span>
               </Link>
               <Link
                 href={`/cases/${today.slug}`}
