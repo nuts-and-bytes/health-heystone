@@ -743,7 +743,7 @@
 // ---------------------------------------------------------------- kit: shared prop and timing helpers
 (function () {
   const R = window.RIG;
-  const { C, E, FS, STRIDE, TAU, FONT, toLocal, seg, clamp, lerp, hash, partial, strokePath, inkFill, rr, ln, circle, text, arcPt } = R;
+  const { C, E, FS, STRIDE, FONT, toLocal, seg, clamp, hash, partial, strokePath, inkFill, rr, ln, circle, text, arcPt } = R;
 
   const inWorld = (g, J, fn) => {
     g.save();

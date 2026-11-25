@@ -2,7 +2,7 @@
 (function () {
   const SC = (window.SCENES = window.SCENES || {});
   const R = window.RIG;
-  const { C, E, P, mix, fig, inkFill, rr, ln, text, seg, breathe, pulse, circle, tick, lerp, L2 } = R;
+  const { C, E, P, mix, fig, inkFill, rr, text, seg, breathe, pulse, circle, tick, lerp, L2 } = R;
   const OR = () => window.ORANGE || '#F97316';
   const chestDot = (g, J) => {
     const p = L2(J.chest, J.hip, 0.3);
