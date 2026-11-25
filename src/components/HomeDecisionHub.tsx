@@ -49,6 +49,7 @@ export default function HomeDecisionHub() {
   const [selected, setSelected] = useState<Dilemma | null>(DILEMMAS[0]);
   const [showSharePoster, setShowSharePoster] = useState(false);
   const [showListIndex, setShowListIndex] = useState(false);
+  const [mobileExpandAll, setMobileExpandAll] = useState(false);
   const [copiedSlug, setCopiedSlug] = useState("");
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -140,9 +141,9 @@ export default function HomeDecisionHub() {
   };
 
   return (
-    <div className="space-y-9">
+    <div className="space-y-6 sm:space-y-9">
       {/* ① Hero：左 极简提问区 + 右 肌肉判官今日开庭卡 */}
-      <section className="grid items-stretch gap-5 md:grid-cols-[1.38fr_0.62fr]">
+      <section className="grid items-stretch gap-4 sm:gap-5 md:grid-cols-[1.38fr_0.62fr]">
         <div className="flex flex-col justify-between py-1">
           <div>
             <div className="flex flex-wrap items-center gap-3 text-xs">
@@ -287,17 +288,18 @@ export default function HomeDecisionHub() {
           </div>
         </div>
 
-        {/* 轻盈错落的纠结气泡云（保留每个气泡真实的三色语义点） */}
+        {/* 轻盈错落的纠结气泡云（手机端「全部」默认展示前 8 个最热气泡，避免 34 个气泡霸屏 1.5 屏；桌面端与切专区展示全部） */}
         <div className="flex flex-wrap gap-2">
-          {filtered.map((d) => {
+          {filtered.map((d, idx) => {
             const active = selected?.slug === d.slug && !aiReply;
             const dot = DILEMMA_VERDICT_META[d.verdict].dot;
+            const hideOnMobile = track === "all" && !mobileExpandAll && idx >= 8 && !active;
             return (
               <button
                 key={d.slug}
                 type="button"
                 onClick={() => openDilemma(d, true)}
-                className={`inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-bold transition sm:text-[13px] ${
+                className={`${hideOnMobile ? "hidden md:inline-flex" : "inline-flex"} cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-bold transition sm:px-3.5 sm:text-[13px] ${
                   active
                     ? "border-ink bg-ink text-white shadow-sm"
                     : "border-line bg-white text-ink hover:-translate-y-0.5 hover:border-ink"
@@ -311,11 +313,20 @@ export default function HomeDecisionHub() {
               </button>
             );
           })}
+          {track === "all" && filtered.length > 8 && (
+            <button
+              type="button"
+              onClick={() => setMobileExpandAll((v) => !v)}
+              className="inline-flex cursor-pointer items-center rounded-full border border-dashed border-ink/40 bg-cream px-3 py-1.5 text-xs font-bold text-ink-soft hover:border-ink hover:text-ink md:hidden"
+            >
+              {mobileExpandAll ? "收起部分气泡 ↑" : `展开全部 ${filtered.length} 个纠结 ↓`}
+            </button>
+          )}
         </div>
       </section>
 
-      {/* ③ 单张清爽「定心丸便签」（去嵌套边框，大留白好读） */}
-      <div ref={resultRef}>
+      {/* ③ 单张清爽「定心丸便签」（scroll-mt-16 避免手机点气泡滚过来被顶栏遮住） */}
+      <div ref={resultRef} className="scroll-mt-16">
         {error && (
           <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
         )}
@@ -571,8 +582,8 @@ export default function HomeDecisionHub() {
       {/* ⑤ 站内其他板块（清爽文字导航，告别大卡片墙） */}
       <section className="grid gap-6 border-t border-line pt-6 sm:grid-cols-3">
         <Link href="/body" className="group block">
-          <p className="text-xs font-bold text-accent-dark">身体解剖</p>
-          <p className="font-display mt-0.5 text-xl text-ink group-hover:text-accent-dark">12 块真实肌群图谱 →</p>
+          <p className="text-xs font-bold text-accent-dark">认识你的身体</p>
+          <p className="font-display mt-0.5 text-xl text-ink group-hover:text-accent-dark">12 块真实肌群与器官图谱 →</p>
           <p className="mt-1 text-xs text-ink-soft">点开看每一块肌肉怎么发力，附橙线小人动画。</p>
         </Link>
         <Link href="/podcasts" className="group block">

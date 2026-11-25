@@ -58,14 +58,14 @@ export default function BodyMap() {
   const roleCases = CASES.filter((c) => activeRole.relatedCases.includes(c.slug));
 
   const tabBtn = (active: boolean) =>
-    `cursor-pointer rounded-xl border-2 px-4 py-2 text-sm font-bold transition ${
+    `shrink-0 cursor-pointer whitespace-nowrap rounded-xl border-2 px-3 py-1.5 text-xs font-bold transition sm:px-4 sm:py-2 sm:text-sm ${
       active ? "border-ink bg-accent-soft text-accent-dark" : "border-line bg-white text-ink-soft hover:border-ink hover:text-ink"
     }`;
 
   return (
-    <div className="space-y-6">
-      {/* 三个清晰分工的视图：真图认肌肉 / 真图+小人动画认器官激素 / 按部位查谣言（零 emoji） */}
-      <div className="flex flex-wrap gap-2">
+    <div className="space-y-5 sm:space-y-6">
+      {/* 三个清晰分工的视图：手机端单行横向滑动不换行 */}
+      <div className="flex gap-2 overflow-x-auto pb-1">
         <button
           onClick={() => {
             sfx.tap();
@@ -73,7 +73,7 @@ export default function BodyMap() {
           }}
           className={tabBtn(tab === "muscles")}
         >
-          真实肌群图谱（12 块）
+          肌群图谱 (12)
         </button>
         <button
           onClick={() => {
@@ -82,7 +82,7 @@ export default function BodyMap() {
           }}
           className={tabBtn(tab === "roles")}
         >
-          器官与激素图鉴（12 个）
+          器官与激素 (12)
         </button>
         <button
           onClick={() => {
@@ -91,7 +91,7 @@ export default function BodyMap() {
           }}
           className={tabBtn(tab === "map")}
         >
-          按身体部位查谣言
+          部位查谣言
         </button>
       </div>
 

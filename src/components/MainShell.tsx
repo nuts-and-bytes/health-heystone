@@ -17,9 +17,9 @@ export default function MainShell({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <main className="mx-auto w-full max-w-4xl px-4 pb-28 pt-8 sm:px-6">{children}</main>
-      <footer className="mx-auto max-w-4xl border-t border-line px-6 py-8 text-center text-xs text-ink-soft">
-        本站内容用于科普，不能替代医生的诊断和建议。每条判决都附有来源，看到带橙色虚线的专业词可以点开看大白话解释。
+      <main className="mx-auto w-full max-w-4xl px-4 pb-12 pt-4 sm:px-6 sm:pt-8 md:pb-20">{children}</main>
+      <footer className="mx-auto max-w-4xl border-t border-line px-5 pb-24 pt-6 text-center text-xs leading-relaxed text-ink-soft md:py-8">
+        本站内容用于科普，不能替代医生的诊断和建议。每条结论均附一线权威来源，零商业带货、零医疗诊断。
       </footer>
     </>
   );
