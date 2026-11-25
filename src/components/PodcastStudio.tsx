@@ -735,7 +735,7 @@ export default function PodcastStudio() {
           <section
             data-pane="panel"
             style={isDesktop ? { width: pane.panel } : undefined}
-            className="panel flex min-h-[580px] w-full shrink-0 flex-col bg-white p-4 sm:p-5 md:h-full md:min-h-0 md:overflow-hidden"
+            className="panel flex min-h-0 w-full shrink-0 flex-col bg-white p-4 sm:p-5 md:h-full md:overflow-hidden"
           >
             {/* 右栏顶部标签栏 */}
             <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-line pb-3">

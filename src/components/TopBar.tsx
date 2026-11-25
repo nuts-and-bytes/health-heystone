@@ -19,14 +19,14 @@ import {
 
 const NAV = [
   { href: "/", label: "纠结决策", Icon: IconSmash, exact: true },
-  { href: "/body", label: "身体解剖", Icon: IconBody, exact: false },
+  { href: "/body", label: "认识你的身体", Icon: IconBody, exact: false },
   { href: "/podcasts", label: "播客精读", Icon: IconPodcast, exact: false },
   { href: "/about", label: "About", Icon: IconEvidence, exact: false },
 ];
 
 const MOBILE_NAV = [
   { href: "/", label: "纠结决策", Icon: IconSmash, exact: true },
-  { href: "/body", label: "身体解剖", Icon: IconBody, exact: false },
+  { href: "/body", label: "认识身体", Icon: IconBody, exact: false },
   { href: "/podcasts", label: "播客精读", Icon: IconPodcast, exact: false },
   { href: "/about", label: "About", Icon: IconEvidence, exact: false },
 ];
@@ -106,9 +106,12 @@ export default function TopBar() {
                 {aud.label}
               </button>
             )}
-            <Stat Icon={IconFlame} value={g.streak} color="#f97316" fill="#fed7aa" label="连续天数" />
-            <Stat Icon={IconBolt} value={g.xp} color="#d97706" fill="#fde68a" label="经验值" />
-            <Stat Icon={IconHeart} value={g.hearts} color="var(--red)" fill="#fecaca" label="今日红心" />
+            {/* 手机端首次进入不展示 0 经验/红心，避免新用户困惑；玩过审案或桌面端正常显示 */}
+            <div className={`${g.xp > 0 ? "flex" : "hidden md:flex"} items-center gap-2.5 lg:gap-3`}>
+              <Stat Icon={IconFlame} value={g.streak} color="#f97316" fill="#fed7aa" label="连续天数" />
+              <Stat Icon={IconBolt} value={g.xp} color="#d97706" fill="#fde68a" label="经验值" />
+              <Stat Icon={IconHeart} value={g.hearts} color="var(--red)" fill="#fecaca" label="今日红心" />
+            </div>
             <button
               onClick={() => game.toggleMute()}
               className="cursor-pointer rounded-lg p-1 text-ink-soft transition hover:bg-white hover:text-ink"
@@ -120,8 +123,8 @@ export default function TopBar() {
         </div>
       </header>
 
-      {/* mobile bottom nav：统一手绘线条图标，去 emoji 廉价感 */}
-      <nav className="fixed inset-x-0 bottom-0 z-40 flex justify-around border-t-[2.5px] border-ink bg-white py-1.5 md:hidden">
+      {/* mobile bottom nav：统一手绘线条图标，适配 iPhone 底部安全区 */}
+      <nav className="fixed inset-x-0 bottom-0 z-40 flex justify-around border-t-[2.5px] border-ink bg-white/95 pt-1.5 pb-[max(0.375rem,env(safe-area-inset-bottom))] backdrop-blur md:hidden">
         {MOBILE_NAV.map(({ href, label, Icon, exact }) => {
           const active = exact ? path === "/" : path.startsWith(href);
           return (
