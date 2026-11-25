@@ -21,14 +21,14 @@ const NAV = [
   { href: "/", label: "纠结决策", Icon: IconSmash, exact: true },
   { href: "/body", label: "身体解剖", Icon: IconBody, exact: false },
   { href: "/podcasts", label: "播客精读", Icon: IconPodcast, exact: false },
-  { href: "/principles", label: "内容红线", Icon: IconEvidence, exact: false },
+  { href: "/about", label: "About", Icon: IconEvidence, exact: false },
 ];
 
 const MOBILE_NAV = [
   { href: "/", label: "纠结决策", Icon: IconSmash, exact: true },
   { href: "/body", label: "身体解剖", Icon: IconBody, exact: false },
   { href: "/podcasts", label: "播客精读", Icon: IconPodcast, exact: false },
-  { href: "/principles", label: "内容红线", Icon: IconEvidence, exact: false },
+  { href: "/about", label: "About", Icon: IconEvidence, exact: false },
 ];
 
 function Stat({

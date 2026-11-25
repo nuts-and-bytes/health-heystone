@@ -48,8 +48,8 @@ export default async function DilemmaDetailPage({
         <Link href="/" className="font-bold text-ink-soft hover:text-ink">
           ← 返回「此刻你在纠结什么？」
         </Link>
-        <Link href="/principles" className="font-bold text-accent-dark hover:underline">
-          零带货 · 零诊疗 · 查看内容红线 →
+        <Link href="/about" className="font-bold text-accent-dark hover:underline">
+          零带货 · 零诊疗 · 关于我们与红线 →
         </Link>
       </div>
 
