@@ -148,7 +148,7 @@ export default function HomeDecisionHub() {
             <div className="flex flex-wrap items-center gap-3 text-xs">
               <span className="inline-flex items-center gap-1.5 font-bold text-accent-dark">
                 <span className="h-2 w-2 rounded-full bg-accent" />
-                健身练吃 · 女性状态
+                健身 · 女性 · 日常普适
               </span>
               <Link
                 href="/about"
@@ -226,16 +226,16 @@ export default function HomeDecisionHub() {
         </aside>
       </section>
 
-      {/* ② 纠结气泡池 + 手气不错摇一签（告别 28 张长方形卡片墙） */}
+      {/* ② 纠结气泡池 + 三色点图例 + 手气不错摇一签 */}
       <section className="space-y-3.5 border-t border-line pt-6">
         <div className="flex flex-wrap items-center justify-between gap-2.5">
           <div className="flex flex-wrap items-center gap-1.5">
             {(
               [
                 ["all", `全部 (${DILEMMAS.length})`],
-                ["fitness-eat", "健身吃喝"],
-                ["fitness-train", "训练体感"],
-                ["women", "女性状态"],
+                ["fitness", "健身"],
+                ["women", "女性"],
+                ["daily", "日常普适"],
               ] as const
             ).map(([id, label]) => (
               <button
@@ -253,23 +253,41 @@ export default function HomeDecisionHub() {
             ))}
           </div>
 
-          <button
-            type="button"
-            onClick={pickRandom}
-            className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border-2 border-ink bg-accent-soft px-3.5 py-1 text-xs font-bold text-accent-dark transition hover:-translate-y-0.5 hover:bg-accent hover:text-white"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <rect x="3" y="3" width="18" height="18" rx="4" />
-              <circle cx="8.5" cy="8.5" r="1.2" fill="currentColor" />
-              <circle cx="15.5" cy="15.5" r="1.2" fill="currentColor" />
-              <circle cx="15.5" cy="8.5" r="1.2" fill="currentColor" />
-              <circle cx="8.5" cy="15.5" r="1.2" fill="currentColor" />
-            </svg>
-            <span>随机抽一题</span>
-          </button>
+          <div className="flex flex-wrap items-center gap-3">
+            {/* 三色圆点图例：一眼看懂绿/黄/红代表什么 */}
+            <div className="flex items-center gap-3 text-[11px] font-bold text-ink-soft">
+              <span className="inline-flex items-center gap-1">
+                <span className="h-2 w-2 rounded-full" style={{ backgroundColor: DILEMMA_VERDICT_META.ok.dot }} />
+                放心
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <span className="h-2 w-2 rounded-full" style={{ backgroundColor: DILEMMA_VERDICT_META.adjust.dot }} />
+                看情况
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <span className="h-2 w-2 rounded-full" style={{ backgroundColor: DILEMMA_VERDICT_META.stop.dot }} />
+                注意红线
+              </span>
+            </div>
+
+            <button
+              type="button"
+              onClick={pickRandom}
+              className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border-2 border-ink bg-accent-soft px-3.5 py-1 text-xs font-bold text-accent-dark transition hover:-translate-y-0.5 hover:bg-accent hover:text-white"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="4" />
+                <circle cx="8.5" cy="8.5" r="1.2" fill="currentColor" />
+                <circle cx="15.5" cy="15.5" r="1.2" fill="currentColor" />
+                <circle cx="15.5" cy="8.5" r="1.2" fill="currentColor" />
+                <circle cx="8.5" cy="15.5" r="1.2" fill="currentColor" />
+              </svg>
+              <span>随机抽一题</span>
+            </button>
+          </div>
         </div>
 
-        {/* 轻盈错落的纠结气泡云 */}
+        {/* 轻盈错落的纠结气泡云（保留每个气泡真实的三色语义点） */}
         <div className="flex flex-wrap gap-2">
           {filtered.map((d) => {
             const active = selected?.slug === d.slug && !aiReply;
@@ -286,8 +304,8 @@ export default function HomeDecisionHub() {
                 }`}
               >
                 <span
-                  className="h-2 w-2 shrink-0 rounded-full"
-                  style={{ backgroundColor: active ? "#F97316" : dot }}
+                  className="h-2 w-2 shrink-0 rounded-full ring-1 ring-white/40"
+                  style={{ backgroundColor: dot }}
                 />
                 <span>{d.shortTag}</span>
               </button>
@@ -487,7 +505,7 @@ export default function HomeDecisionHub() {
             onClick={() => setShowListIndex((v) => !v)}
             className="w-fit cursor-pointer text-xs font-bold text-ink-soft underline decoration-line underline-offset-4 hover:text-ink"
           >
-            {showListIndex ? "收起全部 28 题文字目录 ↑" : "想按清单慢慢翻？展开全部 28 题文字目录 ↓"}
+            {showListIndex ? `收起全部 ${DILEMMAS.length} 题文字目录 ↑` : `想按清单慢慢翻？展开全部 ${DILEMMAS.length} 题文字目录 ↓`}
           </button>
 
           <form

@@ -2,10 +2,12 @@
 
 import { useRef, useState } from "react";
 import { DILEMMA_VERDICT_META, TRACK_META, type Dilemma } from "@/data/dilemmas";
+import { getDilemmaScene } from "./DilemmaVisual";
+import StickScene from "./StickScene";
 
 const FONT = '"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif';
 
-/** 按中文字符宽度自动折行（全角算 1，半角算 0.55），防止 SVG 文字溢出 */
+/** 按中文字符宽度自动折行（全角算 1，半角算 0.55），防止 Canvas 文字溢出 */
 function wrapLines(text: string, maxUnits: number, maxLines: number): string[] {
   const lines: string[] = [];
   let cur = "";
@@ -29,35 +31,172 @@ function wrapLines(text: string, maxUnits: number, maxLines: number): string[] {
   return lines.slice(0, maxLines);
 }
 
-async function exportSvgToPng(svgEl: SVGSVGElement, filename: string) {
-  const clone = svgEl.cloneNode(true) as SVGSVGElement;
-  clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-  clone.setAttribute("width", "1080");
-  clone.setAttribute("height", "1440");
-  const xml = new XMLSerializer().serializeToString(clone);
-  const blob = new Blob([xml], { type: "image/svg+xml;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  try {
-    const img = await new Promise<HTMLImageElement>((resolve, reject) => {
-      const i = new Image();
-      i.onload = () => resolve(i);
-      i.onerror = reject;
-      i.src = url;
-    });
-    const canvas = document.createElement("canvas");
-    canvas.width = 1080;
-    canvas.height = 1440;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    ctx.drawImage(img, 0, 0, 1080, 1440);
-    const png = canvas.toDataURL("image/png");
-    const a = document.createElement("a");
-    a.href = png;
-    a.download = filename;
-    a.click();
-  } finally {
-    URL.revokeObjectURL(url);
+function drawRoundedRect(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: number
+) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+/** 直接把当前 live <stick-scene> 的画布帧合成到 1080×1440 3:4 高清 PNG 中 */
+async function exportPosterWithScene(d: Dilemma, sceneHost: HTMLElement | null) {
+  const W = 1080;
+  const H = 1440;
+  const canvas = document.createElement("canvas");
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  const meta = DILEMMA_VERDICT_META[d.verdict];
+  const badgeBg = d.verdict === "ok" ? "#ECFDF5" : d.verdict === "adjust" ? "#FFFBEB" : "#FEF2F2";
+  const badgeStroke = d.verdict === "ok" ? "#059669" : d.verdict === "adjust" ? "#D97706" : "#DC2626";
+  const badgeText = d.verdict === "ok" ? "#065F46" : d.verdict === "adjust" ? "#92400E" : "#991B1B";
+
+  // 1) 暖纸白底 + 顶部橙边
+  ctx.fillStyle = "#FAF8F4";
+  ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = "#F97316";
+  ctx.fillRect(0, 0, W, 18);
+
+  // 2) 顶栏品牌 + 板块 + 证据等级
+  ctx.fillStyle = "#1C1917";
+  ctx.font = `900 32px ${FONT}`;
+  ctx.fillText("懂点健康", 64, 86);
+  ctx.fillStyle = "#635B52";
+  ctx.font = `600 22px ${FONT}`;
+  ctx.fillText(`· ${TRACK_META[d.track].label}定心丸`, 210, 84);
+  ctx.fillStyle = "#C2410C";
+  ctx.font = `800 22px ${FONT}`;
+  ctx.textAlign = "right";
+  ctx.fillText(d.evidenceLevel, W - 64, 84);
+  ctx.textAlign = "left";
+
+  ctx.strokeStyle = "#E4DDD3";
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.moveTo(64, 114);
+  ctx.lineTo(W - 64, 114);
+  ctx.stroke();
+
+  // 3) 裁决徽章 + 原生态问题
+  drawRoundedRect(ctx, 64, 144, 290, 52, 26);
+  ctx.fillStyle = badgeBg;
+  ctx.fill();
+  ctx.strokeStyle = badgeStroke;
+  ctx.lineWidth = 2.8;
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.arc(96, 170, 8, 0, Math.PI * 2);
+  ctx.fillStyle = meta.dot;
+  ctx.fill();
+
+  ctx.fillStyle = badgeText;
+  ctx.font = `800 24px ${FONT}`;
+  ctx.fillText(meta.badge, 116, 179);
+
+  const qLines = wrapLines(d.question, 18, 2);
+  ctx.fillStyle = "#1C1917";
+  ctx.font = `900 46px ${FONT}`;
+  qLines.forEach((line, i) => ctx.fillText(line, 64, 264 + i * 64));
+
+  // 4) 嵌入当前专属手绘橙线 <stick-scene> 实时画布帧（点阵白纸框）
+  const boxX = 64, boxY = 368, boxW = W - 128, boxH = 380;
+  drawRoundedRect(ctx, boxX, boxY, boxW, boxH, 28);
+  ctx.fillStyle = "#FFFFFF";
+  ctx.fill();
+  ctx.strokeStyle = "#1C1917";
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  // 点阵底纹
+  ctx.save();
+  drawRoundedRect(ctx, boxX, boxY, boxW, boxH, 28);
+  ctx.clip();
+  ctx.fillStyle = "#E7E2DA";
+  for (let gx = boxX + 22; gx < boxX + boxW; gx += 24) {
+    for (let gy = boxY + 22; gy < boxY + boxH; gy += 24) {
+      ctx.beginPath();
+      ctx.arc(gx, gy, 1.8, 0, Math.PI * 2);
+      ctx.fill();
+    }
   }
+  const liveCanvas = sceneHost?.querySelector("canvas") as HTMLCanvasElement | null;
+  if (liveCanvas && liveCanvas.width > 0 && liveCanvas.height > 0) {
+    const scale = Math.min((boxW - 40) / liveCanvas.width, (boxH - 40) / liveCanvas.height);
+    const dw = liveCanvas.width * scale;
+    const dh = liveCanvas.height * scale;
+    ctx.drawImage(liveCanvas, boxX + (boxW - dw) / 2, boxY + (boxH - dh) / 2, dw, dh);
+  }
+  ctx.restore();
+
+  // 5) ① 一句话定心丸
+  drawRoundedRect(ctx, 64, 778, W - 128, 224, 28);
+  ctx.fillStyle = "#FFF7ED";
+  ctx.fill();
+  ctx.strokeStyle = "#1C1917";
+  ctx.lineWidth = 3.5;
+  ctx.stroke();
+
+  ctx.fillStyle = "#C2410C";
+  ctx.font = `900 25px ${FONT}`;
+  ctx.fillText(`结论 · ${d.verdictLabel}`, 100, 828);
+
+  const reassLines = wrapLines(d.reassurance, 24, 3);
+  ctx.fillStyle = "#1C1917";
+  ctx.font = `800 33px ${FONT}`;
+  reassLines.forEach((line, i) => ctx.fillText(line, 100, 882 + i * 48));
+
+  // 6) ② 此刻最省心的做法
+  drawRoundedRect(ctx, 64, 1030, W - 128, 250, 26);
+  ctx.fillStyle = "#FFFFFF";
+  ctx.fill();
+  ctx.strokeStyle = "#E4DDD3";
+  ctx.lineWidth = 2.5;
+  ctx.stroke();
+
+  ctx.fillStyle = "#C2410C";
+  ctx.font = `800 24px ${FONT}`;
+  ctx.fillText("此刻最省心的做法（零商业带货）", 100, 1080);
+
+  const actLines = wrapLines(d.actionNow, 27, 4);
+  ctx.fillStyle = "#1C1917";
+  ctx.font = `600 28px ${FONT}`;
+  actLines.forEach((line, i) => ctx.fillText(line, 100, 1130 + i * 40));
+
+  // 7) 底部权威信源 + 网址水印
+  ctx.strokeStyle = "#E4DDD3";
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.moveTo(64, 1320);
+  ctx.lineTo(W - 64, 1320);
+  ctx.stroke();
+
+  const sourceText = d.sources.map((s) => `${s.org} (${s.year})`).join(" · ");
+  ctx.fillStyle = "#1C1917";
+  ctx.font = `800 22px ${FONT}`;
+  ctx.fillText(`权威信源：${sourceText}`, 64, 1362);
+
+  ctx.fillStyle = "#78716C";
+  ctx.font = `600 20px ${FONT}`;
+  ctx.fillText("health.heystone.site · 零带货 · 零医疗诊断 · 仅引一线权威指南", 64, 1400);
+
+  const png = canvas.toDataURL("image/png");
+  const a = document.createElement("a");
+  a.href = png;
+  a.download = `懂点健康-${d.shortTag}.png`;
+  a.click();
 }
 
 export default function DilemmaShareCard({
@@ -67,28 +206,17 @@ export default function DilemmaShareCard({
   dilemma: Dilemma;
   compact?: boolean;
 }) {
-  const svgRef = useRef<SVGSVGElement | null>(null);
+  const sceneWrapRef = useRef<HTMLDivElement>(null);
   const [saving, setSaving] = useState(false);
   const [copied, setCopied] = useState(false);
-
   const meta = DILEMMA_VERDICT_META[d.verdict];
-  const badgeBg = d.verdict === "ok" ? "#ECFDF5" : d.verdict === "adjust" ? "#FFFBEB" : "#FEF2F2";
-  const badgeStroke = d.verdict === "ok" ? "#059669" : d.verdict === "adjust" ? "#D97706" : "#DC2626";
-  const badgeText = d.verdict === "ok" ? "#065F46" : d.verdict === "adjust" ? "#92400E" : "#991B1B";
-
-  const qLines = wrapLines(d.question, 17, 2);
-  const sideALines = wrapLines(`「${d.debate.sideA}」`, 14, 2);
-  const sideBLines = wrapLines(`「${d.debate.sideB}」`, 14, 2);
-  const reassLines = wrapLines(d.reassurance, 24, 3);
-  const sciLines = wrapLines(d.science, 29, 4);
-  const actLines = wrapLines(d.actionNow, 29, 3);
-  const sourceText = d.sources.map((s) => `${s.org} (${s.year})`).join("  ·  ");
+  const cfg = getDilemmaScene(d.slug);
 
   const handleDownload = async () => {
-    if (!svgRef.current || saving) return;
+    if (saving) return;
     setSaving(true);
     try {
-      await exportSvgToPng(svgRef.current, `懂点健康-${d.shortTag}.png`);
+      await exportPosterWithScene(d, sceneWrapRef.current);
     } finally {
       setSaving(false);
     }
@@ -106,119 +234,60 @@ export default function DilemmaShareCard({
 
   return (
     <div className="space-y-3">
-      <div className={compact ? "mx-auto max-w-[360px]" : ""}>
-        <svg
-          ref={svgRef}
-          viewBox="0 0 600 800"
-          className="w-full rounded-2xl border-[1.5px] border-ink bg-[#FAF8F4] shadow-sm"
-          role="img"
-          aria-label={`定心丸分享卡：${d.question}`}
-        >
-          {/* 暖纸白底 + 顶橙边 */}
-          <rect width="600" height="800" fill="#FAF8F4" />
-          <rect width="600" height="10" fill="#F97316" />
+      {/* 实时可点击互动的 3:4 定心丸分享卡预览（内嵌原版手绘橙线 <stick-scene>） */}
+      <div className={compact ? "mx-auto max-w-[380px]" : ""}>
+        <div className="overflow-hidden rounded-2xl border-2 border-ink bg-[#FAF8F4] shadow-sm">
+          <div className="h-2 bg-accent" />
+          <div className="space-y-3.5 p-4">
+            <div className="flex items-center justify-between border-b border-line pb-2.5 text-xs">
+              <div className="flex items-center gap-1.5">
+                <span className="font-display text-base text-ink">懂点健康</span>
+                <span className="text-ink-soft">· {TRACK_META[d.track].label}定心丸</span>
+              </div>
+              <span className="font-mono text-[11px] font-bold text-accent-dark">{d.evidenceLevel}</span>
+            </div>
 
-          {/* 顶部品牌栏（小橙耳机芽 + 网站名 + 板块） */}
-          <g transform="translate(36 26) scale(0.55)">
-            <path d="M32 19 C32 10.5, 39 6, 44.5 6.5 C44.5 13, 39.5 18.5, 32 19 Z" fill="#FED7AA" stroke="#1C1917" strokeWidth="3.6" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M11 39 C11 25, 20 18.5, 32 18.5 C44 18.5, 53 25, 53 39" stroke="#1C1917" strokeWidth="4" strokeLinecap="round" fill="none" />
-            <rect x="6" y="34" width="8.5" height="14.5" rx="4.25" fill="#FED7AA" stroke="#1C1917" strokeWidth="3.4" />
-            <rect x="49.5" y="34" width="8.5" height="14.5" rx="4.25" fill="#FED7AA" stroke="#1C1917" strokeWidth="3.4" />
-            <circle cx="32" cy="40" r="17.5" fill="#F97316" />
-            <path d="M22.5 38.5 Q25.5 34.5 28.5 38.5" stroke="#1C1917" strokeWidth="3.4" strokeLinecap="round" fill="none" />
-            <path d="M35.5 38.5 Q38.5 34.5 41.5 38.5" stroke="#1C1917" strokeWidth="3.4" strokeLinecap="round" fill="none" />
-            <path d="M26 45.5 Q32 50.5 38 45.5" stroke="#1C1917" strokeWidth="3.4" strokeLinecap="round" fill="none" />
-          </g>
-          <text x="80" y="48" fill="#1C1917" fontSize="18" fontWeight="900" fontFamily={FONT}>
-            懂点健康
-          </text>
-          <text x="164" y="47" fill="#635B52" fontSize="12.5" fontWeight="600" fontFamily={FONT}>
-            · {TRACK_META[d.track].label}定心丸
-          </text>
-          <text x="564" y="47" textAnchor="end" fill="#C2410C" fontSize="12.5" fontWeight="800" fontFamily={FONT}>
-            {d.evidenceLevel}
-          </text>
-          <line x1="36" y1="68" x2="564" y2="68" stroke="#E4DDD3" strokeWidth="1.5" />
+            <div className="space-y-1.5">
+              <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-bold ${meta.tone}`}>
+                <span className="h-2 w-2 rounded-full" style={{ backgroundColor: meta.dot }} />
+                {meta.badge}
+              </span>
+              <h3 className="font-display text-lg leading-snug text-ink">{d.question}</h3>
+            </div>
 
-          {/* 裁决印章 + 原生态问题 */}
-          <rect x="36" y="84" width="166" height="30" rx="15" fill={badgeBg} stroke={badgeStroke} strokeWidth="1.6" />
-          <circle cx="54" cy="99" r="4.5" fill={meta.dot} />
-          <text x="66" y="104" fill={badgeText} fontSize="13.5" fontWeight="800" fontFamily={FONT}>
-            {meta.badge}
-          </text>
+            {/* 内嵌可点击互动的手绘橙线小人动画（导出 PNG 时同步截取当前帧） */}
+            <div ref={sceneWrapRef}>
+              <StickScene
+                key={`share-${d.slug}`}
+                scene={cfg.scene}
+                caption={cfg.caption}
+                play="click"
+                height={170}
+                compact
+              />
+            </div>
 
-          {qLines.map((line, i) => (
-            <text key={i} x="36" y={152 + i * 38} fill="#1C1917" fontSize="26" fontWeight="900" fontFamily={FONT}>
-              {line}
-            </text>
-          ))}
+            <div className="rounded-xl border-[1.5px] border-ink bg-accent-soft/60 p-3">
+              <p className="text-[11px] font-extrabold text-accent-dark">结论 · {d.verdictLabel}</p>
+              <p className="mt-1 text-xs font-bold leading-relaxed text-ink">{d.reassurance}</p>
+            </div>
 
-          {/* 网友两派争论 */}
-          <rect x="36" y="218" width="256" height="76" rx="14" fill="#FFFFFF" stroke="#E4DDD3" strokeWidth="1.5" />
-          <text x="50" y="240" fill="#78716C" fontSize="11.5" fontWeight="700" fontFamily={FONT}>
-            评论区焦虑派
-          </text>
-          {sideALines.map((line, i) => (
-            <text key={i} x="50" y={261 + i * 19} fill="#292524" fontSize="13.5" fontWeight="600" fontFamily={FONT}>
-              {line}
-            </text>
-          ))}
+            <div className="rounded-xl border border-line bg-white p-3">
+              <p className="text-[11px] font-bold text-accent-dark">此刻最省心的做法（零带货）</p>
+              <p className="mt-1 text-xs leading-relaxed text-ink/90">{d.actionNow}</p>
+            </div>
 
-          <rect x="308" y="218" width="256" height="76" rx="14" fill="#FFFFFF" stroke="#E4DDD3" strokeWidth="1.5" />
-          <text x="322" y="240" fill="#78716C" fontSize="11.5" fontWeight="700" fontFamily={FONT}>
-            评论区另一派
-          </text>
-          {sideBLines.map((line, i) => (
-            <text key={i} x="322" y={261 + i * 19} fill="#292524" fontSize="13.5" fontWeight="600" fontFamily={FONT}>
-              {line}
-            </text>
-          ))}
-
-          {/* ① 一句话定心丸（核心高光框） */}
-          <rect x="36" y="312" width="528" height="124" rx="18" fill="#FFF7ED" stroke="#1C1917" strokeWidth="2.2" />
-          <text x="56" y="340" fill="#C2410C" fontSize="13.5" fontWeight="900" fontFamily={FONT}>
-            ① 一句话定心丸 · {d.verdictLabel}
-          </text>
-          {reassLines.map((line, i) => (
-            <text key={i} x="56" y={369 + i * 25} fill="#1C1917" fontSize="18" fontWeight="800" fontFamily={FONT}>
-              {line}
-            </text>
-          ))}
-
-          {/* ② 身体到底发生了什么 */}
-          <rect x="36" y="454" width="528" height="132" rx="16" fill="#FFFFFF" stroke="#E4DDD3" strokeWidth="1.5" />
-          <text x="56" y="481" fill="#78716C" fontSize="13" fontWeight="800" fontFamily={FONT}>
-            ② 身体到底发生了什么
-          </text>
-          {sciLines.map((line, i) => (
-            <text key={i} x="56" y={506 + i * 22} fill="#292524" fontSize="15" fontWeight="500" fontFamily={FONT}>
-              {line}
-            </text>
-          ))}
-
-          {/* ③ 此刻最省心的做法 */}
-          <rect x="36" y="600" width="528" height="114" rx="16" fill="#FFFFFF" stroke="#E4DDD3" strokeWidth="1.5" />
-          <text x="56" y="627" fill="#C2410C" fontSize="13" fontWeight="800" fontFamily={FONT}>
-            ③ 此刻最省心的做法（零商业带货）
-          </text>
-          {actLines.map((line, i) => (
-            <text key={i} x="56" y={652 + i * 22} fill="#1C1917" fontSize="15" fontWeight="600" fontFamily={FONT}>
-              {line}
-            </text>
-          ))}
-
-          {/* 底部权威信源 + 红线声明 */}
-          <line x1="36" y1="734" x2="564" y2="734" stroke="#E4DDD3" strokeWidth="1.5" />
-          <text x="36" y="758" fill="#1C1917" fontSize="12.5" fontWeight="800" fontFamily={FONT}>
-            权威信源：{sourceText}
-          </text>
-          <text x="36" y="780" fill="#78716C" fontSize="11.5" fontWeight="600" fontFamily={FONT}>
-            health.heystone.site · 零带货 · 零医疗诊断 · 仅引一线权威指南
-          </text>
-        </svg>
+            <div className="border-t border-line pt-2.5 text-[10px] text-ink-soft">
+              <p className="font-bold text-ink">
+                权威信源：{d.sources.map((s) => `${s.org} (${s.year})`).join(" · ")}
+              </p>
+              <p className="mt-0.5">health.heystone.site · 零带货 · 零医疗诊断</p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* 一键操作栏 */}
+      {/* 一键导出与复制栏 */}
       <div className="flex flex-wrap gap-2">
         <button
           type="button"
@@ -226,7 +295,7 @@ export default function DilemmaShareCard({
           disabled={saving}
           className="btn flex-1 justify-center !py-2.5 text-xs"
         >
-          {saving ? "正在生成高清 PNG…" : "保存定心丸图 (3:4 PNG)"}
+          {saving ? "正在合成高清 PNG…" : "保存带图解定心丸 (3:4 PNG)"}
         </button>
         <button
           type="button"

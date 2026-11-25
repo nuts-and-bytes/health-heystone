@@ -1,4 +1,4 @@
-export type DilemmaTrack = "fitness-eat" | "fitness-train" | "women";
+export type DilemmaTrack = "fitness" | "women" | "daily";
 export type DilemmaVerdict = "ok" | "adjust" | "stop";
 export type EvidenceLevel = "强证据" | "中等证据" | "有限证据";
 
@@ -30,9 +30,9 @@ export interface Dilemma {
 }
 
 export const TRACK_META: Record<DilemmaTrack, { label: string; sub: string }> = {
-  "fitness-eat": { label: "健身吃喝", sub: "放纵餐 · 饮料 · 营养时机" },
-  "fitness-train": { label: "训练体感", sub: "熬夜 · 酸痛 · 恢复与频率" },
-  women: { label: "女性状态", sub: "经期 · 体态 · 皮肤与能量红线" },
+  fitness: { label: "健身", sub: "吃喝 · 训练 · 恢复与体感" },
+  women: { label: "女性", sub: "经期 · 体态 · 皮肤与能量红线" },
+  daily: { label: "日常普适", sub: "跑步 · 步数 · 睡眠与饮食经典" },
 };
 
 export const DILEMMA_VERDICT_META: Record<
@@ -60,7 +60,7 @@ export const DILEMMAS: Dilemma[] = [
   // ==================== 一、健身人群 · 吃喝与放纵餐纠结（10 题） ====================
   {
     slug: "post-workout-kfc-cola",
-    track: "fitness-eat",
+    track: "fitness",
     shortTag: "练完吃 KFC 会白练吗",
     question: "今天健身了，去吃 KFC / 麦当劳喝可乐，会白练吗？",
     verdict: "ok",
@@ -83,7 +83,7 @@ export const DILEMMAS: Dilemma[] = [
   },
   {
     slug: "zero-cola-fat-loss",
-    track: "fitness-eat",
+    track: "fitness",
     shortTag: "喝无糖可乐会胖吗",
     question: "减脂期喝无糖可乐 / 零度可乐，到底会不会长胖？",
     verdict: "adjust",
@@ -105,7 +105,7 @@ export const DILEMMAS: Dilemma[] = [
   },
   {
     slug: "hotpot-gain-2jin",
-    track: "fitness-eat",
+    track: "fitness",
     shortTag: "大餐后重 2 斤怎么办",
     question: "昨晚吃了一顿火锅/烧烤，今早重了 2 斤，是长胖了吗？要断食补救吗？",
     verdict: "ok",
@@ -129,7 +129,7 @@ export const DILEMMAS: Dilemma[] = [
   },
   {
     slug: "anabolic-window-30min",
-    track: "fitness-eat",
+    track: "fitness",
     shortTag: "练完半小时必须喝蛋白粉吗",
     question: "练完半小时内不喝蛋白粉或不吃饭，肌肉就会掉吗？",
     verdict: "ok",
@@ -152,7 +152,7 @@ export const DILEMMAS: Dilemma[] = [
   },
   {
     slug: "alcohol-after-workout",
-    track: "fitness-eat",
+    track: "fitness",
     shortTag: "健身期聚餐喝酒影响多大",
     question: "健身期聚餐喝了酒（啤酒/微醺小酒），对增肌减脂影响多大？",
     verdict: "adjust",
@@ -175,7 +175,7 @@ export const DILEMMAS: Dilemma[] = [
   },
   {
     slug: "milk-tea-fat-loss",
-    track: "fitness-eat",
+    track: "fitness",
     shortTag: "减脂期能喝奶茶吗",
     question: "减脂期能喝奶茶吗？点三分糖 / 不加小料行不行？",
     verdict: "adjust",
@@ -198,7 +198,7 @@ export const DILEMMAS: Dilemma[] = [
   },
   {
     slug: "iced-americano-preworkout",
-    track: "fitness-eat",
+    track: "fitness",
     shortTag: "练前喝冰美式心慌怎么办",
     question: "练前喝冰美式真的能多燃脂吗？喝完心慌还能练吗？",
     verdict: "adjust",
@@ -221,7 +221,7 @@ export const DILEMMAS: Dilemma[] = [
   },
   {
     slug: "fasted-cardio",
-    track: "fitness-eat",
+    track: "fitness",
     shortTag: "空腹有氧更掉脂吗",
     question: "空腹有氧（早起不吃饭去跑步/爬坡）真的比吃饱了更掉脂肪吗？",
     verdict: "ok",
@@ -245,7 +245,7 @@ export const DILEMMAS: Dilemma[] = [
   },
   {
     slug: "eat-after-9pm-workout",
-    track: "fitness-eat",
+    track: "fitness",
     shortTag: "晚上 9 点练完能吃饭吗",
     question: "晚上 9 点以后练完，还能不能吃晚饭？吃了会胖吗？",
     verdict: "ok",
@@ -268,7 +268,7 @@ export const DILEMMAS: Dilemma[] = [
   },
   {
     slug: "are-supplements-necessary",
-    track: "fitness-eat",
+    track: "fitness",
     shortTag: "蛋白粉和肌酸必须吃吗",
     question: "普通人健身，蛋白粉、肌酸、氮泵这些补剂是必须吃的吗？",
     verdict: "ok",
@@ -294,7 +294,7 @@ export const DILEMMAS: Dilemma[] = [
   // ==================== 二、健身人群 · 训练体感与恢复纠结（8 题） ====================
   {
     slug: "stay-up-late-workout",
-    track: "fitness-train",
+    track: "fitness",
     shortTag: "熬夜到 2 点明天还练吗",
     question: "昨晚熬夜到 2 点，今天早起还该不该去健身？",
     verdict: "stop",
@@ -318,7 +318,7 @@ export const DILEMMAS: Dilemma[] = [
   },
   {
     slug: "no-soreness-wasted",
-    track: "fitness-train",
+    track: "fitness",
     shortTag: "练完不酸是白练吗",
     question: "练完第二天肌肉完全不酸，是不是白练了？",
     verdict: "ok",
@@ -340,7 +340,7 @@ export const DILEMMAS: Dilemma[] = [
   },
   {
     slug: "dizzy-after-leg-day",
-    track: "fitness-train",
+    track: "fitness",
     shortTag: "练腿头晕恶心正常吗",
     question: "练完腿 / 硬拉觉得头晕、恶心、眼前发黑，正常吗？",
     verdict: "stop",
@@ -363,7 +363,7 @@ export const DILEMMAS: Dilemma[] = [
   },
   {
     slug: "twice-a-week-enough",
-    track: "fitness-train",
+    track: "fitness",
     shortTag: "一周只练 2 次有用吗",
     question: "上班/上学太忙，一周只能练 2 次，或每次只练 25 分钟，还有用吗？",
     verdict: "ok",
@@ -386,7 +386,7 @@ export const DILEMMAS: Dilemma[] = [
   },
   {
     slug: "beginner-weight-gain",
-    track: "fitness-train",
+    track: "fitness",
     shortTag: "新手健身重了 2 斤",
     question: "刚开始健身满一个月，怎么体重反而重了 1–2 斤？",
     verdict: "ok",
@@ -408,7 +408,7 @@ export const DILEMMAS: Dilemma[] = [
   },
   {
     slug: "workout-with-cold",
-    track: "fitness-train",
+    track: "fitness",
     shortTag: "感冒发烧能出汗排毒吗",
     question: "感冒、嗓子疼或有点低烧，还能去健身「出出汗排毒」吗？",
     verdict: "stop",
@@ -431,7 +431,7 @@ export const DILEMMAS: Dilemma[] = [
   },
   {
     slug: "cardio-only-no-weights",
-    track: "fitness-train",
+    track: "fitness",
     shortTag: "只做有氧不撸铁行吗",
     question: "只做有氧（跑步 / 帕梅拉 / 跳操）不撸铁，能瘦出好看线条吗？",
     verdict: "adjust",
@@ -454,7 +454,7 @@ export const DILEMMAS: Dilemma[] = [
   },
   {
     slug: "train-sore-muscle-next-day",
-    track: "fitness-train",
+    track: "fitness",
     shortTag: "酸痛没好能接着练吗",
     question: "同一个部位酸痛还没完全好，隔天能接着练吗？",
     verdict: "adjust",
@@ -710,6 +710,148 @@ export const DILEMMAS: Dilemma[] = [
     ],
     redLine: "若长期极度乏力、面色苍白、畏寒或莫名水肿，建议挂全科/内分泌科查血常规、铁蛋白、维生素 D 与甲状腺功能；本站不推荐任何补剂或茶饮品牌。",
     keywords: ["气血茶", "抗炎", "补剂", "怎么睡都累", "脸黄", "熬夜", "疲惫", "缺铁"],
+  },
+
+  // ==================== 四、日常普适 · 人人都关心的经典纠结（6 题） ====================
+  {
+    slug: "running-hurts-knees",
+    track: "daily",
+    shortTag: "跑步真的伤膝盖吗",
+    question: "跑步到底伤不伤膝盖？是不是跑多了膝盖就废了？",
+    verdict: "ok",
+    verdictLabel: "规律慢跑反而护膝，久坐才更伤",
+    reassurance: "放心跑！多项大型研究发现，休闲规律跑步人群的膝关节炎发生率，反而比长期久坐不动的人更低。",
+    debate: {
+      sideA: "楼下大爷说跑多了半月板磨没了，老了走不动路。",
+      sideB: "膝盖软骨像海绵，需要适度压缩才能吸水获得营养。",
+    },
+    science:
+      "关节软骨没有直接血管，靠规律负重挤压像海绵一样「压出旧液、吸进滑液营养」。JOSPT 荟萃分析（涵盖 11 万余人）显示，休闲跑者膝/髋关节炎患病率约 3.5%，明显低于久坐人群的 10.2%——真正伤膝盖的是体重过大突然猛加跑量、肌力不足或带伤硬跑。",
+    actionNow:
+      "从慢跑/快走交替起步，每周跑量增幅不超过 10%，顺手配合每周 2 次臀腿力量训练给膝盖「减震」。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "PubMed", title: "Alentorn-Geli et al., The Association of Recreational and Competitive Running With Hip and Knee Osteoarthritis (JOSPT)", year: 2017 },
+      { org: "ACSM", title: "Exercise and Osteoarthritis Clinical Consensus", year: 2020 },
+    ],
+    redLine: "如果跑步时或跑后出现膝盖持续锐痛、肿胀、卡顿或上下楼明显刺痛，请先停跑并挂运动医学科/骨科评估。",
+    keywords: ["跑步", "伤膝盖", "膝盖", "半月板", "关节炎", "慢跑"],
+  },
+  {
+    slug: "ten-thousand-steps",
+    track: "daily",
+    shortTag: "每天必须走够一万步吗",
+    question: "每天必须走够一万步才健康吗？微信步数没破万今天白走了？",
+    verdict: "ok",
+    verdictLabel: "不用死磕一万步，7,000–8,000 步收益已接近封顶",
+    reassurance: "「日行万步」最早只是 1965 年日本计步器的营销口号！每天多走 2,000 步就已经开始显著获益了。",
+    debate: {
+      sideA: "不到一万步不算有效运动，睡前也要在客厅原地凑满。",
+      sideB: "大规模研究显示走到 7,000–8,000 步死亡风险下降就已经非常明显了。",
+    },
+    science:
+      "《柳叶刀·公共卫生》（Lancet Public Health）汇总 15 项队列研究（近 5 万人）指出：60 岁以上人群每天约 6,000–8,000 步、60 岁以下约 8,000–10,000 步时，全因死亡风险下降趋于平台期；从 3,000 步涨到 6,000 步的边际收益最大。",
+    actionNow:
+      "别被手机步数绑架：比平时每天多走 15–20 分钟（约多 2,000 步）就是实打实的进步，有空再加点力量训练更全能。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "PubMed", title: "Paluch et al., Daily steps and all-cause mortality: a meta-analysis of 15 international cohorts (Lancet Public Health)", year: 2022 },
+      { org: "WHO", title: "Guidelines on Physical Activity and Sedentary Behaviour", year: 2020 },
+    ],
+    keywords: ["一万步", "10000步", "步数", "走路", "微信步数", "散步"],
+  },
+  {
+    slug: "egg-yolk-cholesterol",
+    track: "daily",
+    shortTag: "一天能吃几个蛋黄",
+    question: "每天吃鸡蛋要把蛋黄扔掉吗？吃多了会不会把胆固醇吃高？",
+    verdict: "ok",
+    verdictLabel: "健康人每天 1–2 个全蛋完全放心",
+    reassurance: "别再冤枉蛋黄扔掉了！人体血液里的胆固醇约 70%–80% 是肝脏自己合成的，不是吃个蛋黄直接涨上去的。",
+    debate: {
+      sideA: "蛋黄胆固醇高，吃超过 1 个就会堵血管。",
+      sideB: "我天天吃 2 个水煮蛋，体检血脂照样全绿。",
+    },
+    science:
+      "美国膳食指南与《中国居民膳食指南（2022）》均已取消对健康人群「膳食胆固醇上限 300mg」的死规定。真正推高坏胆固醇（LDL-C）的头号元凶是饱和脂肪和反式脂肪，而不是水煮蛋里的蛋黄（蛋黄还富含卵磷脂、胆碱与维生素 D）。",
+    actionNow:
+      "健康成年人每天吃 1–2 个全蛋（水煮、蒸蛋、少油煎蛋）非常稳妥；把注意力放在少吃油炸糕点和肥肉上更有用。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "中国营养学会", title: "《中国居民膳食指南（2022）》蛋类摄入建议", year: 2022 },
+      { org: "PubMed", title: "Drouin-Chartier et al., Egg consumption and risk of cardiovascular disease (BMJ)", year: 2020 },
+    ],
+    redLine: "已确诊高胆固醇血症、冠心病或糖尿病患者，每日蛋黄及饮食控脂方案请遵心内科/营养科医生建议。",
+    keywords: ["蛋黄", "鸡蛋", "胆固醇", "血脂", "水煮蛋"],
+  },
+  {
+    slug: "bed-rest-recovery",
+    track: "daily",
+    shortTag: "受伤或术后躺着静养最好吗",
+    question: "扭伤、腰痛或手术之后，是不是完全卧床静养恢复最快？",
+    verdict: "adjust",
+    verdictLabel: "急性期短休后，在医生允许下尽早温和活动",
+    reassurance: "一直躺着不动反而让肌肉像泄气的气球一样飞速流失！现代康复医学更强调「安全前提下尽早动起来」。",
+    debate: {
+      sideA: "伤筋动骨一百天，必须天天躺床上一点别动。",
+      sideB: "骨科医生现在术后第二天就催着下床康复，躺太久反而血栓又掉肌。",
+    },
+    science:
+      "临床研究显示，健康人完全卧床短短 7–10 天，下肢肌肉量与肌力就会出现明显下滑，同时增加下肢深静脉血栓和关节僵硬风险。除明确需要制动固定的骨折/急性期外，循序渐进的早期康复活动恢复更快。",
+    actionNow:
+      "遇到扭伤、腰痛或术后恢复，问清医生「什么时候可以开始、哪些动作能做」，在无剧痛范围内尽早恢复日常温和活动。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "PubMed", title: "Kortebein et al., Effect of 10 days of bed rest on skeletal muscle in healthy adults (JAMA)", year: 2007 },
+      { org: "ACSM", title: "Early Mobilization and Rehabilitation Principles", year: 2020 },
+    ],
+    redLine: "骨折、韧带撕裂、术后或急性腰椎间盘突出发作期间，所有康复启动时机必须严格遵照主治骨科/康复科医嘱。",
+    keywords: ["静养", "卧床", "术后", "扭伤", "腰痛", "躺着"],
+  },
+  {
+    slug: "weekend-catchup-sleep",
+    track: "daily",
+    shortTag: "周末补觉能补回熬夜吗",
+    question: "工作日天天熬夜，周末狂睡到中午，能把缺的觉补回来吗？",
+    verdict: "adjust",
+    verdictLabel: "能稍微缓一缓，但补不满长期睡眠债",
+    reassurance: "周末适度多睡 1–2 小时确实比硬扛强，但指望靠周末睡懒觉抵消周一到周五的熬夜，代谢和昼夜节律还是会吃亏。",
+    debate: {
+      sideA: "工作日只睡 5 小时，周六睡 12 小时就扯平了。",
+      sideB: "周末越睡越昏沉，周一更起不来，还变胖。",
+    },
+    science:
+      "《当代生物学》（Current Biology）对照实验表明，工作日长期睡眠不足即使周末放开补觉，胰岛素敏感性下降和晚间进食增多的代谢紊乱仍无法完全逆转；且周末起床时间推迟超过 2 小时会导致「社交时差」，打乱下周生物钟。",
+    actionNow:
+      "周末补觉尽量比平时晚起不超过 1–1.5 小时，下午实在困补个 20 分钟小睡，最治本的还是把工作日入睡时间往前挪 30 分钟。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "PubMed", title: "Depner et al., Ad libitum Weekend Recovery Sleep Fails to Prevent Metabolic Dysregulation (Current Biology)", year: 2019 },
+    ],
+    keywords: ["补觉", "周末补觉", "熬夜", "睡眠债", "睡懒觉"],
+  },
+  {
+    slug: "eight-cups-water",
+    track: "daily",
+    shortTag: "每天必须喝够 8 杯水吗",
+    question: "每天必须硬灌够 8 杯水才算健康吗？喝不够会伤身体吗？",
+    verdict: "ok",
+    verdictLabel: "不必死磕 8 杯，看口渴感与淡柠檬尿色",
+    reassurance: "别拿着大水壶硬灌自己了！蔬菜、水果、汤粥、牛奶和茶里的水全算在每日水分摄入里。",
+    debate: {
+      sideA: "每天必须喝满 2000ml 白开水，少一口都算缺水。",
+      sideB: "每个人体重、气温、出汗量都不一样，渴了喝就行。",
+    },
+    science:
+      "《科学》（Science）一项涵盖 5,600 余人的同位素示踪研究证实，人体每日需水量因体型、气温、湿度与运动量差异巨大，并无放之四海而皆准的「8 杯」铁律，且日常食物本身就贡献了约 20%–30% 的水分。",
+    actionNow:
+      "两个最靠谱的自测法：别等极度口渴才喝，日常小口常饮；看小便颜色保持在「清亮到淡柠檬黄」就说明水分刚刚好。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "PubMed", title: "Yamada et al., Variation in human water turnover associated with environmental and lifestyle factors (Science)", year: 2022 },
+      { org: "中国营养学会", title: "《中国居民膳食指南（2022）》饮水建议", year: 2022 },
+    ],
+    keywords: ["8杯水", "八杯水", "喝水", "2000ml", "补水"],
   },
 ];
 

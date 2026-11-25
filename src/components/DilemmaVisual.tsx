@@ -3,9 +3,9 @@
 import type { Dilemma } from "@/data/dilemmas";
 import StickScene from "./StickScene";
 
-/** 为每道高频纠结匹配专属手绘橙线 <stick-scene> 互动场景 */
-const SCENE_MAP: Record<string, { scene: string; caption: string }> = {
-  // 健身吃喝
+/** 为每道高频纠结匹配专属手绘橙线 <stick-scene> 互动场景（写入 AGENTS.md 铁律） */
+export const SCENE_MAP: Record<string, { scene: string; caption: string }> = {
+  // 健身
   "post-workout-kfc-cola": { scene: "dilemma-kfc-balance", caption: "点击看：一顿快餐 vs 一周总账天平" },
   "zero-cola-fat-loss": { scene: "dilemma-zero-cola", caption: "点击看：0卡血糖线与白开水对比" },
   "hotpot-gain-2jin": { scene: "dilemma-water-scale", caption: "点击看：水分排出后秤针自然回落" },
@@ -16,8 +16,6 @@ const SCENE_MAP: Record<string, { scene: string; caption: string }> = {
   "fasted-cardio": { scene: "fat-tank", caption: "点击看：空腹与进食的全天总脂肪账本" },
   "eat-after-9pm-workout": { scene: "dilemma-protein-window", caption: "点击看：晚练后补足全天蛋白不额外长胖" },
   "are-supplements-necessary": { scene: "dilemma-protein-window", caption: "点击看：三餐蛋白才是 90% 地基" },
-
-  // 训练体感
   "stay-up-late-workout": { scene: "sleep-bank", caption: "点击看：睡眠罐透支时硬练反而掉恢复" },
   "no-soreness-wasted": { scene: "lactate-doms", caption: "点击看：乳酸1小时排空，不酸照样在修复" },
   "dizzy-after-leg-day": { scene: "dilemma-red-flag", caption: "点击看：练腿发黑立刻拉下暂停键" },
@@ -27,7 +25,7 @@ const SCENE_MAP: Record<string, { scene: string; caption: string }> = {
   "cardio-only-no-weights": { scene: "move-push", caption: "点击看：加上基础力量稳住代谢与线条" },
   "train-sore-muscle-next-day": { scene: "bed-balloon", caption: "点击看：张弛有度，给肌纤维留出修复期" },
 
-  // 女性状态
+  // 女性
   "period-workout-glutes-core": { scene: "dilemma-period-pace", caption: "点击看：按当天体感把强度旋钮调到舒适档" },
   "period-iced-americano": { scene: "dilemma-period-pace", caption: "点击看：敏感就换温热，体感舒服别焦虑" },
   "pms-cravings-bloating": { scene: "dilemma-water-scale", caption: "点击看：黄体期锁水波动，经后自然回落" },
@@ -38,13 +36,33 @@ const SCENE_MAP: Record<string, { scene: string; caption: string }> = {
   "female-body-fat-lower-better": { scene: "dilemma-red-flag", caption: "点击看：过度压低体脂会触发能量警报" },
   "crunches-lower-belly-postpartum": { scene: "move-plank", caption: "点击看：核心稳定比盲目卷腹更护腰腹" },
   "tired-anti-inflammatory-supplements": { scene: "sleep-bank", caption: "点击看：先补满睡眠罐，比网红补剂管用十倍" },
+
+  // 日常普适
+  "running-hurts-knees": { scene: "knee-sponge", caption: "点击看：膝盖软骨像海绵，规律慢跑反而促营养" },
+  "ten-thousand-steps": { scene: "step-stairs", caption: "点击看：步数收益阶梯，7000–8000步已很强" },
+  "egg-yolk-cholesterol": { scene: "cholesterol-truck", caption: "点击看：血液胆固醇大多由肝脏自产，别冤枉蛋黄" },
+  "bed-rest-recovery": { scene: "bed-balloon", caption: "点击看：长期躺床肌肉会像气球一样泄气" },
+  "weekend-catchup-sleep": { scene: "sleep-bank", caption: "点击看：工作日透支睡眠，周末罐口有裂缝补不满" },
+  "eight-cups-water": { scene: "dilemma-eight-cups", caption: "点击看：划掉死磕8杯水，看淡柠檬色标准" },
 };
 
-export default function DilemmaVisual({ dilemma }: { dilemma: Dilemma }) {
-  const cfg = SCENE_MAP[dilemma.slug] ?? {
-    scene: "dilemma-kfc-balance",
-    caption: "点一下小人互动演示",
-  };
+export function getDilemmaScene(slug: string) {
+  return (
+    SCENE_MAP[slug] ?? {
+      scene: "dilemma-kfc-balance",
+      caption: "点一下小人互动演示",
+    }
+  );
+}
+
+export default function DilemmaVisual({
+  dilemma,
+  height = 196,
+}: {
+  dilemma: Dilemma;
+  height?: number;
+}) {
+  const cfg = getDilemmaScene(dilemma.slug);
 
   return (
     <StickScene
@@ -52,7 +70,7 @@ export default function DilemmaVisual({ dilemma }: { dilemma: Dilemma }) {
       scene={cfg.scene}
       caption={cfg.caption}
       play="click"
-      height={196}
+      height={height}
       compact
     />
   );
