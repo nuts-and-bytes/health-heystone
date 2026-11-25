@@ -183,7 +183,8 @@ export default function PodcastStudio() {
   const [showPresets, setShowPresets] = useState(false);
   const qaAbortRef = useRef<AbortController | null>(null);
   const qaEndRef = useRef<HTMLDivElement>(null);
-  const activeSubRef = useRef<HTMLButtonElement>(null);
+  const activeCueRef = useRef<HTMLButtonElement>(null);
+  const cueListRef = useRef<HTMLDivElement>(null);
 
   const checkAiStatus = async () => {
     try {
@@ -247,13 +248,6 @@ export default function PodcastStudio() {
     setGuideError("");
     setQaError("");
   }, [ep.id]);
-
-  // 字幕跟随播放滚动
-  useEffect(() => {
-    if (audio.playing && rightTab === "subtitle" && activeSubRef.current) {
-      activeSubRef.current.scrollIntoView({ block: "nearest", behavior: "smooth" });
-    }
-  }, [audio.activeSegIndex, audio.playing, rightTab]);
 
   // 问答流式输出时滚到底部
   useEffect(() => {
@@ -489,6 +483,19 @@ export default function PodcastStudio() {
     }
     return idx;
   }, [allChapters, audio.currentTime]);
+
+  // 也跟随暂停时的定位，只滚动字幕栏，避免窄窗口跳离播放器。
+  useEffect(() => {
+    const list = cueListRef.current;
+    const cue = activeCueRef.current;
+    if (rightTab !== "subtitle" || !list || !cue) return;
+    const visible = list.getBoundingClientRect();
+    const active = cue.getBoundingClientRect();
+    const offset = active.top < visible.top ? active.top - visible.top : Math.max(0, active.bottom - visible.bottom);
+    if (!offset) return;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    list.scrollBy({ top: offset, behavior: audio.playing && !reduceMotion ? "smooth" : "instant" });
+  }, [activeChapterIdx, audio.activeSegIndex, audio.playing, query, rightTab]);
 
   const currentLine =
     audio.transcript && audio.activeSegIndex >= 0
@@ -898,7 +905,7 @@ export default function PodcastStudio() {
 
             {/* Tab 1: 简体字幕（自动高亮并滚入视野） */}
             {rightTab === "subtitle" && (
-              <div className="mt-3 min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
+              <div ref={cueListRef} className="mt-3 min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
                 {q && (visibleSubtitles?.length ?? visibleChapters.length) === 0 && (
                   <p role="status" className="px-3 py-4 text-sm text-ink-soft">本集没有匹配的{subtitleLabel}。</p>
                 )}
@@ -909,7 +916,8 @@ export default function PodcastStudio() {
                       return (
                         <button
                           key={i}
-                          ref={isNow ? activeSubRef : undefined}
+                          ref={isNow ? activeCueRef : undefined}
+                          aria-current={isNow ? "time" : undefined}
                           onClick={() => jumpTo(s.start)}
                           className={`flex w-full cursor-pointer items-start gap-2.5 rounded-xl border px-3 py-2 text-left text-sm transition ${
                             isNow ? "border-accent/40 bg-accent-soft/65" : "border-transparent hover:bg-cream"
@@ -925,10 +933,12 @@ export default function PodcastStudio() {
                 ) : (
                   visibleChapters
                     .map((ch) => {
-                      const isNow = ch.time === allChapters[activeChapterIdx]?.time;
+                      const isNow = !q && ch.time === allChapters[activeChapterIdx]?.time;
                       return (
                         <button
                           key={ch.time}
+                          ref={isNow ? activeCueRef : undefined}
+                          aria-current={isNow ? "time" : undefined}
                           onClick={() => jumpTo(timeToSec(ch.time))}
                           className={`flex w-full cursor-pointer items-start gap-2.5 rounded-xl border px-3 py-2 text-left text-sm transition ${
                             isNow ? "border-accent/40 bg-accent-soft/65" : "border-transparent hover:bg-cream"
