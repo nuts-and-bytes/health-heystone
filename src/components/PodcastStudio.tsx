@@ -778,9 +778,9 @@ export default function PodcastStudio() {
               </div>
             </div>
 
-            {/* Tab 1: 简体字幕（自动高亮并滚入视野） */}
+            {/* Tab 1: 简体字幕（自动高亮并滚入视野；手机端限高避免 2800 行把页面撑超长） */}
             {rightTab === "subtitle" && (
-              <div className="mt-3 min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
+              <div className="mt-3 max-h-[56dvh] min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1 md:max-h-none">
                 {audio.transcript ? (
                   audio.transcript
                     .filter((s) => !q || s.text.toLowerCase().includes(q))
