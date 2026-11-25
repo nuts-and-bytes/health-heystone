@@ -24,6 +24,9 @@ export const SCENE_MAP: Record<string, { scene: string; caption: string }> = {
   "workout-with-cold": { scene: "dilemma-red-flag", caption: "点击看：发热期停练保护心肌能量条" },
   "cardio-only-no-weights": { scene: "move-push", caption: "点击看：加上基础力量稳住代谢与线条" },
   "train-sore-muscle-next-day": { scene: "bed-balloon", caption: "点击看：张弛有度，给肌纤维留出修复期" },
+  "electrolyte-water-needed": { scene: "dilemma-electrolyte-timer", caption: "点击看：1小时内喝白水，超1小时暴汗补电解质" },
+  "no-stretch-bulky-muscle": { scene: "dilemma-stretch-spring", caption: "点击看：温和拉伸恢复弹性，告别死疙瘩焦虑" },
+  "massage-gun-neck-danger": { scene: "dilemma-massage-gun", caption: "点击看：避开颈部骨突禁区，只轻扫大块肌肉" },
 
   // 女性
   "period-workout-glutes-core": { scene: "dilemma-period-pace", caption: "点击看：按当天体感把强度旋钮调到舒适档" },
@@ -44,6 +47,8 @@ export const SCENE_MAP: Record<string, { scene: string; caption: string }> = {
   "cold-hands-dizzy-iron": { scene: "women-iron-battery", caption: "点击看：放慢起身 + 血常规与铁蛋白排查" },
   "collagen-peptide-drinks": { scene: "women-collagen-brick", caption: "点击看：胶原拆成普通氨基酸，防晒睡眠是真地基" },
   "running-leak-pelvic-floor": { scene: "women-pelvic-hammock", caption: "点击看：练紧盆底肌吊床，稳稳托住跑跳压力" },
+  "breast-hyperplasia-cancer": { scene: "women-breast-birads", caption: "点击看：看懂 BI-RADS 分级，1–2类定期复查别恐慌" },
+  "sports-bra-all-day": { scene: "women-sports-bra", caption: "点击看：运动穿稳支撑，日常与睡觉换宽松" },
 
   // 日常普适
   "running-hurts-knees": { scene: "knee-sponge", caption: "点击看：膝盖软骨像海绵，规律慢跑反而促营养" },

@@ -475,6 +475,76 @@ export const DILEMMAS: Dilemma[] = [
     redLine: "如果出现的是关节尖锐刺痛、局部肿胀淤青或单侧放射性疼痛，绝非正常酸痛，请立刻停练并就医评估。",
     keywords: ["酸痛", "隔天", "接着练", "以痛攻痛", "排酸", "恢复"],
   },
+  {
+    slug: "electrolyte-water-needed",
+    track: "fitness",
+    shortTag: "健身一定要喝电解质水吗",
+    question: "健身出汗一定要喝电解质水吗？还是智商税？",
+    verdict: "adjust",
+    verdictLabel: "常规 1 小时内喝白水就够，暴汗长训再补",
+    reassurance: "在空调房练 40 分钟普通力量或慢跑，喝白开水完全够用，没必要跟风每顿都买含糖电解质饮料！",
+    debate: {
+      sideA: "出汗会流失钠钾，健身不喝电解质水容易抽筋脱水。",
+      sideB: "普通人练一小时根本流不了多少电解质，三餐里的盐早就够补了。",
+    },
+    science:
+      "ACSM 运动补液立场声明指出：在 60 分钟以内的中低强度训练中，白开水配合正常三餐即可满足水分与电解质需求；只有持续超过 60–90 分钟的高强度训练、高温高湿户外暴汗或明显出现抽筋乏力时，补充含钠/钾的电解质水才真正有必要。",
+    actionNow:
+      "常规健身带一瓶白开水小口常饮；高温暴汗长跑时可选低糖/无糖电解质饮或淡盐水+香蕉。留意配料表，别把高糖运动饮料当水喝。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "ACSM", title: "Exercise and Fluid Replacement Position Stand", year: 2007 },
+      { org: "ISSN", title: "Sports Nutrition Review & Hydration Recommendations", year: 2018 },
+    ],
+    keywords: ["电解质水", "运动饮料", "补液", "出汗", "抽筋", "智商税"],
+  },
+  {
+    slug: "no-stretch-bulky-muscle",
+    track: "fitness",
+    shortTag: "练完不拉伸肌肉会变死疙瘩吗",
+    question: "练完太累直接躺了，不拉伸肌肉真的会变硬、变粗成「死疙瘩」吗？",
+    verdict: "ok",
+    verdictLabel: "不会变死疙瘩，但练后温和拉伸很舒服",
+    reassurance: "放心！肌肉形状主要由基因和肌腱附着点决定，不会因为今天忘了拉伸就突然长成一坨硬疙瘩。",
+    debate: {
+      sideA: "跑完步不拉伸小腿，一周直接变肌肉萝卜腿！",
+      sideB: "拉伸只能改善柔韧度和放松紧绷感，根本改变不了肌肉长相。",
+    },
+    science:
+      "运动生理学研究表明，练后觉得小腿或手臂「变硬变鼓」只是短期肌肉充血泵感，几小时后会自然消退；静态拉伸无法改变肌纤维附着形态，但能温和改善关节活动度、缓解局部紧张。注意练前宜做动态热身，而非长时间静态拉伸。",
+    actionNow:
+      "练前花 5 分钟做动态热身（高抬腿、徒手深蹲、绕肩）；练后如果时间允许，给今天练过的肌群各做 15–30 秒温和静态拉伸，没空跳过也不用焦虑。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "ACSM", title: "Quantity and Quality of Exercise: Flexibility & Stretching Guidance", year: 2011 },
+      { org: "PubMed", title: "Behm et al., Acute effects of muscle stretching on physical performance and range of motion", year: 2016 },
+    ],
+    keywords: ["拉伸", "不拉伸", "死疙瘩", "萝卜腿", "变硬", "静态拉伸", "热身"],
+  },
+  {
+    slug: "massage-gun-neck-danger",
+    track: "fitness",
+    shortTag: "筋膜枪能打脖子吗",
+    question: "筋膜枪哪里都能打吗？脖子酸拿筋膜枪打行不行？",
+    verdict: "stop",
+    verdictLabel: "严禁打颈部与骨突，只能轻扫大块肌肉",
+    reassurance: "脖子酸千万别拿筋膜枪狂怼！颈部血管和神经极其表浅，确实有打脖子引发头晕甚至血管夹层的急诊病例。",
+    debate: {
+      sideA: "加班脖子僵得要命，拿筋膜枪开最大档打两分钟超爽。",
+      sideB: "康复科反复警告：颈前、颈侧、脊柱骨头和关节绝对不能打！",
+    },
+    science:
+      "筋膜枪通过高频机械叩击短暂放松软组织、降低主观酸痛感，仅适用于大腿、臀部、小腿肚、背阔肌等肌肉丰厚处。颈部两侧有颈动脉窦与椎动脉，高频强力冲击存在诱发血压骤降、晕厥或动脉内膜损伤的风险。",
+    actionNow:
+      "只在肌肉厚实的部位顺着肌纤维缓慢移动（同一部位不超过 1–2 分钟），避开颈部、脊椎正中、锁骨、膝盖骨、腋窝与腹股沟；脖子酸改用热敷和温和颈部伸展。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "PubMed", title: "Percussion massage therapy safety & carotid/vertebral artery dissection case reports", year: 2022 },
+      { org: "ACSM", title: "Safe Self-Myofascial Release Practices", year: 2020 },
+    ],
+    redLine: "高危安全红线：严禁击打颈部与骨突。若使用筋膜枪后出现突然头晕、视物模糊、剧烈头痛或肢体麻木，请立即停止并前往急诊/神经内科。",
+    keywords: ["筋膜枪", "脖子酸", "颈椎", "打脖子", "放松", "头晕"],
+  },
 
   // ==================== 三、女性健康 · 经期、体态与饮食焦虑（10 题） ====================
   {
@@ -899,6 +969,52 @@ export const DILEMMAS: Dilemma[] = [
     ],
     redLine: "若漏尿频率较高、伴随盆腔下坠感、排尿疼痛或产后长期未恢复，建议挂妇科泌尿门诊或盆底康复科做专业肌力评估，切勿网购来路不明的家用仪器。",
     keywords: ["漏尿", "跳绳漏尿", "跑步漏尿", "盆底肌", "凯格尔", "压力性尿失禁", "产后"],
+  },
+  {
+    slug: "breast-hyperplasia-cancer",
+    track: "women",
+    shortTag: "体检查出乳腺增生严重吗",
+    question: "体检超声查出「乳腺增生」，是不是离乳腺癌不远了？",
+    verdict: "ok",
+    verdictLabel: "绝大多数是良性生理变化，不是癌前病变",
+    reassurance: "别被「增生」两个字吓哭！育龄女性里乳腺增生极其普遍，绝大多数与经前激素波动有关，并不会直接变成乳腺癌。",
+    debate: {
+      sideA: "体检单写着乳腺增生，搜完网上吓得一夜没睡，赶紧买疏通按摩套餐！",
+      sideB: "乳腺科医生说 BI-RADS 1–2 类就是正常良性，规律作息按年复查就行。",
+    },
+    science:
+      "医学上单纯性乳腺增生多属雌孕激素周期波动引起的良性结构变化，常表现为经前乳房胀痛、经后缓解。判断风险的核心看超声报告里的 BI-RADS 分级：1–2 类为良性，3 类绝大多数仍为良性（按医嘱短期随访即可），切勿轻信美容院「精油开背/拨筋通乳」反而可能揉伤腺体。",
+    actionNow:
+      "翻开报告单先看 BI-RADS 级别：1–2 类放下心来、每年常规体检复查即可，平时少熬夜少生闷气、选不勒胸的内衣；不要花冤枉钱做暴力胸部按摩。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "ACOG", title: "Benign Breast Conditions & Breast Imaging Reporting (BI-RADS)", year: 2021 },
+      { org: "WHO", title: "Breast Cancer Early Detection & Benign Conditions Overview", year: 2023 },
+    ],
+    redLine: "若报告提示 BI-RADS 4 类及以上，或摸到质地硬、边界不清、无痛性肿块，以及单侧乳头血性溢液、皮肤橘皮样凹陷，请尽快挂正规医院乳腺外科面诊。",
+    keywords: ["乳腺增生", "乳腺结节", "BI-RADS", "胸胀", "乳腺癌", "体检"],
+  },
+  {
+    slug: "sports-bra-all-day",
+    track: "women",
+    shortTag: "运动内衣能穿一整天或睡觉吗",
+    question: "运动内衣能穿一整天甚至穿着睡觉吗？运动不穿真的会下垂吗？",
+    verdict: "adjust",
+    verdictLabel: "运动时必穿稳支撑，练完换宽松、睡觉解开",
+    reassurance: "分场景最省心：跑跳健身时一定要穿合适支撑度的运动内衣护住悬韧带，但平时和睡觉别一直穿着高强度压缩款勒自己。",
+    debate: {
+      sideA: "运动内衣没钢圈好舒服，我直接从早穿到晚甚至穿着睡。",
+      sideB: "高强度运动内衣压迫感强，练完出汗不换又闷又勒，容易闷痘胸胀。",
+    },
+    science:
+      "运动生物力学研究表明，跑步和跳跃时乳房上下及左右位移幅度较大，缺乏支撑会反复牵拉库珀悬韧带（Cooper's ligaments）并引发运动期乳房疼痛；但高强度压缩式运动内衣全天穿戴或潮湿久穿，容易造成局部压迫不适与皮肤闷热摩擦。",
+    actionNow:
+      "按运动冲击度选支撑：瑜伽/普拉提选低强度，力量/快走选中强度，跑步/跳绳选高强度；练完及时洗澡换回干爽宽松的日常内衣，睡觉尽量不穿内衣让胸部放松。",
+    evidenceLevel: "中等证据",
+    sources: [
+      { org: "PubMed", title: "McGhee & Steele, Biomechanics of Breast Support for Active Women (Exercise and Sport Sciences Reviews)", year: 2020 },
+    ],
+    keywords: ["运动内衣", "下垂", "副乳", "睡觉穿内衣", "悬韧带", "胸胀"],
   },
 
   // ==================== 四、日常普适 · 人人都关心的经典纠结（6 题） ====================
