@@ -1,11 +1,41 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { BrandMark } from "./Icons";
 import StickScene from "./StickScene";
 
 const CHEER_KEY = "health-heystone-cheers-v2";
+
+type CheerCounts = { oranges: number; coffees: number };
+
+function subscribeToCheerStorage(onChange: () => void) {
+  const handleStorage = (event: StorageEvent) => {
+    if (event.key === CHEER_KEY || event.key === null) onChange();
+  };
+  window.addEventListener("storage", handleStorage);
+  return () => window.removeEventListener("storage", handleStorage);
+}
+
+function readStoredCheers() {
+  try {
+    return localStorage.getItem(CHEER_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function parseCheerCounts(snapshot: string | null): CheerCounts {
+  try {
+    const saved = JSON.parse(snapshot ?? "null");
+    return {
+      oranges: Number.isSafeInteger(saved?.oranges) && saved.oranges > 0 ? saved.oranges : 0,
+      coffees: Number.isSafeInteger(saved?.coffees) && saved.coffees > 0 ? saved.coffees : 0,
+    };
+  } catch {
+    return { oranges: 0, coffees: 0 };
+  }
+}
 
 const TREAT_REPLIES = [
   "咔嚓一口小橘子，精力回满，继续帮你翻论文！",
@@ -26,29 +56,23 @@ const WHITELIST = [
 ];
 
 export default function AboutAuthor() {
-  const [oranges, setOranges] = useState(0);
-  const [coffees, setCoffees] = useState(0);
+  const savedCheers = useSyncExternalStore(subscribeToCheerStorage, readStoredCheers, () => null);
+  const [updatedCheers, setUpdatedCheers] = useState<CheerCounts | null>(null);
+  const { oranges, coffees } = updatedCheers ?? parseCheerCounts(savedCheers);
   const [triggerKey, setTriggerKey] = useState(0);
   const [bubble, setBubble] = useState("点下面投喂，或者直接戳画布里的小人互动 →");
   const [copied, setCopied] = useState<"" | "email" | "wechat">("");
 
-  useEffect(() => {
-    try {
-      const saved = JSON.parse(localStorage.getItem(CHEER_KEY) || "{}");
-      if (saved.oranges) setOranges(saved.oranges);
-      if (saved.coffees) setCoffees(saved.coffees);
-    } catch {}
-  }, []);
-
   const feed = (kind: "orange" | "coffee") => {
-    const nextO = kind === "orange" ? oranges + 1 : oranges;
-    const nextC = kind === "coffee" ? coffees + 1 : coffees;
-    setOranges(nextO);
-    setCoffees(nextC);
+    const next = {
+      oranges: kind === "orange" ? oranges + 1 : oranges,
+      coffees: kind === "coffee" ? coffees + 1 : coffees,
+    };
+    setUpdatedCheers(next);
     setTriggerKey((k) => k + 1);
-    setBubble(TREAT_REPLIES[(nextO + nextC - 1) % TREAT_REPLIES.length]);
+    setBubble(TREAT_REPLIES[(next.oranges + next.coffees - 1) % TREAT_REPLIES.length]);
     try {
-      localStorage.setItem(CHEER_KEY, JSON.stringify({ oranges: nextO, coffees: nextC }));
+      localStorage.setItem(CHEER_KEY, JSON.stringify(next));
     } catch {}
   };
 
