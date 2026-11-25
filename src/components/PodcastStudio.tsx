@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { EPISODES, secToTime, timeToSec, type Chapter, type Episode } from "@/data/podcasts";
 import { getCase } from "@/data/cases";
 import { getBodyRole } from "@/data/body-pedia";
@@ -140,6 +140,17 @@ async function streamPodcastAI(
   if (rest) onDelta(rest);
 }
 
+async function readAiStatus(signal?: AbortSignal) {
+  try {
+    const response = await fetch("/api/podcast-qa", { signal });
+    if (!response.ok) return null;
+    const status = await response.json();
+    return { configured: Boolean(status.configured), model: status.model || "gpt-4o-mini" };
+  } catch {
+    return null;
+  }
+}
+
 export default function PodcastStudio() {
   const audio = useAudio();
   const ep = audio.episode;
@@ -186,18 +197,28 @@ export default function PodcastStudio() {
   const activeCueRef = useRef<HTMLButtonElement>(null);
   const cueListRef = useRef<HTMLDivElement>(null);
 
+  const [previousEpisodeId, setPreviousEpisodeId] = useState(ep.id);
+  if (previousEpisodeId !== ep.id) {
+    setPreviousEpisodeId(ep.id);
+    setGuideStreaming(false);
+    setGuideError("");
+    setGuideErrorCode("");
+    setQaStreaming(false);
+    setQaError("");
+    setQaErrorCode("");
+  }
+
   const checkAiStatus = async () => {
-    try {
-      const r = await fetch("/api/podcast-qa");
-      if (r.ok) {
-        const j = await r.json();
-        setAiStatus({ configured: Boolean(j.configured), model: j.model || "gpt-4o-mini" });
-      }
-    } catch {}
+    const status = await readAiStatus();
+    if (status) setAiStatus(status);
   };
 
   useEffect(() => {
-    checkAiStatus();
+    const controller = new AbortController();
+    void readAiStatus(controller.signal).then((status) => {
+      if (status && !controller.signal.aborted) setAiStatus(status);
+    });
+    return () => controller.abort();
   }, []);
 
   // 桌面宽屏才锁定三栏。小窗口沿页面顺序浏览，避免右栏被切掉。
@@ -219,34 +240,37 @@ export default function PodcastStudio() {
     return () => observer.disconnect();
   }, []);
 
-  // 读取本地持久化状态
+  // 首次渲染使用服务端默认值，下一帧从浏览器恢复。
   useEffect(() => {
-    try {
-      const savedPane = JSON.parse(localStorage.getItem(LAYOUT_KEY) || "{}");
-      setPane((prev) => ({ ...prev, ...savedPane }));
-    } catch {}
-    try {
-      setCustomVideos(JSON.parse(localStorage.getItem(VIDEO_KEY) || "{}"));
-    } catch {}
-    try {
-      setGuides(JSON.parse(localStorage.getItem(GUIDE_KEY) || "{}"));
-    } catch {}
-    try {
-      setChats(JSON.parse(localStorage.getItem(CHAT_KEY) || "{}"));
-    } catch {}
-    try {
-      setQaUsage(JSON.parse(localStorage.getItem(USAGE_KEY) || "{}"));
-    } catch {}
+    const frame = requestAnimationFrame(() => {
+      try {
+        const savedPane = JSON.parse(localStorage.getItem(LAYOUT_KEY) || "{}");
+        setPane((prev) => ({ ...prev, ...savedPane }));
+      } catch {}
+      try {
+        setCustomVideos(JSON.parse(localStorage.getItem(VIDEO_KEY) || "{}"));
+      } catch {}
+      try {
+        setGuides(JSON.parse(localStorage.getItem(GUIDE_KEY) || "{}"));
+      } catch {}
+      try {
+        setChats(JSON.parse(localStorage.getItem(CHAT_KEY) || "{}"));
+      } catch {}
+      try {
+        setQaUsage(JSON.parse(localStorage.getItem(USAGE_KEY) || "{}"));
+      } catch {}
+    });
+    return () => cancelAnimationFrame(frame);
   }, []);
 
-  // 切换单集时中止上一集未完成的流
-  useEffect(() => {
-    guideAbortRef.current?.abort();
-    qaAbortRef.current?.abort();
-    setGuideStreaming(false);
-    setQaStreaming(false);
-    setGuideError("");
-    setQaError("");
+  // 切集与离开页面时中止旧请求，下一集在接收交互前释放控制器。
+  useLayoutEffect(() => {
+    return () => {
+      guideAbortRef.current?.abort();
+      qaAbortRef.current?.abort();
+      guideAbortRef.current = null;
+      qaAbortRef.current = null;
+    };
   }, [ep.id]);
 
   // 问答流式输出时滚到底部
@@ -350,9 +374,11 @@ export default function PodcastStudio() {
 
     try {
       await streamPodcastAI({ episodeId: epId, action: "guide" }, ctrl.signal, (chunk) => {
+        if (ctrl.signal.aborted) return;
         acc += chunk;
         setGuides((prev) => ({ ...prev, [epId]: acc }));
       });
+      if (ctrl.signal.aborted) return;
       setGuides((prev) => {
         const next = { ...prev, [epId]: acc };
         persistGuides(next);
@@ -360,18 +386,21 @@ export default function PodcastStudio() {
       });
     } catch (err) {
       const e = err as Error & { code?: string };
-      if (e.name !== "AbortError") {
+      const aborted = ctrl.signal.aborted || e.name === "AbortError";
+      if (!aborted && guideAbortRef.current === ctrl) {
         setGuideError(e.message || "导读生成失败，请稍后重试");
         setGuideErrorCode(e.code || "ERROR");
-      } else if (acc) {
+      } else if (aborted && acc) {
         setGuides((prev) => {
-          const next = { ...prev, [epId]: acc };
-          persistGuides(next);
-          return next;
+          if (prev[epId] === acc) persistGuides(prev);
+          return prev;
         });
       }
     } finally {
-      setGuideStreaming(false);
+      if (guideAbortRef.current === ctrl) {
+        guideAbortRef.current = null;
+        setGuideStreaming(false);
+      }
     }
   };
 
@@ -417,6 +446,7 @@ export default function PodcastStudio() {
         { episodeId: epId, action: "chat", messages: reqMessages },
         ctrl.signal,
         (chunk) => {
+          if (ctrl.signal.aborted) return;
           acc += chunk;
           setChats((prev) => {
             const cur = prev[epId] ?? withPlaceholder;
@@ -425,6 +455,7 @@ export default function PodcastStudio() {
           });
         }
       );
+      if (ctrl.signal.aborted) return;
       setChats((prev) => {
         const finalList: ChatMsg[] = [...reqMessages, { role: "assistant", content: acc }];
         const next = { ...prev, [epId]: finalList };
@@ -433,20 +464,22 @@ export default function PodcastStudio() {
       });
     } catch (err) {
       const e = err as Error & { code?: string };
-      if (e.name !== "AbortError") {
+      const aborted = ctrl.signal.aborted || e.name === "AbortError";
+      if (!aborted && qaAbortRef.current === ctrl) {
         setQaError(e.message || "回答生成失败，请重试");
         setQaErrorCode(e.code || "ERROR");
         setChats((prev) => ({ ...prev, [epId]: reqMessages }));
-      } else if (acc) {
+      } else if (aborted && acc) {
         setChats((prev) => {
-          const finalList: ChatMsg[] = [...reqMessages, { role: "assistant", content: acc }];
-          const next = { ...prev, [epId]: finalList };
-          persistChats(next);
-          return next;
+          if (prev[epId]?.at(-1)?.content === acc) persistChats(prev);
+          return prev;
         });
       }
     } finally {
-      setQaStreaming(false);
+      if (qaAbortRef.current === ctrl) {
+        qaAbortRef.current = null;
+        setQaStreaming(false);
+      }
     }
   };
 
