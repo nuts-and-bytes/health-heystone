@@ -116,6 +116,20 @@ async function callGemini(prompt: string) {
 }
 
 async function savePending(text: string) {
+  const webhook = process.env.FEEDBACK_WEBHOOK_URL?.trim();
+  if (webhook) {
+    try {
+      await fetch(webhook, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          msg_type: "text",
+          content: { text: `【未命中真实纠结】${text}` },
+          text: `【未命中真实纠结】${text}`,
+        }),
+      });
+    } catch {}
+  }
   try {
     const dir = path.join(process.cwd(), "data");
     await mkdir(dir, { recursive: true });

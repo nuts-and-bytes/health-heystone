@@ -323,6 +323,112 @@ function EpisodeVisualSvg({ ep, svgRef }: { ep: Episode; svgRef: React.RefObject
         </g>
       )}
 
+      {/* ─────── 单集 4：六层楼痛经女性专场（轻重分级 + 误区拆解图解） ─────── */}
+      {ep.id === "pineapple-141" && (
+        <g fontFamily={FONT}>
+          <text x="36" y="108" fill="#1C1917" fontSize="30" fontWeight="900">
+            痛经不用慌，但也绝别硬扛
+          </text>
+          <text x="36" y="140" fill="#635B52" fontSize="14" fontWeight="500">
+            六层楼（原三甲妇产科医生）：疼痛值得被认真对待
+          </text>
+
+          {/* 3 阶痛经分级标尺 */}
+          <rect x="36" y="164" width="528" height="196" rx="18" fill="#FFFFFF" stroke="#1C1917" strokeWidth="2" />
+          <text x="56" y="194" fill="#1C1917" fontSize="15" fontWeight="800">
+            先对照：你的痛经在哪一档？
+          </text>
+
+          <rect x="56" y="212" width="154" height="128" rx="12" fill="#ECFDF5" stroke="#10B981" strokeWidth="1.5" />
+          <text x="133" y="238" textAnchor="middle" fill="#065F46" fontSize="15" fontWeight="900">轻度</text>
+          <text x="133" y="266" textAnchor="middle" fill="#1C1917" fontSize="12.5" fontWeight="700">轻微坠胀</text>
+          <text x="133" y="288" textAnchor="middle" fill="#635B52" fontSize="11.5">不影响正常上班</text>
+          <text x="133" y="316" textAnchor="middle" fill="#047857" fontSize="11.5" fontWeight="700">热敷 + 温和走路</text>
+
+          <rect x="223" y="212" width="154" height="128" rx="12" fill="#FFF7ED" stroke="#F97316" strokeWidth="1.8" />
+          <text x="300" y="238" textAnchor="middle" fill="#C2410C" fontSize="15" fontWeight="900">中度</text>
+          <text x="300" y="266" textAnchor="middle" fill="#1C1917" fontSize="12.5" fontWeight="700">明显影响专注</text>
+          <text x="300" y="288" textAnchor="middle" fill="#635B52" fontSize="11.5">需暂停剧烈运动</text>
+          <text x="300" y="316" textAnchor="middle" fill="#C2410C" fontSize="11.5" fontWeight="700">科学评估勿硬忍</text>
+
+          <rect x="390" y="212" width="154" height="128" rx="12" fill="#FEF2F2" stroke="#EF4444" strokeWidth="1.8" />
+          <text x="467" y="238" textAnchor="middle" fill="#B91C1C" fontSize="15" fontWeight="900">重度警报</text>
+          <text x="467" y="266" textAnchor="middle" fill="#1C1917" fontSize="12.5" fontWeight="700">冷汗/呕吐/卧床</text>
+          <text x="467" y="288" textAnchor="middle" fill="#635B52" fontSize="11.5">警惕内异症等</text>
+          <text x="467" y="316" textAnchor="middle" fill="#B91C1C" fontSize="11.5" fontWeight="800">直接挂妇科面诊</text>
+
+          {/* 下方 2x2 误区拆解 */}
+          <rect x="36" y="380" width="254" height="106" rx="14" fill="#FFFFFF" stroke="#E4DDD3" strokeWidth="1.5" />
+          <text x="54" y="408" fill="#C2410C" fontSize="13.5" fontWeight="800">05:59 · 温和活动有助缓解</text>
+          <text x="54" y="434" fill="#1C1917" fontSize="13.5" fontWeight="600">规律走路改善盆腔血流，</text>
+          <text x="54" y="456" fill="#635B52" fontSize="12.5">体感允许就不必绝对卧床。</text>
+
+          <rect x="310" y="380" width="254" height="106" rx="14" fill="#FFFFFF" stroke="#E4DDD3" strokeWidth="1.5" />
+          <text x="328" y="408" fill="#C2410C" fontSize="13.5" fontWeight="800">30:06 · 红糖姜茶真相</text>
+          <text x="328" y="434" fill="#1C1917" fontSize="13.5" fontWeight="600">舒服主要靠「热」和暖敷，</text>
+          <text x="328" y="456" fill="#635B52" fontSize="12.5">红糖本身没有神奇止痛成分。</text>
+
+          <rect x="36" y="500" width="254" height="106" rx="14" fill="#FFFFFF" stroke="#E4DDD3" strokeWidth="1.5" />
+          <text x="54" y="528" fill="#C2410C" fontSize="13.5" fontWeight="800">48:42 · 豆制品与牛奶</text>
+          <text x="54" y="554" fill="#1C1917" fontSize="13.5" fontWeight="600">日常正常吃豆腐喝牛奶，</text>
+          <text x="54" y="576" fill="#635B52" fontSize="12.5">不会把雌激素吃紊乱。</text>
+
+          <rect x="310" y="500" width="254" height="106" rx="14" fill="#FFFFFF" stroke="#E4DDD3" strokeWidth="1.5" />
+          <text x="328" y="528" fill="#C2410C" fontSize="13.5" fontWeight="800">32:35 · 看诊前记 3 件事</text>
+          <text x="328" y="554" fill="#1C1917" fontSize="13.5" fontWeight="600">周期天数、疼痛起止时间、</text>
+          <text x="328" y="576" fill="#635B52" fontSize="12.5">经量变化，沟通效率翻倍。</text>
+        </g>
+      )}
+
+      {/* ─────── 单集 5：孙凌霞营养师减脂饮食专场（三餐金字塔 + 避坑对照） ─────── */}
+      {ep.id === "pineapple-94" && (
+        <g fontFamily={FONT}>
+          <text x="36" y="108" fill="#1C1917" fontSize="29" fontWeight="900">
+            减肥掉发没劲？先把饭吃对
+          </text>
+          <text x="36" y="140" fill="#635B52" fontSize="14" fontWeight="500">
+            孙凌霞（美国注册营养师）：别把三餐的坑丢给网红补剂
+          </text>
+
+          {/* 3 大核心数字卡片 */}
+          <rect x="36" y="164" width="166" height="108" rx="16" fill="#FFF7ED" stroke="#F97316" strokeWidth="2" />
+          <text x="119" y="208" textAnchor="middle" fill="#C2410C" fontSize="24" fontWeight="900">保蛋白</text>
+          <text x="119" y="236" textAnchor="middle" fill="#1C1917" fontSize="12.5" fontWeight="700">减脂防掉发与掉肌</text>
+          <text x="119" y="256" textAnchor="middle" fill="#635B52" fontSize="11">三餐均匀吃优质蛋白</text>
+
+          <rect x="217" y="164" width="166" height="108" rx="16" fill="#FFFFFF" stroke="#1C1917" strokeWidth="1.8" />
+          <text x="300" y="208" textAnchor="middle" fill="#1C1917" fontSize="24" fontWeight="900">80%人缺</text>
+          <text x="300" y="236" textAnchor="middle" fill="#1C1917" fontSize="12.5" fontWeight="700">维生素 D 普遍不足</text>
+          <text x="300" y="256" textAnchor="middle" fill="#635B52" fontSize="11">体检可查 25(OH)D</text>
+
+          <rect x="398" y="164" width="166" height="108" rx="16" fill="#FFFFFF" stroke="#1C1917" strokeWidth="1.8" />
+          <text x="481" y="208" textAnchor="middle" fill="#1C1917" fontSize="24" fontWeight="900">不盲买</text>
+          <text x="481" y="236" textAnchor="middle" fill="#1C1917" fontSize="12.5" fontWeight="700">抗衰补剂非捷径</text>
+          <text x="481" y="256" textAnchor="middle" fill="#635B52" fontSize="11">零带货 · 先打牢三餐</text>
+
+          {/* 4 条高频避坑对照 */}
+          <rect x="36" y="294" width="528" height="312" rx="18" fill="#FFFFFF" stroke="#1C1917" strokeWidth="2" />
+          <text x="58" y="326" fill="#1C1917" fontSize="15.5" fontWeight="900">
+            这 4 个日常养生/减脂坑，最容易踩
+          </text>
+
+          <text x="58" y="366" fill="#C2410C" fontSize="14" fontWeight="800">01 · 明明吃不少还累、掉发（04:41）</text>
+          <text x="58" y="390" fill="#44403C" fontSize="13">主食多但肉蛋奶豆太少，蛋白质与铁长期不够，头发最先受影响。</text>
+          <line x1="58" y1="408" x2="542" y2="408" stroke="#E4DDD3" strokeWidth="1" />
+
+          <text x="58" y="438" fill="#C2410C" fontSize="14" fontWeight="800">02 · 乳糖不耐只能彻底戒奶？（21:38）</text>
+          <text x="58" y="462" fill="#44403C" fontSize="13">可以换无糖酸奶、舒化奶或少量随餐喝，不必白白丢掉钙和优质蛋白。</text>
+          <line x1="58" y1="480" x2="542" y2="480" stroke="#E4DDD3" strokeWidth="1" />
+
+          <text x="58" y="510" fill="#C2410C" fontSize="14" fontWeight="800">03 · 吃芹菜就能补够膳食纤维？（49:00）</text>
+          <text x="58" y="534" fill="#44403C" fontSize="13">芹菜纤维并不算顶尖，全谷杂豆、菌菇、魔芋和深色蔬菜更高效。</text>
+          <line x1="58" y1="552" x2="542" y2="552" stroke="#E4DDD3" strokeWidth="1" />
+
+          <text x="58" y="582" fill="#C2410C" fontSize="14" fontWeight="800">04 · 网红抗衰三件套值得买吗？（55:49）</text>
+          <text x="58" y="598" fill="#44403C" fontSize="12.5">没有补剂能替你补觉和吃菜，先吃够三餐再谈查指标按需补充。</text>
+        </g>
+      )}
+
       {/* 底部统一行动条 + 懂点健康水印 */}
       <rect x="36" y="632" width="528" height="92" rx="16" fill="#1C1917" />
       <text x="58" y="662" fill="#F97316" fontSize="13" fontWeight="800" fontFamily={FONT}>

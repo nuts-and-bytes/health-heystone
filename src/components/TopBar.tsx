@@ -70,10 +70,10 @@ export default function TopBar() {
   return (
     <>
       <header className="sticky top-0 z-40 border-b-[2.5px] border-ink bg-cream/95 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center gap-2 px-4 py-2.5 sm:px-6 lg:gap-4">
-          <Link href="/" className="group flex shrink-0 items-center gap-2 whitespace-nowrap text-ink">
-            <BrandMark className="transition-transform group-hover:-rotate-6" />
-            <span className="font-display text-xl leading-none lg:text-2xl">懂点健康</span>
+        <div className="mx-auto flex max-w-6xl items-center gap-2 px-3 py-2 sm:px-6 sm:py-2.5 lg:gap-4">
+          <Link href="/" className="group flex shrink-0 items-center gap-1.5 whitespace-nowrap text-ink sm:gap-2">
+            <BrandMark className="h-7 w-7 transition-transform group-hover:-rotate-6 sm:h-8 sm:w-8" />
+            <span className="font-display text-lg leading-none sm:text-xl lg:text-2xl">懂点健康</span>
           </Link>
 
           <nav className="ml-2 hidden items-center gap-1 md:flex lg:ml-4 lg:gap-1.5">

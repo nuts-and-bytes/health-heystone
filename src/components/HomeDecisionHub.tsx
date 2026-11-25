@@ -14,6 +14,7 @@ import { useGame } from "@/lib/game";
 import Mascot from "./Mascot";
 import { IconGavel } from "./Icons";
 import PodcastMarkdown from "./PodcastMarkdown";
+import DilemmaShareCard from "./DilemmaShareCard";
 
 function dailyCase() {
   const d = new Date();
@@ -56,10 +57,14 @@ export default function HomeDecisionHub() {
 
   const [track, setTrack] = useState<"all" | DilemmaTrack>("all");
   const [selected, setSelected] = useState<Dilemma | null>(DILEMMAS[0]);
+  const [showSharePoster, setShowSharePoster] = useState(false);
+  const [copiedSlug, setCopiedSlug] = useState("");
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [aiReply, setAiReply] = useState<AiReply | null>(null);
   const [error, setError] = useState("");
+  const [feedbackDraft, setFeedbackDraft] = useState("");
+  const [feedbackState, setFeedbackState] = useState<{ done: boolean; issueUrl?: string; msg?: string } | null>(null);
   const resultRef = useRef<HTMLDivElement>(null);
 
   const hotDilemmas = useMemo(
@@ -75,8 +80,36 @@ export default function HomeDecisionHub() {
   const openDilemma = (d: Dilemma) => {
     setAiReply(null);
     setError("");
+    setShowSharePoster(false);
     setSelected(d);
     resultRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  };
+
+  const copyDilemmaLink = async (d: Dilemma) => {
+    const origin = typeof window !== "undefined" ? window.location.origin : "https://health.heystone.site";
+    const url = `${origin}/d/${d.slug}`;
+    try {
+      await navigator.clipboard.writeText(`${d.question}\n定心丸：${d.verdictLabel} — ${d.reassurance}\n${url}`);
+      setCopiedSlug(d.slug);
+      setTimeout(() => setCopiedSlug(""), 2000);
+    } catch {}
+  };
+
+  const submitFeedback = async () => {
+    const text = feedbackDraft.trim();
+    if (text.length < 3) return;
+    try {
+      const r = await fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "dilemma", content: text }),
+      });
+      const j = await r.json();
+      if (r.ok) {
+        setFeedbackDraft("");
+        setFeedbackState({ done: true, issueUrl: j.issueUrl, msg: "已记下你的纠结！我们会优先查一线指南上架。" });
+      }
+    } catch {}
   };
 
   const askDecision = async (q = input) => {
@@ -183,30 +216,35 @@ export default function HomeDecisionHub() {
           </div>
         </div>
 
-        {/* 肌肉判官卡片（保留站内趣味互动与今日开庭入口） */}
-        <aside className="panel flex flex-col overflow-hidden bg-[#fdeecf]">
-          <div className="relative flex-1 overflow-hidden">
-            <Mascot mood="hero" className="h-full min-h-[200px] w-full object-cover" />
-            <span className="absolute left-3 top-3 rounded-full border border-ink/20 bg-white/90 px-2.5 py-0.5 text-[11px] font-bold text-accent-dark backdrop-blur-sm">
+        {/* 肌肉判官卡片（手机端紧凑横排不占屏，桌面端完整竖排主视觉） */}
+        <aside className="panel flex flex-row items-stretch overflow-hidden bg-[#fdeecf] md:flex-col">
+          <div className="relative w-28 shrink-0 overflow-hidden sm:w-36 md:w-full md:flex-1">
+            <Mascot mood="hero" className="h-full w-full object-cover md:min-h-[200px]" />
+            <span className="absolute left-2 top-2 hidden rounded-full border border-ink/20 bg-white/90 px-2.5 py-0.5 text-[11px] font-bold text-accent-dark backdrop-blur-sm md:inline-block">
               肌肉判官 · 今日开庭
             </span>
           </div>
-          <div className="border-t-2 border-ink bg-white p-4">
-            <p className="text-xs font-bold text-ink-soft">先猜真假，再看反转证据</p>
-            <Link
-              href={`/cases/${today.slug}`}
-              className="font-display mt-1 block text-lg leading-snug text-ink hover:text-accent-dark"
-            >
-              「{today.claim}」
-            </Link>
-            <div className="mt-3 flex items-center gap-2">
-              <Link href="/court" className="btn flex-1 justify-center !py-2 text-xs">
-                <IconGavel width={15} height={15} />
+          <div className="flex min-w-0 flex-1 flex-col justify-between border-l-2 border-ink bg-white p-3.5 md:border-l-0 md:border-t-2 md:p-4">
+            <div>
+              <p className="text-[11px] font-bold text-accent-dark md:text-xs md:text-ink-soft">
+                <span className="md:hidden">肌肉判官 · 今日开庭</span>
+                <span className="hidden md:inline">先猜真假，再看反转证据</span>
+              </p>
+              <Link
+                href={`/cases/${today.slug}`}
+                className="font-display mt-1 block line-clamp-2 text-base leading-snug text-ink hover:text-accent-dark md:text-lg"
+              >
+                「{today.claim}」
+              </Link>
+            </div>
+            <div className="mt-2.5 flex items-center gap-2 md:mt-3">
+              <Link href="/court" className="btn flex-1 justify-center !py-1.5 text-xs md:!py-2">
+                <IconGavel width={14} height={14} />
                 <span>{done > 0 ? `继续审案 (${done}/${CASES.length})` : "滑卡审案 →"}</span>
               </Link>
               <Link
                 href={`/cases/${today.slug}`}
-                className="rounded-xl border-2 border-line bg-cream px-3 py-2 text-xs font-bold text-ink transition hover:border-ink"
+                className="shrink-0 rounded-xl border-2 border-line bg-cream px-2.5 py-1.5 text-xs font-bold text-ink transition hover:border-ink md:px-3 md:py-2"
               >
                 看本案
               </Link>
@@ -344,35 +382,63 @@ export default function HomeDecisionHub() {
               </div>
             )}
 
-            {/* 权威信源白名单 */}
-            <div className="flex flex-wrap items-center gap-2 border-t border-line pt-4">
-              <span className="text-xs font-bold text-ink-soft">权威信源：</span>
-              {selected.sources.map((s, i) =>
-                s.url ? (
-                  <a
-                    key={i}
-                    href={s.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="rounded-full border border-line bg-cream/70 px-3 py-1 text-xs font-bold text-ink transition hover:border-ink"
-                    title={s.title}
-                  >
-                    {s.org} ({s.year}) ↗
-                  </a>
-                ) : (
-                  <span
-                    key={i}
-                    className="rounded-full border border-line bg-cream/50 px-3 py-1 text-xs font-bold text-ink-soft"
-                    title={s.title}
-                  >
-                    {s.org} ({s.year})
-                  </span>
-                )
-              )}
-              <Link href="/principles" className="ml-auto text-xs font-bold text-accent-dark hover:underline">
-                查看信源白名单 →
-              </Link>
+            {/* 权威信源白名单 + 一键分享定心丸图 */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs font-bold text-ink-soft">权威信源：</span>
+                {selected.sources.map((s, i) =>
+                  s.url ? (
+                    <a
+                      key={i}
+                      href={s.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="rounded-full border border-line bg-cream/70 px-3 py-1 text-xs font-bold text-ink transition hover:border-ink"
+                      title={s.title}
+                    >
+                      {s.org} ({s.year}) ↗
+                    </a>
+                  ) : (
+                    <span
+                      key={i}
+                      className="rounded-full border border-line bg-cream/50 px-3 py-1 text-xs font-bold text-ink-soft"
+                      title={s.title}
+                    >
+                      {s.org} ({s.year})
+                    </span>
+                  )
+                )}
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowSharePoster((v) => !v)}
+                  className="cursor-pointer rounded-xl border-2 border-ink bg-accent-soft px-3 py-1.5 text-xs font-bold text-accent-dark transition hover:bg-accent hover:text-white"
+                >
+                  {showSharePoster ? "收起分享图" : "保存定心丸图 (3:4)"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => copyDilemmaLink(selected)}
+                  className="cursor-pointer rounded-xl border border-line bg-white px-3 py-1.5 text-xs font-bold text-ink transition hover:border-ink"
+                >
+                  {copiedSlug === selected.slug ? "已复制链接 ✓" : "复制链接"}
+                </button>
+                <Link
+                  href={`/d/${selected.slug}`}
+                  className="rounded-xl border border-line bg-cream px-3 py-1.5 text-xs font-bold text-ink-soft hover:border-ink hover:text-ink"
+                >
+                  独立页 ↗
+                </Link>
+              </div>
             </div>
+
+            {showSharePoster && (
+              <div className="rounded-2xl border border-line bg-cream/40 p-4">
+                <DilemmaShareCard dilemma={selected} compact />
+              </div>
+            )}
           </section>
         )}
       </div>
@@ -439,6 +505,50 @@ export default function HomeDecisionHub() {
             );
           })}
         </div>
+      </section>
+
+      {/* ③-b 真实纠结投稿箱（收集线上真实用户长尾需求） */}
+      <section className="rounded-2xl border border-line bg-white p-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm font-bold text-ink">这里没有你此刻的纠结？丢给我们查证据</p>
+            <p className="mt-0.5 text-xs text-ink-soft">每周从真实投稿里挑最高频的，核对一线指南后做成定心丸卡片上架。</p>
+          </div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              submitFeedback();
+            }}
+            className="flex w-full gap-2 sm:max-w-md"
+          >
+            <input
+              value={feedbackDraft}
+              onChange={(e) => setFeedbackDraft(e.target.value)}
+              placeholder="例如：练完喝电解质水会水肿吗？"
+              className="min-w-0 flex-1 rounded-xl border border-line bg-cream/40 px-3 py-2 text-xs text-ink outline-none focus:border-ink focus:bg-white"
+            />
+            <button
+              type="submit"
+              disabled={feedbackDraft.trim().length < 3}
+              className="cursor-pointer rounded-xl bg-ink px-4 py-2 text-xs font-bold text-white transition hover:bg-accent disabled:opacity-40"
+            >
+              投稿
+            </button>
+          </form>
+        </div>
+        {feedbackState?.done && (
+          <p className="mt-2.5 text-xs text-emerald-800">
+            {feedbackState.msg}
+            {feedbackState.issueUrl && (
+              <>
+                {" "}
+                <a href={feedbackState.issueUrl} target="_blank" rel="noreferrer" className="font-bold underline">
+                  也可顺手记到公开选题单 ↗
+                </a>
+              </>
+            )}
+          </p>
+        )}
       </section>
 
       {/* ④ 收敛后的站内延伸入口（保留全部既有精华，不抢主入口注意力） */}

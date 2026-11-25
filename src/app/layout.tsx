@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Noto_Sans_SC } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import TopBar from "@/components/TopBar";
 import MainShell from "@/components/MainShell";
 import { AudioProvider } from "@/lib/audio";
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <TopBar />
           <MainShell>{children}</MainShell>
         </AudioProvider>
+        <Analytics />
       </body>
     </html>
   );
