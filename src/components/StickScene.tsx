@@ -24,17 +24,24 @@ export default function StickScene({
   caption,
   play = "view",
   height = 230,
+  compact = false,
+  triggerKey = 0,
 }: {
   scene: string;
   caption?: string;
   play?: "view" | "click" | "hover" | "loop";
   height?: number;
+  compact?: boolean;
+  /** 递增即可从外部按钮触发动画播放 */
+  triggerKey?: number;
 }) {
   const hostRef = useRef<HTMLDivElement>(null);
+  const elRef = useRef<HTMLElement | null>(null);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
+    setReady(false);
     loadScript("/scenes/stick.js")
       .then(() => loadScript("/scenes/theme.js"))
       .then(() => loadScript(`/scenes/${scene}.js`))
@@ -57,14 +64,24 @@ export default function StickScene({
     el.setAttribute("no-font", "");
     el.style.height = `${height}px`;
     el.style.width = "100%";
+    el.style.cursor = "pointer";
     host.appendChild(el);
+    elRef.current = el;
     return () => {
+      elRef.current = null;
       host.innerHTML = "";
     };
   }, [ready, scene, play, height]);
 
+  // 外部按钮触发（如 About 页点「投喂小橘子」）直接模拟点击画布播放
+  useEffect(() => {
+    if (triggerKey > 0 && elRef.current) {
+      elRef.current.click();
+    }
+  }, [triggerKey]);
+
   return (
-    <figure className="my-5 overflow-hidden rounded-2xl border-[1.5px] border-line bg-white">
+    <figure className={`${compact ? "" : "my-5"} overflow-hidden rounded-2xl border-[1.5px] border-line bg-white`}>
       <div
         ref={hostRef}
         className="w-full"
@@ -74,9 +91,9 @@ export default function StickScene({
           backgroundSize: "14px 14px",
         }}
       />
-      <figcaption className="flex items-center justify-between gap-3 border-t border-line/70 bg-paper px-4 py-2.5 text-xs text-ink-soft">
-        <span>{caption || "点一下动画可以重播"}</span>
-        <span className="shrink-0 font-medium text-accent-dark">点击重播 ↻</span>
+      <figcaption className="flex items-center justify-between gap-2 border-t border-line/70 bg-paper px-3.5 py-2 text-[11px] text-ink-soft">
+        <span className="truncate">{caption || "点一下小人互动演示"}</span>
+        <span className="shrink-0 font-bold text-accent-dark">点击互动 ↻</span>
       </figcaption>
     </figure>
   );

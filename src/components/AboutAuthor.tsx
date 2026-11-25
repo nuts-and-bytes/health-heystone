@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { BrandMark } from "./Icons";
+import StickScene from "./StickScene";
 
 const CHEER_KEY = "health-heystone-cheers-v2";
 
@@ -27,8 +28,8 @@ const WHITELIST = [
 export default function AboutAuthor() {
   const [oranges, setOranges] = useState(0);
   const [coffees, setCoffees] = useState(0);
-  const [bubble, setBubble] = useState("逛累了坐会儿？投喂一颗小橘子试试 →");
-  const [bounce, setBounce] = useState(false);
+  const [triggerKey, setTriggerKey] = useState(0);
+  const [bubble, setBubble] = useState("点下面投喂，或者直接戳画布里的小人互动 →");
   const [copied, setCopied] = useState<"" | "email" | "wechat">("");
 
   useEffect(() => {
@@ -44,12 +45,11 @@ export default function AboutAuthor() {
     const nextC = kind === "coffee" ? coffees + 1 : coffees;
     setOranges(nextO);
     setCoffees(nextC);
-    setBounce(true);
+    setTriggerKey((k) => k + 1);
     setBubble(TREAT_REPLIES[(nextO + nextC - 1) % TREAT_REPLIES.length]);
     try {
       localStorage.setItem(CHEER_KEY, JSON.stringify({ oranges: nextO, coffees: nextC }));
     } catch {}
-    setTimeout(() => setBounce(false), 450);
   };
 
   const copyText = async (val: string, kind: "email" | "wechat") => {
@@ -74,7 +74,7 @@ export default function AboutAuthor() {
 
         <div className="space-y-2.5 text-[15px] leading-relaxed text-ink/90">
           <p>
-            我是<strong>石头（朱鑫垚）</strong>，平时健身、看书、听播客，也喜欢把生活里的小麻烦做成顺手的小工具。
+            我是<strong>石头（Xinyao）</strong>，平时健身、看书、听播客，也喜欢把生活里的小麻烦做成顺手的小工具。
           </p>
           <p>
             普通人不用变成医学博士——只要在「练完吃不吃」「经期能不能练」这些瞬间，手里有一点靠谱的依据，少一点没必要的内耗，就是我做「懂点健康」的全部初衷。
@@ -110,43 +110,26 @@ export default function AboutAuthor() {
         </div>
       </section>
 
-      {/* ③ 趣味互动：书桌前的「投喂小橙」鼓励区 */}
+      {/* ③ 趣味互动：统一手绘橙线 <stick-scene> 书桌投喂互动 */}
       <section className="space-y-5 border-t border-line pt-7">
-        <div className="flex flex-col items-center gap-5 rounded-3xl bg-white px-5 py-6 sm:flex-row sm:items-center sm:px-7">
-          {/* 互动小橙 SVG */}
-          <div className={`shrink-0 transition-transform duration-300 ${bounce ? "-translate-y-2 scale-105" : ""}`}>
-            <svg viewBox="0 0 150 120" className="h-28 w-36" fill="none" aria-hidden="true">
-              <ellipse cx="75" cy="102" rx="54" ry="9" fill="#FED7AA" opacity="0.6" />
-              {/* 小书桌 */}
-              <line x1="22" y1="98" x2="128" y2="98" stroke="#1C1917" strokeWidth="2.2" strokeLinecap="round" />
-              {/* 小笔记本电脑 */}
-              <path d="M84 98 L94 74 L120 74 L112 98 Z" fill="#FAF8F4" stroke="#1C1917" strokeWidth="2" strokeLinejoin="round" />
-              <circle cx="105" cy="86" r="2.2" fill="#F97316" />
-              {/* 桌上的小橘子 */}
-              <circle cx="42" cy="90" r="8" fill="#F97316" stroke="#1C1917" strokeWidth="1.8" />
-              <path d="M42 82 C43 78, 47 77, 48 79" stroke="#15803D" strokeWidth="2" strokeLinecap="round" />
-              {/* 小橙戴耳机 */}
-              <g>
-                <animateTransform attributeName="transform" type="translate" values="0 0; 0 -2; 0 0" dur="2.2s" repeatCount="indefinite" />
-                <path d="M52 44 C52 30, 80 30, 80 44" stroke="#1C1917" strokeWidth="2.8" strokeLinecap="round" />
-                <rect x="48" y="40" width="5.5" height="10" rx="2.75" fill="#FED7AA" stroke="#1C1917" strokeWidth="1.6" />
-                <rect x="78.5" y="40" width="5.5" height="10" rx="2.75" fill="#FED7AA" stroke="#1C1917" strokeWidth="1.6" />
-                <circle cx="66" cy="46" r="12" fill="#F97316" />
-                <path d="M61 45 Q63 42.5 65 45 M67 45 Q69 42.5 71 45" stroke="#1C1917" strokeWidth="1.8" strokeLinecap="round" />
-                <path d="M62 50 Q66 53.5 70 50" stroke="#1C1917" strokeWidth="1.8" strokeLinecap="round" />
-                <path d="M66 58 L66 84 M66 68 L84 82" stroke="#1C1917" strokeWidth="2.4" strokeLinecap="round" />
-              </g>
-            </svg>
-          </div>
+        <div className="grid items-center gap-5 sm:grid-cols-[0.95fr_1.05fr]">
+          <StickScene
+            scene="about-desk-stone"
+            caption="戳小人或点右侧按钮投喂一颗小橘子"
+            play="click"
+            height={186}
+            compact
+            triggerKey={triggerKey}
+          />
 
-          <div className="min-w-0 flex-1 text-center sm:text-left">
+          <div className="space-y-3">
             <p className="inline-block rounded-2xl bg-accent-soft/75 px-3 py-1.5 text-xs font-bold text-accent-dark">
               「{bubble}」
             </p>
-            <p className="mt-2.5 text-xs leading-relaxed text-ink-soft">
+            <p className="text-xs leading-relaxed text-ink-soft">
               小站完全免费、没有广告。觉得有用就顺手投喂一下，或者去 GitHub 点颗 Star，就是给石头最大的续命咖啡。
             </p>
-            <div className="mt-3.5 flex flex-wrap justify-center gap-2 sm:justify-start">
+            <div className="flex flex-wrap gap-2">
               <button
                 type="button"
                 onClick={() => feed("orange")}
@@ -174,7 +157,7 @@ export default function AboutAuthor() {
         </div>
 
         {/* 极简一行文字联系方式（无卡片） */}
-        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 pt-1 text-xs font-bold text-ink-soft">
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 pt-2 text-xs font-bold text-ink-soft">
           <a href="https://github.com/nuts-and-bytes" target="_blank" rel="noreferrer" className="hover:text-ink">
             GitHub ↗
           </a>
