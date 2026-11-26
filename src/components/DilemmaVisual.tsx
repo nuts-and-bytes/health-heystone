@@ -27,6 +27,8 @@ export const SCENE_MAP: Record<string, { scene: string; caption: string }> = {
   "electrolyte-water-needed": { scene: "dilemma-electrolyte-timer", caption: "点击看：1小时内喝白水，超1小时暴汗补电解质" },
   "no-stretch-bulky-muscle": { scene: "dilemma-stretch-spring", caption: "点击看：温和拉伸恢复弹性，告别死疙瘩焦虑" },
   "massage-gun-neck-danger": { scene: "dilemma-massage-gun", caption: "点击看：避开颈部骨突禁区，只轻扫大块肌肉" },
+  "smartwatch-calories-eat-back": { scene: "dilemma-watch-calories", caption: "点击看：手表热量常虚高 30%，别按表全吃回来" },
+  "intermittent-fasting-16-8-gallstones": { scene: "dilemma-fasting-clock", caption: "点击看：总热量才是核心，窗口前移护胆囊" },
 
   // 女性
   "period-workout-glutes-core": { scene: "dilemma-period-pace", caption: "点击看：按当天体感把强度旋钮调到舒适档" },
@@ -49,6 +51,8 @@ export const SCENE_MAP: Record<string, { scene: string; caption: string }> = {
   "running-leak-pelvic-floor": { scene: "women-pelvic-hammock", caption: "点击看：练紧盆底肌吊床，稳稳托住跑跳压力" },
   "breast-hyperplasia-cancer": { scene: "women-breast-birads", caption: "点击看：看懂 BI-RADS 分级，1–2类定期复查别恐慌" },
   "sports-bra-all-day": { scene: "women-sports-bra", caption: "点击看：运动穿稳支撑，日常与睡觉换宽松" },
+  "period-checkup-reschedule": { scene: "women-period-checkup", caption: "点击看：经期体检按项目分流，先查常规后补妇科" },
+  "false-wide-hips-correction": { scene: "women-hip-alignment", caption: "点击看：绑带按不小骨头，激活臀中肌改力线" },
 
   // 日常普适
   "running-hurts-knees": { scene: "knee-sponge", caption: "点击看：膝盖软骨像海绵，规律慢跑反而促营养" },
@@ -57,6 +61,7 @@ export const SCENE_MAP: Record<string, { scene: string; caption: string }> = {
   "bed-rest-recovery": { scene: "bed-balloon", caption: "点击看：长期躺床肌肉会像气球一样泄气" },
   "weekend-catchup-sleep": { scene: "sleep-bank", caption: "点击看：工作日透支睡眠，周末罐口有裂缝补不满" },
   "eight-cups-water": { scene: "dilemma-eight-cups", caption: "点击看：划掉死磕8杯水，看淡柠檬色标准" },
+  "fruit-dinner-fatty-liver": { scene: "dilemma-fruit-plate", caption: "点击看：水果回小碟，晚饭换成均衡蛋白餐盘" },
 };
 
 export function getDilemmaScene(slug: string) {

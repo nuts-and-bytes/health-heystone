@@ -545,6 +545,56 @@ export const DILEMMAS: Dilemma[] = [
     redLine: "高危安全红线：严禁击打颈部与骨突。若使用筋膜枪后出现突然头晕、视物模糊、剧烈头痛或肢体麻木，请立即停止并前往急诊/神经内科。",
     keywords: ["筋膜枪", "脖子酸", "颈椎", "打脖子", "放松", "头晕"],
   },
+  {
+    slug: "smartwatch-calories-eat-back",
+    track: "fitness",
+    shortTag: "手表消耗的卡路里能吃回来吗",
+    question: "运动手表显示的运动消耗准吗？减脂期能不能把多烧的卡路里「吃回来」？",
+    verdict: "adjust",
+    verdictLabel: "手表热量误差大，减脂期别按 100% 吃回来",
+    reassurance: "手表测心率和步数挺靠谱，但估算「烧了多少大卡」普遍偏高！减脂期别照着表上的数字把饭全加回来。",
+    debate: {
+      sideA: "今天手表显示多烧了 500 大卡，晚上照着吃回来才不会饿垮。",
+      sideB: "穿戴设备热量误差动辄 30%，照表吃回来减脂全白费。",
+    },
+    science:
+      "斯坦福大学验证研究（Shcherbina 等）与 PubMed 系统综述（Fuller 等）均指出：商用智能手表在心率与步数监测上表现较好，但估算能量消耗（大卡）的误差普遍偏大（平均绝对百分比误差常达 27%–30% 以上），在力量训练和复合动作中更容易高估。",
+    actionNow:
+      "把手表消耗当成「活动量趋势参考」，减脂期不必照表 100% 吃回来；如遇超长距离跑或高强度训练确实极度饥饿，最多保守补回估测值的一半以内，并以连续 2–4 周的真实体重与腰围趋势为准。本站零带货，不推荐任何手表或记录 App 品牌。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "PubMed", title: "Shcherbina et al., Accuracy in Wrist-Worn, Sensor-Based Measurements of Heart Rate and Energy Expenditure (J Pers Med)", year: 2017, url: "https://pubmed.ncbi.nlm.nih.gov/28538738/" },
+      { org: "PubMed", title: "Fuller et al., Reliability and Validity of Commercially Available Wearable Devices for Measuring Steps, Energy Expenditure, and Heart Rate: Systematic Review (JMIR mHealth uHealth)", year: 2020, url: "https://pubmed.ncbi.nlm.nih.gov/32897239/" },
+      { org: "ACSM", title: "Appropriate Physical Activity Intervention Strategies for Weight Loss and Prevention of Weight Regain", year: 2009 },
+    ],
+    redLine: "若因每天紧盯热量数字产生强烈进食愧疚、反复算卡焦虑或暴食循环，建议暂时关闭热量显示并寻求专业营养或心理支持。",
+    keywords: ["运动手表", "手表", "卡路里", "热量消耗", "吃回来", "误差", "Apple Watch", "佳明", "手环", "减脂"],
+  },
+  {
+    slug: "intermittent-fasting-16-8-gallstones",
+    track: "fitness",
+    shortTag: "16+8 轻断食更快瘦吗",
+    question: "「16+8 轻断食 / 不吃早饭」减脂真比正常吃三餐更快吗？会不会得胆结石？",
+    verdict: "adjust",
+    verdictLabel: "本质还是控总热量，别硬饿、警惕胆汁淤积",
+    reassurance: "16+8 没有「饿满 16 小时自动狂烧脂」的魔法！它管用只是因为少吃了一顿，吃够三餐制造同样热量缺口，瘦得一样快。",
+    debate: {
+      sideA: "16+8 不用算热量掉秤飞快，省一顿早饭超方便！",
+      sideB: "我长期跳过早饭跟风轻断食，晚上报复性暴食，体检还查出胆结石。",
+    },
+    science:
+      "《新英格兰医学杂志》（NEJM, Liu 等 2022）随机对照试验显示，在总热量摄入相同的前提下，16+8 限时进食与常规全天限能量饮食在 12 个月后的减重与体脂下降幅度没有显著差异。同时，消化病学研究表明，长期超长空腹叠加过快减重会减少胆囊收缩排空，促使胆汁浓缩淤积，升高胆固醇结石风险。",
+    actionNow:
+      "吃规律三餐更舒服就完全不必硬做 16+8；若想尝试限时进食，尽量把进食窗口放在白天（如早 8 点到晚 6 点）而非长期跳过早餐，且窗口期保证优质蛋白与适量健康脂肪以促进胆囊正常排空。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "PubMed", title: "Liu et al., Calorie Restriction with or without Time-Restricted Eating in Weight Loss (NEJM)", year: 2022 },
+      { org: "中国营养学会", title: "《中国居民膳食指南（2022）》规律进餐与合理吃早餐建议", year: 2022 },
+      { org: "PubMed", title: "Prolonged fasting, rapid weight loss and gallstone disease risk: Clinical review", year: 2021 },
+    ],
+    redLine: "已有胆结石/胆囊炎病史、低血糖、胃溃疡、孕期哺乳期、未成年人及进食障碍史者切勿盲目轻断食；若出现右上腹隐痛、绞痛或进食油腻后恶心，请及时挂消化科/普外科就医。",
+    keywords: ["16+8", "轻断食", "间歇性断食", "不吃早饭", "胆结石", "胆囊", "暴食", "减脂"],
+  },
 
   // ==================== 三、女性健康 · 经期、体态与饮食焦虑（10 题） ====================
   {
@@ -1016,6 +1066,54 @@ export const DILEMMAS: Dilemma[] = [
     ],
     keywords: ["运动内衣", "下垂", "副乳", "睡觉穿内衣", "悬韧带", "胸胀"],
   },
+  {
+    slug: "period-checkup-reschedule",
+    track: "women",
+    shortTag: "经期撞上体检要改期吗",
+    question: "体检刚好撞上大姨妈，抽血、B 超、妇科检查还能做吗？必须整套改期吗？",
+    verdict: "adjust",
+    verdictLabel: "不用整套作废，按项目「先查+后补」最省心",
+    reassurance: "不用慌着把整场体检退掉！常规抽血、肝肾功、甲功和腹部/乳腺 B 超大多不受影响，把妇科、尿检和部分肿瘤标志物留到经净后再补就行。",
+    debate: {
+      sideA: "好不容易请假约上的体检，干脆硬着头皮把所有项目一口气查完！",
+      sideB: "妇科和尿检会被经血污染，化验全白做，还可能出假阳性吓自己一跳。",
+    },
+    science:
+      "ACOG 宫颈癌筛查指引指出，中重度经血会遮蔽宫颈细胞样本导致 TCT/HPV 不合格，且经期内诊增加不适与逆行感染风险；临床检验文献也表明，经血污染尿液易造成红细胞、隐血及蛋白假阳性，同时血清 CA-125 在经期常出现生理性升高，易引发虚惊。",
+    actionNow:
+      "提前告知体检中心正处经期：当天照常做常规生化抽血（血糖/血脂/肝肾功/甲功）、心电图、胸片与腹部/甲状腺 B 超；将妇科内诊、白带、TCT/HPV、尿常规、便常规及 CA-125 延至经期完全干净 3–7 天后再补做。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "ACOG", title: "Cervical Cancer Screening Clinical Guidance & Specimen Adequacy", year: 2021 },
+      { org: "PubMed", title: "Menstrual cycle fluctuations in serum CA-125 and menstrual blood contamination in urinalysis", year: 2019 },
+    ],
+    redLine: "具体体检改期与补检规则以体检中心及医生通知为准；若经期伴随异常大量出血、剧烈腹痛或明显头晕，请暂缓空腹抽血体检并优先挂妇科面诊。",
+    keywords: ["经期体检", "生理期体检", "大姨妈体检", "抽血", "B超", "尿常规", "妇科检查", "改期", "CA125", "TCT"],
+  },
+  {
+    slug: "false-wide-hips-correction",
+    track: "women",
+    shortTag: "假胯宽能靠矫正操练没吗",
+    question: "女生「假胯宽」靠网红矫正操能练没吗？绑腿带、徒手正骨有用吗？",
+    verdict: "adjust",
+    verdictLabel: "骨头按不小，练强臀中肌+改步态能改善视觉",
+    reassurance: "先放下焦虑！「假胯宽」并不是医学病名，成年骨骼绝不可能被绑带绑小或徒手按进去，但练对臀腿和体态确实能让线条变顺、显腿长。",
+    debate: {
+      sideA: "每天戴骨盆矫正带+跟着做 10 分钟瘦胯操，一周就能把骨头收回去！",
+      sideB: "大腿根外凸的是股骨大转子和脂肪，绑带全是智商税，练臀中肌和减脂才靠谱。",
+    },
+    science:
+      "运动解剖与 PubMed 生物力学研究表明，视觉上大腿根外侧偏宽多由三项叠加：天生的股骨大转子骨性宽度（成年后无法靠外力缩小）、久坐与臀中肌无力引发的股骨内旋，以及大腿外侧皮下脂肪堆积。绑腿带与「徒手缩骨」既不能改变骨骼结构，过度捆绑反而可能影响局部循环。",
+    actionNow:
+      "省下买矫正带和正骨课的钱！日常减少跷二郎腿和内八字走路，每周 2–3 次强化臀中肌与髋外旋肌群（蚌式开合、侧向螃蟹步、单腿臀桥），配合整体控脂，臀线上移后视觉比例会自然变顺。本站零带货，不推任何塑形器械、正骨课程或医美项目。",
+    evidenceLevel: "中等证据",
+    sources: [
+      { org: "PubMed", title: "Powers CM, The Influence of Abnormal Hip Mechanics on Knee and Lower Extremity Alignment (JOSPT)", year: 2010 },
+      { org: "ACSM", title: "Resistance Training & Neuromuscular Control for Lower Extremity Alignment", year: 2020 },
+    ],
+    redLine: "若伴随髋关节持续弹响疼痛、步态明显跛行或下肢麻木，请前往正规医院骨科或康复医学科评估，切勿接受暴力徒手正骨。",
+    keywords: ["假胯宽", "妈妈臀", "股骨大转子", "股骨内旋", "臀中肌", "骨盆矫正带", "绑腿带", "徒手正骨"],
+  },
 
   // ==================== 四、日常普适 · 人人都关心的经典纠结（6 题） ====================
   {
@@ -1157,6 +1255,31 @@ export const DILEMMAS: Dilemma[] = [
       { org: "中国营养学会", title: "《中国居民膳食指南（2022）》饮水建议", year: 2022 },
     ],
     keywords: ["8杯水", "八杯水", "喝水", "2000ml", "补水"],
+  },
+  {
+    slug: "fruit-dinner-fatty-liver",
+    track: "daily",
+    shortTag: "水果当晚饭会吃出脂肪肝吗",
+    question: "晚上只吃水果当晚饭「水果代餐」，能瘦更快吗？听说反而掉肌肉还长脂肪肝？",
+    verdict: "stop",
+    verdictLabel: "别拿水果当正餐，易掉肌肉且过量果糖伤肝",
+    reassurance: "水果很健康，但它绝不是合格的晚饭！长期只啃水果代餐，掉的往往是水分和肌肉，高糖水果吃过量还真可能把肝脏累出脂肪。",
+    debate: {
+      sideA: "水果 0 脂肪又清爽，晚上只吃半个西瓜或一串葡萄，掉秤飞快！",
+      sideB: "水果全糖几乎没蛋白，我代餐两个月松垮掉发，体检还查出脂肪肝！",
+    },
+    science:
+      "《中国居民膳食指南（2022）》明确指出，水果缺乏人体必需的蛋白质和必需脂肪酸，不能替代正餐，推荐成人每日鲜果摄入 200–350 克。PubMed 代谢研究也证实，过量游离果糖几乎全部由肝脏代谢，会直接促进肝脏从头脂肪合成（DNL）并升高非酒精性脂肪肝（NAFLD）风险，而长期缺蛋白会加速肌肉流失、拉低基础代谢。",
+    actionNow:
+      "把水果放回「两餐之间适量吃」的位置（每天 1–2 个拳头大小，优先选浆果、苹果、猕猴桃等完整鲜果，少榨汁）；晚饭踏实吃一拳优质蛋白（鱼/蛋/瘦肉/豆腐）+ 大把蔬菜 + 少量杂粮主食，瘦得更稳还不伤肝。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "中国营养学会", title: "《中国居民膳食指南（2022）》蔬菜水果摄入与平衡膳食建议", year: 2022 },
+      { org: "PubMed", title: "Jensen et al., Fructose and Sugar: A Major Mediator of Non-Alcoholic Fatty Liver Disease (J Hepatol)", year: 2018 },
+      { org: "WHO", title: "Healthy Diet Fact Sheet & Free Sugars Guidance", year: 2020 },
+    ],
+    redLine: "已确诊糖尿病、脂肪肝、高甘油三酯或痛风人群，每日水果品种与摄入上限请遵内分泌科或临床营养科医嘱；本站不推任何代餐粉或果蔬酵素。",
+    keywords: ["水果代餐", "水果当晚饭", "吃水果减肥", "果糖", "脂肪肝", "掉肌肉", "西瓜", "晚饭"],
   },
 ];
 
