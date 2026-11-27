@@ -641,8 +641,9 @@ export const DILEMMAS: Dilemma[] = [
       { org: "ACSM", title: "Exercise and Fluid Replacement & Exertional Heat Illness Position Stands", year: 2021 },
       { org: "PubMed", title: "Meerman & Brown, When somebody loses weight, where does the fat go? (BMJ)", year: 2014 },
       { org: "PubMed", title: "Physiological strain and energy expenditure responses to exercising in a sauna suit", year: 2018 },
+      { org: "WHO", title: "Heatwaves: How to stay cool（热射病急救）", year: 2024, url: "https://www.who.int/news-room/questions-and-answers/item/heatwaves-how-to-stay-cool" },
     ],
-    redLine: "高危安全红线：运动或桑拿中若出现头晕恶心、冷汗转无汗、心跳剧烈、皮肤灼热或意识模糊等中暑/热射病征兆，必须立刻停止运动、撤离高温环境、降温补液并紧急就医。",
+    redLine: "运动或桑拿期间或之后，若出现意识模糊、抽搐或昏迷，立即拨打 120。等待救援时，将人移至阴凉通风处，脱去多余衣物，用凉水打湿皮肤并扇风，尽快降温。不要喂水或喂药。",
     keywords: ["暴汗服", "出汗", "出汗多", "燃脂", "排毒", "桑拿", "汗蒸", "热射病", "脱水"],
   },
 
