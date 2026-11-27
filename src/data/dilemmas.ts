@@ -595,6 +595,56 @@ export const DILEMMAS: Dilemma[] = [
     redLine: "已有胆结石/胆囊炎病史、低血糖、胃溃疡、孕期哺乳期、未成年人及进食障碍史者切勿盲目轻断食；若出现右上腹隐痛、绞痛或进食油腻后恶心，请及时挂消化科/普外科就医。",
     keywords: ["16+8", "轻断食", "间歇性断食", "不吃早饭", "胆结石", "胆囊", "暴食", "减脂"],
   },
+  {
+    slug: "train-to-failure-rir",
+    track: "fitness",
+    shortTag: "每组必须练到力竭吗",
+    question: "练力量每组都必须练到「力竭（做不动为止）」才长肌肉吗？留 1–3 次余力是不是在摸鱼？",
+    verdict: "ok",
+    verdictLabel: "不必组组力竭，留 1–3 次余力效果几乎一样",
+    reassurance: "留 1–3 次余力（RIR 1–3）绝不是摸鱼！研究反复证实，只要动作到位、总训练量够，不必把每一组都拼到脸憋红、动作变形才长肌肉。",
+    debate: {
+      sideA: "每组不练到彻底做不动就是划水，肌肉根本收不到刺激！",
+      sideB: "组组力竭疲劳感炸裂还伤关节，留 1–3 次余力反而总容量更高、恢复更快。",
+    },
+    science:
+      "PubMed 多项抗阻训练荟萃分析与剂量反应回归（Schoenfeld、Vieira、Robinson 等）表明，当总训练容量相当时，练到绝对力竭与距力竭保留 1–3 次余力（RIR）在肌肥大和最大力量增长上几乎没有显著差异；ACSM 抗阻处方共识也指出，长期组组力竭会大幅抬高中枢疲劳与关节负荷，反而不利动作稳定与持续进步。",
+    actionNow:
+      "多数正式组控制在「还能勉强再标准做 1–3 次」的强度（RIR 1–3）；想冲极限只放在相对安全的固定器械或孤立动作的最后一组，深蹲硬拉等自由重量更优先保动作标准。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "PubMed", title: "Vieira et al., Effects of Resistance Training Performed to Failure or Not to Failure on Muscle Strength, Hypertrophy, and Power Output: Systematic Review & Meta-Analysis", year: 2021 },
+      { org: "PubMed", title: "Robinson et al., Exploring the Dose-Response Relationship Between Estimated Resistance Training Proximity to Failure, Strength Gain, and Muscle Hypertrophy (Sports Medicine)", year: 2024 },
+      { org: "ACSM", title: "Progression Models in Resistance Training for Healthy Adults", year: 2009 },
+    ],
+    redLine: "盲目每组硬冲力竭易导致借力代偿与急性拉伤；若训练中出现关节尖锐刺痛、弹响伴无力或腰背放射痛，应立即停止动作并在必要时挂运动医学科/骨科评估。",
+    keywords: ["力竭", "练到力竭", "RIR", "保留次数", "余力", "增肌", "力量训练", "摸鱼"],
+  },
+  {
+    slug: "sauna-suit-sweat-fat-loss",
+    track: "fitness",
+    shortTag: "穿暴汗服出汗多更燃脂吗",
+    question: "穿暴汗服运动或蒸桑拿「出汗越多」，真的减脂更快、还能排毒吗？",
+    verdict: "stop",
+    verdictLabel: "出汗不等于燃脂，警惕脱水与热射病",
+    reassurance: "秤上少的那一两斤全是水和盐，喝两杯水就会回来！脂肪不是靠「出汗流出去」的，强行捂汗不仅不加速减脂，还真有中暑风险。",
+    debate: {
+      sideA: "穿暴汗服跑半小时狂流汗、秤上立刻轻 2 斤，燃脂排毒效果翻倍！",
+      sideB: "汗里 99% 是水分和电解质，暴汗服把热锁死，练到头晕差点热射病进医院。",
+    },
+    science:
+      "ACSM 运动补液与热损伤预防立场声明明确指出，出汗只是人体蒸发散热的体温调节机制，汗液成分 99% 以上是水与电解质；不透气暴汗服阻碍汗液蒸发散热，会急剧升高核心体温、脱水、电解质紊乱与劳力性热射病风险。PubMed 代谢研究也证实，脂肪氧化后的产物约 84% 是以二氧化碳形式经呼吸排出，而非靠汗液「排毒或流油」。",
+    actionNow:
+      "果断收起暴汗服，换回透气速干的普通运动服，在通风环境下规律完成有氧和力量训练并小口补水；真正掉脂肪靠的是可持续的热量缺口与规律运动，不是比谁出汗多。本站零带货，不推任何运动服饰或排汗产品。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "ACSM", title: "Exercise and Fluid Replacement & Exertional Heat Illness Position Stands", year: 2021 },
+      { org: "PubMed", title: "Meerman & Brown, When somebody loses weight, where does the fat go? (BMJ)", year: 2014 },
+      { org: "PubMed", title: "Physiological strain and energy expenditure responses to exercising in a sauna suit", year: 2018 },
+    ],
+    redLine: "高危安全红线：运动或桑拿中若出现头晕恶心、冷汗转无汗、心跳剧烈、皮肤灼热或意识模糊等中暑/热射病征兆，必须立刻停止运动、撤离高温环境、降温补液并紧急就医。",
+    keywords: ["暴汗服", "出汗", "出汗多", "燃脂", "排毒", "桑拿", "汗蒸", "热射病", "脱水"],
+  },
 
   // ==================== 三、女性健康 · 经期、体态与饮食焦虑（10 题） ====================
   {
@@ -1114,6 +1164,54 @@ export const DILEMMAS: Dilemma[] = [
     redLine: "若伴随髋关节持续弹响疼痛、步态明显跛行或下肢麻木，请前往正规医院骨科或康复医学科评估，切勿接受暴力徒手正骨。",
     keywords: ["假胯宽", "妈妈臀", "股骨大转子", "股骨内旋", "臀中肌", "骨盆矫正带", "绑腿带", "徒手正骨"],
   },
+  {
+    slug: "daily-panty-liners-underwear",
+    track: "women",
+    shortTag: "非经期能天天垫护垫吗",
+    question: "非经期天天垫护垫防白带弄脏内裤，真的更卫生吗？内裤必须手洗、三个月一换吗？",
+    verdict: "adjust",
+    verdictLabel: "别天天垫护垫捂着，穿纯棉透气内裤并晒干就好",
+    reassurance: "非经期有少量透明或乳白色、无异味的分泌物完全正常，不必为了隔绝它天天贴护垫把私处捂在闷热环境里！",
+    debate: {
+      sideA: "内裤沾到白带好脏，天天贴护垫才精致卫生，而且内裤绝不能机洗！",
+      sideB: "天天垫护垫底部塑料膜不透气，又闷又潮反而反复得霉菌性阴道炎。",
+    },
+    science:
+      "ACOG 外阴阴道护理指引建议日常穿透气纯棉内裤、减少局部潮湿闷热并避免含香精产品。PubMed 临床综述指出，虽然健康人群短期使用透气护垫未必直接致病，但对有复发性外阴阴道假丝酵母菌病（霉菌性阴道炎）倾向或湿热环境下的人群，长期封闭闷热与摩擦会削弱局部皮肤屏障、诱发反复不适。至于内裤清洁，关键在于「单独清洗、充分漂净与彻底干燥（日晒或高温烘干）」，而非纠结必须手洗。",
+    actionNow:
+      "护垫只留给经期最后两天少量点滴或长途出行应急（并勤换无香透气款）；日常直接穿宽松纯棉内裤，每日换洗（手洗或单独筒高温/除菌机洗均可），通风晒干或烘干，每 3–6 个月或发现变硬发黄变形时更换。本站零带货，不推任何护垫、抑菌洗液或自检贴品牌。",
+    evidenceLevel: "中等证据",
+    sources: [
+      { org: "ACOG", title: "Vaginitis & Vulvovaginal Care Clinical Guidance", year: 2022, url: "https://www.acog.org/womens-health/faqs/vaginitis" },
+      { org: "PubMed", title: "Farage et al., Clinical and Microbiological Evaluation of Panty Liners and Vulvovaginal Health", year: 2015 },
+    ],
+    redLine: "若出现外阴持续瘙痒、灼痛、豆腐渣样或灰白色鱼腥味白带，切勿靠垫护垫掩盖或自行购买洗液/自检贴处理，请直接挂妇科查白带常规对症治疗。",
+    keywords: ["护垫", "卫生护垫", "天天用护垫", "白带", "内裤", "内裤机洗", "三个月一换", "阴道炎"],
+  },
+  {
+    slug: "sunscreen-indoors-cloudy",
+    track: "women",
+    shortTag: "阴天和室内也要涂防晒吗",
+    question: "阴天和在办公室坐一天，也要每天涂防晒霜吗？不涂真的会快速光老化长斑吗？",
+    verdict: "adjust",
+    verdictLabel: "户外阴天与靠窗要防，远离窗户室内别焦虑",
+    reassurance: "防晒确实是最硬核的抗老手段，但也不用焦虑到在拉着窗帘的室内定闹钟每 2 小时补涂一次！看紫外线指数和座位是否靠窗就行。",
+    debate: {
+      sideA: "阴天和办公室只要不拉窗帘都要每 2 小时补涂防晒，不然紫外线直接照老十岁！",
+      sideB: "坐工位根本晒不到太阳，天天糊厚防晒再反复卸妆反而闷痘伤皮肤屏障。",
+    },
+    science:
+      "美国皮肤病学会（AAD）指出，导致皮肤光老化与色斑的 UVA 紫外线穿透力很强：阴天云层仍可透过高达约 80% 的紫外线，普通窗玻璃也能透过大部分 UVA。但世界卫生组织（WHO）紫外线指数（UVI）指引同样明确：户外 UVI ≥ 3 时需要严格防晒；若全天身处远离窗户的室内且 UVI 极低，日常并无必要频繁补涂。",
+    actionNow:
+      "分场景省心做：1）白天要出门（无论晴天阴天，尤其 UVI ≥ 3）或工位紧邻大面无遮挡朝阳窗户 → 出门前涂广谱 SPF 30+ 防晒，或直接用硬防晒（遮阳伞、帽、拉百叶窗）；2）全天待在远离窗户的室内、只早晚天黑通勤 → 无需焦虑硬涂防晒，减少不必要清洁摩擦。本站零带货，不推任何防晒或卸妆品牌。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "AAD", title: "American Academy of Dermatology: Sunscreen FAQs & Sun Protection Guidance", year: 2023, url: "https://www.aad.org/media/stats-sunscreen" },
+      { org: "WHO", title: "Ultraviolet Radiation & Global Solar UV Index Practical Guide", year: 2022 },
+    ],
+    redLine: "若皮肤出现短期迅速增大、边缘不规则、颜色不均、破溃或出血的色素痣/皮损，请及时前往正规医院皮肤科面诊排查。",
+    keywords: ["防晒", "防晒霜", "阴天防晒", "室内防晒", "光老化", "紫外线", "UVA", "UVI"],
+  },
 
   // ==================== 四、日常普适 · 人人都关心的经典纠结（6 题） ====================
   {
@@ -1280,6 +1378,31 @@ export const DILEMMAS: Dilemma[] = [
     ],
     redLine: "已确诊糖尿病、脂肪肝、高甘油三酯或痛风人群，每日水果品种与摄入上限请遵内分泌科或临床营养科医嘱；本站不推任何代餐粉或果蔬酵素。",
     keywords: ["水果代餐", "水果当晚饭", "吃水果减肥", "果糖", "脂肪肝", "掉肌肉", "西瓜", "晚饭"],
+  },
+  {
+    slug: "walk-after-meal-gastroptosis",
+    track: "daily",
+    shortTag: "饭后散步会胃下垂吗",
+    question: "吃饱后立刻散步会得「胃下垂」吗？饭后到底该坐着、靠墙站还是直接躺？",
+    verdict: "ok",
+    verdictLabel: "慢走不会晃出胃下垂，别立刻平躺或剧烈跑跳就行",
+    reassurance: "放心走！健康人的胃由韧带和腹壁肌肉稳稳托住，饭后溜达散步绝不会把胃「晃下垂」，反而能帮你稳住餐后血糖。",
+    debate: {
+      sideA: "吃完饭必须坐半小时一动不动，立刻站起来走会把胃坠成胃下垂！",
+      sideB: "饭后坐着不动长小肚子、躺平还反酸烧心，出门慢走 10 分钟最舒服。",
+    },
+    science:
+      "胃下垂的主要成因是体型极度消瘦、腹壁肌群薄弱或韧带松弛，并非普通饭后缓步走所致。相反，PubMed 多项临床研究表明，餐后不久进行 10–30 分钟轻缓步行，肌肉摄取葡萄糖增加，能显著压平餐后血糖峰值并温和促进胃肠蠕动；而最不推荐的是「饭后立刻平躺」，会削弱食管下括约肌抗反流屏障，显著增加烧心反酸风险。",
+    actionNow:
+      "最舒服的饭后节奏：吃完别立刻平躺睡觉（建议餐后留出 2–3 小时再完全平躺），也别立刻快跑跳绳；先轻松坐着歇 10–20 分钟，再出门慢悠悠散步 10–20 分钟，消食又稳血糖。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "PubMed", title: "Buffey et al., The Acute Effects of Interrupting Prolonged Sitting Time with Standing and Light-Intensity Walking on Postprandial Glucose (Sports Medicine)", year: 2022 },
+      { org: "PubMed", title: "Fujiwara et al., Association between dinner-to-bed time and gastro-esophageal reflux disease (Am J Gastroenterol)", year: 2005 },
+      { org: "中国营养学会", title: "《中国居民膳食指南（2022）》吃动平衡与食不过饱建议", year: 2022 },
+    ],
+    redLine: "已确诊胃下垂或极度消瘦人群饭后宜先短休再缓行、避免剧烈弹跳；若长期出现餐后上腹剧痛、反复反酸烧心、恶心呕吐或不明原因消瘦，请挂消化内科面诊排查。",
+    keywords: ["饭后散步", "胃下垂", "饭后坐着", "饭后躺着", "反酸", "烧心", "靠墙站", "控血糖"],
   },
 ];
 

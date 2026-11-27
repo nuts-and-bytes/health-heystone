@@ -29,6 +29,8 @@ export const SCENE_MAP: Record<string, { scene: string; caption: string }> = {
   "massage-gun-neck-danger": { scene: "dilemma-massage-gun", caption: "点击看：避开颈部骨突禁区，只轻扫大块肌肉" },
   "smartwatch-calories-eat-back": { scene: "dilemma-watch-calories", caption: "点击看：手表热量常虚高 30%，别按表全吃回来" },
   "intermittent-fasting-16-8-gallstones": { scene: "dilemma-fasting-clock", caption: "点击看：总热量才是核心，窗口前移护胆囊" },
+  "train-to-failure-rir": { scene: "dilemma-rir-meter", caption: "点击看：留 1–3 次余力（RIR），增肌几乎一样还更稳" },
+  "sauna-suit-sweat-fat-loss": { scene: "dilemma-sauna-sweat", caption: "点击看：出汗只排盐和水，脂肪主要经呼吸 CO₂ 排出" },
 
   // 女性
   "period-workout-glutes-core": { scene: "dilemma-period-pace", caption: "点击看：按当天体感把强度旋钮调到舒适档" },
@@ -53,6 +55,8 @@ export const SCENE_MAP: Record<string, { scene: string; caption: string }> = {
   "sports-bra-all-day": { scene: "women-sports-bra", caption: "点击看：运动穿稳支撑，日常与睡觉换宽松" },
   "period-checkup-reschedule": { scene: "women-period-checkup", caption: "点击看：经期体检按项目分流，先查常规后补妇科" },
   "false-wide-hips-correction": { scene: "women-hip-alignment", caption: "点击看：绑带按不小骨头，激活臀中肌改力线" },
+  "daily-panty-liners-underwear": { scene: "women-panty-liner", caption: "点击看：撤掉闷热护垫，纯棉透气+晒干最护微生态" },
+  "sunscreen-indoors-cloudy": { scene: "women-uv-window", caption: "点击看：阴天与靠窗防 UVA，远离窗户室内别焦虑" },
 
   // 日常普适
   "running-hurts-knees": { scene: "knee-sponge", caption: "点击看：膝盖软骨像海绵，规律慢跑反而促营养" },
@@ -62,6 +66,7 @@ export const SCENE_MAP: Record<string, { scene: string; caption: string }> = {
   "weekend-catchup-sleep": { scene: "sleep-bank", caption: "点击看：工作日透支睡眠，周末罐口有裂缝补不满" },
   "eight-cups-water": { scene: "dilemma-eight-cups", caption: "点击看：划掉死磕8杯水，看淡柠檬色标准" },
   "fruit-dinner-fatty-liver": { scene: "dilemma-fruit-plate", caption: "点击看：水果回小碟，晚饭换成均衡蛋白餐盘" },
+  "walk-after-meal-gastroptosis": { scene: "dilemma-postmeal-walk", caption: "点击看：饭后避开立刻平躺，慢走 10–20 分稳血糖不伤胃" },
 };
 
 export function getDilemmaScene(slug: string) {
