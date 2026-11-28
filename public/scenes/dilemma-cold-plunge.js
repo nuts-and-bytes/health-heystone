@@ -1,4 +1,4 @@
-// dilemma-cold-plunge: 力量训练后立刻泡冰浴会压低 mTOR 增肌修复信号，增肌期建议错开 4–6 小时或放休息日。
+// dilemma-cold-plunge: 反复在力量训练后立即冰浴可能影响增肌，不示意具体等待时长或生理信号数值。
 (function () {
   const SC = (window.SCENES = window.SCENES || {});
   const R = window.RIG;
@@ -16,38 +16,32 @@
 
     rr(g, x, y, w, h, 10);
     inkFill(g, C.paper, 1.6);
-    text(g, '冰浴时机 · 肌肥大信号条', x + w / 2, y + 17, 9, C.ink);
+    text(g, '增肌训练 · 练后怎么洗', x + w / 2, y + 17, 9, C.ink);
     ln(g, x + 10, y + 24, x + w - 10, y + 24, 1, C.line || '#e5e7eb');
 
-    // Timeline bar: Immediate post-lift -> 4-6h later / Rest day
+    // Switch from immediate ice immersion to a regular shower; not a timeline.
     const barX = x + 14, barY = y + 48, barW = w - 28;
     ln(g, barX, barY, barX + barW, barY, 2.2, C.line || '#d6d3d1');
-    text(g, '刚练完', barX + 10, barY - 10, 7.6, shiftK < 0.4 ? '#B91C1C' : C.muted);
-    text(g, '4–6h 后 / 休息日', barX + barW - 26, barY - 10, 7.6, shiftK > 0.5 ? OR() : C.muted);
+    text(g, '立刻冰浴', barX + 10, barY - 10, 7.6, shiftK < 0.4 ? '#B91C1C' : C.muted);
+    text(g, '普通淋浴', barX + barW - 26, barY - 10, 7.6, shiftK > 0.5 ? OR() : C.muted);
 
-    // Sliding ice-tub marker
+    // Sliding choice marker
     const tubX = lerp(barX + 12, barX + barW - 14, shiftK);
     rr(g, tubX - 11, barY - 7, 22, 14, 4);
     inkFill(g, shiftK > 0.5 ? C.butterSoft : '#EFF6FF', 1.4);
-    text(g, '冰', tubX, barY + 3, 8.2, shiftK > 0.5 ? OR() : '#1D4ED8');
+    text(g, shiftK > 0.5 ? '洗' : '冰', tubX, barY + 3, 8.2, shiftK > 0.5 ? OR() : '#1D4ED8');
 
-    // Muscle repair mTOR signal bar
-    text(g, '肌肉修复合成信号 (mTOR)', x + w / 2, y + 73, 8.2, C.ink);
-    rr(g, x + 14, y + 80, w - 28, 12, 6);
-    inkFill(g, C.paper, 1.2);
-    const fillW = lerp(34, w - 32, shiftK);
-    rr(g, x + 16, y + 82, fillW, 8, 4);
-    g.fillStyle = shiftK > 0.5 ? OR() : '#93C5FD';
-    g.fill();
+    text(g, '研究关注的是重复冰浴', x + w / 2, y + 76, 8.2, C.ink);
+    text(g, '没有确定的等待时长', x + w / 2, y + 88, 8, C.muted);
 
-    text(g, okK > 0.3 ? '✓ 错开 4–6h · 修复信号满格' : '立刻冰浴会压低增肌信号', x + w / 2, y + 104, 8, okK > 0.3 ? OR() : '#B91C1C');
-    text(g, '日常增肌洗温水澡就够，心血管病慎冰浴', x + w / 2, 14, 8.1, C.muted);
+    text(g, okK > 0.3 ? '✓ 不必例行泡冰水' : '练后反复冰浴可能影响增肌', x + w / 2, y + 104, 8, okK > 0.3 ? OR() : '#B91C1C');
+    text(g, '日常训练后照常洗澡即可', x + w / 2, 14, 8.1, C.muted);
   }
 
   SC['dilemma-cold-plunge'] = {
     dur: 5.2,
     width: 390,
-    label: '小橙把冰浴时间滑块从刚练完推到4到6小时后与休息日，肌肉修复合成信号条随之回升到满格。',
+    label: '小橙把练后选择从立即泡冰水切换为普通淋浴，不规定冰浴的等待时长。',
     draw(g, S) {
       const T = S.on ? S.u * this.dur : -1;
       const t = S.t;
