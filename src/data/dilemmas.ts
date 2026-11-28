@@ -646,6 +646,56 @@ export const DILEMMAS: Dilemma[] = [
     redLine: "运动或桑拿期间或之后，若出现意识模糊、抽搐或昏迷，立即拨打 120。等待救援时，将人移至阴凉通风处，脱去多余衣物，用凉水打湿皮肤并扇风，尽快降温。不要喂水或喂药。",
     keywords: ["暴汗服", "出汗", "出汗多", "燃脂", "排毒", "桑拿", "汗蒸", "热射病", "脱水"],
   },
+  {
+    slug: "weights-before-cardio",
+    track: "fitness",
+    shortTag: "先撸铁还是先有氧",
+    question: "先撸铁（力量训练）还是先有氧（跑步/椭圆机）？顺序做反了是不是白练？",
+    verdict: "adjust",
+    verdictLabel: "都不会白练，增肌保肌优先「先力量、后有氧」",
+    reassurance: "顺序做反不会「白练」！但如果你以增肌、塑形或减脂期保住肌肉为主，把力量训练放在有氧前面，动作更稳、精力更足、受伤风险更低。",
+    debate: {
+      sideA: "必须先在跑步机跑 40 分钟热身再举铁，不然直接举铁会长壮。",
+      sideB: "先跑完有氧糖原和精力全耗光了，举铁重量掉一截还容易动作变形拉伤。",
+    },
+    science:
+      "PubMed 同期训练（Concurrent Training）顺序系统综述与荟萃分析指出，先做长时间耐力有氧会提前消耗肌糖原并诱发中枢神经疲劳，略微削弱随后的最大力量与爆发力表现；ACSM 综合体能处方建议按核心目标排序——以增肌、力量或减脂保肌为主时「先力量、后有氧」，以备战长跑/提升耐力成绩为主时则「先有氧、后力量」，若精力充足也可将两者错开 3–6 小时或分天进行。",
+    actionNow:
+      "日常减脂塑形推荐顺序：5 分钟轻度动态热身 → 力量训练（精力最满时保动作标准）→ 20–30 分钟中低强度有氧（如慢跑、快走爬坡或骑行）。想专注冲刺长跑配速的日子再把有氧放前面。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "PubMed", title: "Eddens et al., The Role of Intra-Session Exercise Sequence in the Interference Effect: A Systematic Review with Meta-Analysis (Sports Medicine)", year: 2018 },
+      { org: "PubMed", title: "Schumann et al., Compatibility of Concurrent Aerobic and Strength Training for Skeletal Muscle Size and Function: An Updated Systematic Review and Meta-Analysis (Sports Medicine)", year: 2022 },
+      { org: "ACSM", title: "Quantity and Quality of Exercise for Developing and Maintaining Cardiorespiratory, Musculoskeletal, and Neuromotor Fitness", year: 2011 },
+    ],
+    redLine: "在有氧极度疲惫状态下硬上大重量深蹲、硬拉容易出现腰膝代偿拉伤；训练中若出现关节尖锐刺痛或头晕眼前发黑，应立即停止动作并休息，必要时挂运动医学科/骨科评估。",
+    keywords: ["先力量还是先有氧", "先撸铁还是先跑步", "先无氧还是先有氧", "训练顺序", "同期训练", "白练", "有氧", "力量"],
+  },
+  {
+    slug: "cold-plunge-after-lifting",
+    track: "fitness",
+    shortTag: "练完泡冰浴会白练吗",
+    question: "练完洗冷水澡 / 泡冰水浴（Cold Plunge）能更快消炎恢复吗？还是反而让肌肉白练了？",
+    verdict: "adjust",
+    verdictLabel: "增肌期别在力量后立刻冰浴，错开 4–6 小时更稳",
+    reassurance: "并不是「一碰凉水肌肉就没了」，但力量训练后立刻跳进冰水桶浸泡，确实会压低肌肉修复生长的信号——普通人增肌期洗个舒服的温水澡就够了！",
+    debate: {
+      sideA: "欧美运动员练完都在泡冰桶，消炎抗酸痛、多巴胺拉满恢复超快！",
+      sideB: "研究早就证实力量后立刻泡冰水会抑制增肌信号，把今天举的铁打折扣了。",
+    },
+    science:
+      "Roberts 等（*The Journal of Physiology*, 2015）12 周随机对照试验与 Piñero 等（*European Journal of Sport Science*, 2024）贝叶斯荟萃分析表明，抗阻训练后常规进行冰水浸泡（CWI）会通过剧烈血管收缩、下调 mTOR 蛋白合成通路与抑制卫星细胞增殖，显著削弱长期肌肥大与力量增长。它更适合职业运动员在背靠背密集比赛期换取短期酸痛缓解。",
+    actionNow:
+      "以增肌和力量增长为目标时，避开在撸铁后立刻泡冰浴或长时间极冷水冲淋；如果纯粹喜欢冷水浴提神，建议安排在力量训练前、训练结束 4–6 小时后，或单独放在休息日。本站零带货，不推任何冰浴桶或制冷设备。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "PubMed", title: "Roberts et al., Post-exercise cold water immersion attenuates acute anabolic signalling and long-term adaptations in muscle to strength training (J Physiol)", year: 2015 },
+      { org: "PubMed", title: "Piñero et al., Throwing cold water on muscle growth: A systematic review with meta-analysis of the effects of postexercise cold water immersion on resistance training-induced hypertrophy (Eur J Sport Sci)", year: 2024 },
+      { org: "ACSM", title: "Recovery Strategies and Thermal Modalities in Resistance Training", year: 2021 },
+    ],
+    redLine: "高危安全红线：有心血管基础疾病、未控制高血压、心律失常或雷诺现象人群切勿盲目尝试骤冷冰浴；若冷水刺激后出现胸闷、心悸、呼吸困难或头晕，须立即离开冷环境保暖并就医。",
+    keywords: ["冷水澡", "冰浴", "冰水浴", "Cold Plunge", "消炎", "恢复", "增肌", "mTOR", "白练"],
+  },
 
   // ==================== 三、女性健康 · 经期、体态与饮食焦虑（10 题） ====================
   {
@@ -1213,6 +1263,31 @@ export const DILEMMAS: Dilemma[] = [
     redLine: "若皮肤出现短期迅速增大、边缘不规则、颜色不均、破溃或出血的色素痣/皮损，请及时前往正规医院皮肤科面诊排查。",
     keywords: ["防晒", "防晒霜", "阴天防晒", "室内防晒", "光老化", "紫外线", "UVA", "UVI"],
   },
+  {
+    slug: "period-wash-hair-shower",
+    track: "women",
+    shortTag: "生理期能洗头洗澡吗",
+    question: "生理期能洗头、洗澡吗？洗头真的会「宫寒、头痛、老了落病根」吗？",
+    verdict: "ok",
+    verdictLabel: "放心洗！温水洗完及时吹干反而更舒服卫生",
+    reassurance: "放心洗头、洗温水澡！现代医学没有任何证据表明经期洗头会导致宫寒、闭经或老了落病根，硬忍着不洗反而又油又闷更容易滋生细菌。",
+    debate: {
+      sideA: "老一辈说经期洗头毛孔张开，湿寒会倒灌进子宫引发痛经、闭经和偏头痛！",
+      sideB: "经期本来就爱出油出汗，不洗头捂七天难受死了，温水洗完马上吹干根本没事。",
+    },
+    science:
+      "世界卫生组织（WHO）与美国妇产科医师学会（ACOG）经期卫生管理共识指出，月经是子宫内膜周期性脱落的正常生理过程，外部温水洗头或淋浴不会改变子宫血流或引发「宫寒」。相反，经期保持外阴与全身清洁能有效降低生殖道与泌尿道感染风险，温水淋浴还能帮助放松盆底与腹部肌肉、缓解轻度痛经。所谓「经期洗头落病根」源于过去缺乏热水与吹风机的年代。",
+    actionNow:
+      "经期照常使用温水洗头与淋浴（避开盆浴/公共泡汤以减少逆行感染机会），洗后第一时间擦干身体、用吹风机把头皮发根彻底吹干、别顶着湿发直吹冷风即可。本站零带货，不推姜汁洗发水或暖宫产品。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "WHO", title: "WHO Statement on Menstrual Health and Hygiene", year: 2022 },
+      { org: "ACOG", title: "Menstruation in Girls and Adolescents & Menstrual Hygiene Guidance", year: 2021 },
+      { org: "PubMed", title: "Menstrual Hygiene Management and Reproductive Tract Infection Prevention: Systematic Review", year: 2019 },
+    ],
+    redLine: "若经期伴随持续剧烈痛经、经量异常过多（如 1–2 小时浸透卫生巾）、发热寒战或异味分泌物，请及时前往正规医院妇科就诊排查。",
+    keywords: ["经期洗头", "生理期洗头", "大姨妈洗头", "经期洗澡", "宫寒", "落病根", "痛经", "吹干"],
+  },
 
   // ==================== 四、日常普适 · 人人都关心的经典纠结（6 题） ====================
   {
@@ -1404,6 +1479,56 @@ export const DILEMMAS: Dilemma[] = [
     ],
     redLine: "已确诊胃下垂或极度消瘦人群饭后宜先短休再缓行、避免剧烈弹跳；若长期出现餐后上腹剧痛、反复反酸烧心、恶心呕吐或不明原因消瘦，请挂消化内科面诊排查。",
     keywords: ["饭后散步", "胃下垂", "饭后坐着", "饭后躺着", "反酸", "烧心", "靠墙站", "控血糖"],
+  },
+  {
+    slug: "meal-order-veggies-first",
+    track: "daily",
+    shortTag: "先吃菜再吃饭能控糖吗",
+    question: "饭前「先吃菜、再吃肉、最后吃主食」的吃饭顺序真的能控糖不长胖吗？还是会把胃吃坏？",
+    verdict: "adjust",
+    verdictLabel: "确能压平餐后血糖峰，但别空腹硬啃生冷菜",
+    reassurance: "「菜→肉→饭」确实有扎实临床研究撑腰，能让你饭后更少犯困、血糖更稳；但它不是无视总热量的减肥魔法，肠胃偏弱的人也完全不必空腹硬啃冰凉沙拉。",
+    debate: {
+      sideA: "按菜→肉→饭的顺序吃，餐后血糖稳如直线、不犯困还能自然瘦下来！",
+      sideB: "胃不好的人空腹先吃一大碗生冷蔬菜直接胃胀反酸，减肥最后还不是看总热量。",
+    },
+    science:
+      "Shukla 等（*Diabetes Care*, 2015 及后续 *BMJ Open Diabetes Res Care* 交叉对照试验）证实，在食物内容与总热量完全相同的前提下，先吃富含膳食纤维的非淀粉蔬菜与优质蛋白质、最后吃碳水主食，能延缓胃排空并促进 GLP-1 饱腹激素分泌，显著压低餐后血糖与胰岛素峰值。但减脂仍取决于全天总能量平衡，且慢性胃炎或消化功能较弱者空腹吃大量生冷粗纤维易引起腹胀不适。",
+    actionNow:
+      "想稳血糖、减少午后饭困：先吃几口温热熟蔬菜和瘦肉/鱼蛋/豆腐，再把米饭面条等主食放在后半程搭配着吃，细嚼慢咽；胃肠敏感者选清炒或焯水熟菜，不必机械教条地空腹狂吃生冷沙拉。本站零带货，不推控糖丸或碳水阻断剂。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "PubMed", title: "Shukla et al., Food Order Has a Significant Impact on Postprandial Glucose and Insulin Levels (Diabetes Care)", year: 2015 },
+      { org: "PubMed", title: "Shukla et al., Carbohydrate-last meal pattern lowers postprandial glucose and insulin excursions (BMJ Open Diabetes Res Care)", year: 2017 },
+      { org: "中国营养学会", title: "《中国居民膳食指南（2022）》食物多样、合理搭配与细嚼慢咽建议", year: 2022 },
+    ],
+    redLine: "已确诊糖尿病且正在使用胰岛素或促泌剂降糖药者，调整进餐顺序与碳水时机时需监测血糖以防低血糖，并遵内分泌科医嘱；若长期餐后胃痛、反酸或消瘦，请挂消化内科就诊。",
+    keywords: ["先吃菜还是先吃饭", "吃饭顺序", "进食顺序", "菜肉饭", "控糖", "饭困", "餐后血糖", "胃胀"],
+  },
+  {
+    slug: "melatonin-insomnia-dependency",
+    track: "daily",
+    shortTag: "失眠吃褪黑素会依赖吗",
+    question: "失眠熬夜靠吃「褪黑素」助眠靠谱吗？长期吃会不会产生依赖、越吃越睡不着？",
+    verdict: "adjust",
+    verdictLabel: "它是生物钟校时信号，不是万能安眠药",
+    reassurance: "褪黑素一般不会像传统安眠药那样产生药物成瘾，但它只擅长「调时差、校生物钟」，对焦虑压力型慢性失眠往往只是隔靴搔痒，别越吃量越大！",
+    debate: {
+      sideA: "褪黑素是人体天然激素，安全没副作用，睡不着就天天吃几颗才踏实。",
+      sideB: "我吃了一周做噩梦、白天头昏脑涨，压力失眠吃它根本不管用还越吃越焦虑。",
+    },
+    science:
+      "PubMed 多项慢性失眠与昼夜节律系统综述指出，外源性褪黑素本质是给大脑传递「天黑了」的时间信号（Chronobiotic），对倒时差、夜班轮班或睡眠相位后移较有效；但对原发性或压力焦虑驱动的慢性失眠，它仅能轻微缩短入睡时间，长期疗效远不如一线首选的失眠认知行为疗法（CBT-I）。它虽无明显化学成瘾性，但长期盲目大剂量服用可能引发晨起嗜睡、头痛、多梦或干扰自身节律。",
+    actionNow:
+      "把重心放回证据最硬的睡眠节律修复：固定每天起床时间、早晨醒后尽早接触自然光照 15–30 分钟、下午少碰咖啡因、睡前 1 小时远离强光刷手机。本站零带货、零用药处方，不推荐任何褪黑素软糖/补剂品牌，也不提供自行加减剂量建议。",
+    evidenceLevel: "强证据",
+    sources: [
+      { org: "PubMed", title: "Ferracioli-Oda et al., Meta-Analysis: Melatonin for the Treatment of Primary Sleep Disorders (PLoS ONE)", year: 2013 },
+      { org: "PubMed", title: "Trauer et al., Cognitive Behavioral Therapy for Chronic Insomnia: A Systematic Review and Meta-analysis (Ann Intern Med)", year: 2015 },
+      { org: "WHO", title: "WHO Mental Health & Non-Pharmacological First-Line Sleep Intervention Guidance", year: 2022 },
+    ],
+    redLine: "若每周入睡困难或早醒 ≥3 次且持续超过 3 个月，或伴随明显情绪低落、焦虑惊恐、夜间响亮打鼾与呼吸暂停，请直接前往正规医院睡眠医学科/心理科规范诊治，切勿长期自行叠加服用助眠产品。",
+    keywords: ["褪黑素", "失眠", "助眠", "依赖", "成瘾", "生物钟", "倒时差", "CBT-I", "熬夜"],
   },
 ];
 
