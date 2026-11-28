@@ -1,4 +1,4 @@
-// women-period-shower: 生理期温水洗头洗澡不会导致宫寒或落病根，洗完及时吹干反而更卫生舒服。
+// women-period-shower: 经期可以照常洗头、淋浴或温水泡澡。
 (function () {
   const SC = (window.SCENES = window.SCENES || {});
   const R = window.RIG;
@@ -27,7 +27,7 @@
       ln(g, x + 18, y + 43, x + 18 + (w - 36) * crossK, y + 43, 1.8, OR());
     }
 
-    // Bottom warm shower + hairdryer comfort box
+    // Bottom warm shower or bath comfort box
     rr(g, x + 10, y + 62, w - 20, 44, 7);
     inkFill(g, dryK > 0.3 ? C.butterSoft : C.paper, 1.5);
 
@@ -37,16 +37,16 @@
     ln(g, x + 30, y + 77, x + 29, y + 86, 1.3, dryK > 0.3 ? OR() : C.muted);
     ln(g, x + 35, y + 77, x + 35, y + 85, 1.3, dryK > 0.3 ? OR() : C.muted);
 
-    text(g, dryK > 0.3 ? '✓ 温水淋浴 + 及时吹干' : '温水清洁 · 吹干防着凉', x + w / 2 + 12, y + 79, 8.5, dryK > 0.3 ? OR() : C.ink);
-    text(g, '防感染 · 温热还舒缓腹痛', x + w / 2 + 12, y + 95, 7.6, dryK > 0.3 ? C.ink : C.muted);
+    text(g, dryK > 0.3 ? '✓ 淋浴或温水泡澡' : '经期照常洗头洗澡', x + w / 2 + 12, y + 79, 8.5, dryK > 0.3 ? OR() : C.ink);
+    text(g, '温水可缓解痛经', x + w / 2 + 12, y + 95, 7.6, dryK > 0.3 ? C.ink : C.muted);
 
-    text(g, '避开盆浴泡汤，洗后擦干发根即可', x + w / 2, 14, 8.4, C.muted);
+    text(g, '洗后按自己觉得舒服的方式擦干', x + w / 2, 14, 8.4, C.muted);
   }
 
   SC['women-period-shower'] = {
     dur: 5.2,
     width: 390,
-    label: '小橙划掉经期洗头落病根的旧谣言，点亮温水淋浴与及时吹干头发的卫生舒缓卡片。',
+    label: '小橙划掉经期洗头落病根的旧谣言，点亮温水淋浴或泡澡的提示。',
     draw(g, S) {
       const T = S.on ? S.u * this.dur : -1;
       const t = S.t;
