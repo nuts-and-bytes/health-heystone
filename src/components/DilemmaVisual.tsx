@@ -32,7 +32,7 @@ export const SCENE_MAP: Record<string, { scene: string; caption: string }> = {
   "train-to-failure-rir": { scene: "dilemma-rir-meter", caption: "点击看：留 1–3 次余力（RIR），增肌几乎一样还更稳" },
   "sauna-suit-sweat-fat-loss": { scene: "dilemma-sauna-sweat", caption: "点击看：出汗只排盐和水，脂肪主要经呼吸 CO₂ 排出" },
   "weights-before-cardio": { scene: "dilemma-order-switch", caption: "点击看：把力量调到有氧前面，动作更稳不掉表现" },
-  "cold-plunge-after-lifting": { scene: "dilemma-cold-plunge", caption: "点击看：力量后立刻冰浴会压低修复信号，错开更稳" },
+  "cold-plunge-after-lifting": { scene: "dilemma-cold-plunge", caption: "点击看：想增肌，不必练完就泡冰浴" },
 
   // 女性
   "period-workout-glutes-core": { scene: "dilemma-period-pace", caption: "点击看：按当天体感把强度旋钮调到舒适档" },
@@ -59,7 +59,7 @@ export const SCENE_MAP: Record<string, { scene: string; caption: string }> = {
   "false-wide-hips-correction": { scene: "women-hip-alignment", caption: "点击看：绑带按不小骨头，激活臀中肌改力线" },
   "daily-panty-liners-underwear": { scene: "women-panty-liner", caption: "点击看：撤掉闷热护垫，纯棉透气+晒干最护微生态" },
   "sunscreen-indoors-cloudy": { scene: "women-uv-window", caption: "点击看：阴天与靠窗防 UVA，远离窗户室内别焦虑" },
-  "period-wash-hair-shower": { scene: "women-period-shower", caption: "点击看：划掉旧谣言，温水洗完及时吹干更卫生舒服" },
+  "period-wash-hair-shower": { scene: "women-period-shower", caption: "点击看：经期可以照常洗头、淋浴或温水泡澡" },
 
   // 日常普适
   "running-hurts-knees": { scene: "knee-sponge", caption: "点击看：膝盖软骨像海绵，规律慢跑反而促营养" },
